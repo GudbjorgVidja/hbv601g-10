@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_home">
+
+    <!--
+    <fragment // tegund hlutarins
+        android:id="@+id/navigation_home" //"handle" til að navigate-a á þetta fragment
+        android:name="hbv601g.recipeapp.ui.home.HomeFragment" // path á java skrá fyrir fragmentið
+        android:label="@string/title_home" // titllinn sem kemur efst á skjánum
+        tools:layout="@layout/fragment_home" /> //slóð á xml skrá fyrir þetta fragment
+    -->
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="hbv601g.recipeapp.ui.home.HomeFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/navigation_recipes"
+        android:name="hbv601g.recipeapp.ui.recipes.RecipesFragment"
+        android:label="@string/title_recipes"
+        tools:layout="@layout/fragment_recipes"/>
+
+    <fragment
+        android:id="@+id/navigation_ingredients"
+        android:name="hbv601g.recipeapp.ui.ingredients.IngredientsFragment"
+        android:label="@string/title_ingredients"
+        tools:layout="@layout/fragment_ingredients" />
+
+    <fragment
+        android:id="@+id/navigation_user"
+        android:name="hbv601g.recipeapp.ui.user.UserFragment"
+        android:label="@string/title_user"
+        tools:layout="@layout/fragment_user"/>
+
+
+    <!-- fragments  -->
+    <fragment
+        android:id="@+id/navigation_user_no_user"
+        android:name="hbv601g.recipeapp.ui.user.UserNoUserFragment"
+        android:label="No user"
+        tools:layout="@layout/fragment_user_no_user"/>
+
+    <fragment
+        android:id="@+id/navigation_signup"
+        android:name="hbv601g.recipeapp.ui.login.SignupFragment"
+        android:label="@string/title_signup"
+        tools:layout="@layout/fragment_signup"/>
+
+    <fragment
+        android:id="@+id/navigation_login"
+        android:name="hbv601g.recipeapp.ui.login.LoginFragment"
+        android:label="@string/title_login"
+        tools:layout="@layout/fragment_login"/>
+
+
+</navigation>
