@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -38,7 +39,8 @@ public class UserNoUserFragment extends Fragment {
         binding.signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navController.navigate(R.id.navigation_signup);
+                mainActivity.makeToast("Ekki útfært", Toast.LENGTH_LONG);
+                //navController.navigate(R.id.navigation_signup);
             }
         });
 

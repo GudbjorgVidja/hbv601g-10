@@ -3,14 +3,10 @@ package hbv601g.recipeapp;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -69,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
     public void updateUser(String username, String password){
         // Nær í allar upplýsingar geymdar í shared preferences
         sharedpreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
-
         SharedPreferences.Editor editor = sharedpreferences.edit();
         editor.putString(USERNAME_KEY, username);
         editor.putString(PASSWORD_KEY, password);
@@ -82,6 +77,10 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedpreferences.edit();
         editor.clear();
         editor.apply();
+    }
+
+    public void makeToast(String message, int length){
+        Toast.makeText(MainActivity.this, message, length).show();
     }
 
     public String getUserName(){
