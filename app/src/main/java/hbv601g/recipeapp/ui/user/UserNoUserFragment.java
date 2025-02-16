@@ -30,18 +30,11 @@ public class UserNoUserFragment extends Fragment {
         assert mainActivity != null;
         NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
 
-        binding.loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navController.navigate(R.id.navigation_login);
-            }
-        });
-        binding.signupButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mainActivity.makeToast("Ekki útfært", Toast.LENGTH_LONG);
-                //navController.navigate(R.id.navigation_signup);
-            }
+        binding.loginButton.setOnClickListener(v -> navController.navigate(R.id.navigation_login));
+
+        binding.signupButton.setOnClickListener(v -> {
+            mainActivity.makeToast(R.string.signup_not_implemented, Toast.LENGTH_LONG);
+            //navController.navigate(R.id.navigation_signup);
         });
 
         return root;

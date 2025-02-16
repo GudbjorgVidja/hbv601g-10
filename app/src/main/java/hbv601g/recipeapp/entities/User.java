@@ -70,9 +70,9 @@ public class User {
 //        this.recipesByUser = recipesByUser;
 //    }
 //
-//    public long getID() {
-//        return ID;
-//    }
+    public long getID() {
+        return ID;
+    }
 //
 //    public void addIngredientMeasurement(IngredientMeasurement ingredientMeasurement) {
 //        pantry.add(ingredientMeasurement);

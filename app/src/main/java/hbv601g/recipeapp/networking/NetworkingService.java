@@ -19,10 +19,11 @@ import com.google.gson.*;
 
 public class NetworkingService extends Service {
 
-    private String baseURL;
+    private final String baseURL;
     private JsonElement jsonElement;
+    private int code;
     public NetworkingService() {
-        baseURL = "http://10.0.2.2:8080/"; // http://localhost:8080/
+        baseURL = "https://hbv501g-26.onrender.com/";
     }
 
     // Required, dunno why
@@ -41,26 +42,27 @@ public class NetworkingService extends Service {
                 .url(baseURL+reqURL)
                 .build();
 
-        // Til að bíða eftir response
+        // Wait for response
         CountDownLatch latch = new CountDownLatch(1);
 
-        final JsonElement[] element = new JsonElement[1];
         Call call = client.newCall(request);
 
         call.enqueue(new Callback() {
             public void onResponse(Call call, Response response)
                     throws IOException {
+
                 String ret = response.body().string();
-                Log.d("API", "code:" + response.code() + " og body:" + ret);
+                code = response.code();
 
                 jsonElement = JsonParser.parseString(ret);
-                Log.d("API", "JsonArray:" +  jsonElement.isJsonArray() + " JsonObject:"+jsonElement.isJsonObject());
                 latch.countDown();
             }
+
 
             public void onFailure(Call call, IOException e) {
                 Log.d("API", "onFailure");
                 call.cancel(); // ?
+                latch.countDown(); // gott eða nah?
             }
         });
 
@@ -71,7 +73,9 @@ public class NetworkingService extends Service {
             throw new RuntimeException(e);
         }
 
-        Log.d("API", "jsonElement null: " + jsonElement.isJsonNull() );
+
+        // See about implementation
+        if(code != 200) return null;
 
         return jsonElement;
     }
@@ -82,7 +86,7 @@ public class NetworkingService extends Service {
     public JsonElement patchRequest(String reqURL, String data){
         return null;
     }
-    public JsonElement deleteRequest(String reqURL){ // engin delete m data?
+    public JsonElement deleteRequest(String reqURL){
         return null;
     }
 }

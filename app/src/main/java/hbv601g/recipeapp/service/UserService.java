@@ -24,7 +24,7 @@ public class UserService extends Service {
     }
 
     // TODO: skila boolean (virkar?) eða user (ekki null?)
-    public void logIn(String username, String password){
+    public User logIn(String username, String password){
         String url = "user/login";
 
         //?username=${username}&password=${password}
@@ -43,8 +43,9 @@ public class UserService extends Service {
             user = gson.fromJson(element, User.class);
             Log.d("API", "user object, name:" + user.getUsername());
         }
+        else return null;
 
-        // return user;
+        return user;
 
     }
 

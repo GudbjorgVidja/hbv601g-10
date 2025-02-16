@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -16,6 +17,7 @@ import java.util.Objects;
 import hbv601g.recipeapp.MainActivity;
 import hbv601g.recipeapp.R;
 import hbv601g.recipeapp.databinding.FragmentLoginBinding;
+import hbv601g.recipeapp.entities.User;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.UserService;
 
@@ -33,22 +35,23 @@ public class LoginFragment extends Fragment{
         assert mainActivity != null;
         NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
 
-        binding.loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String username = Objects.requireNonNull(binding.userNameInput.getText()).toString();
-                String password = Objects.requireNonNull(binding.passwordInput.getText()).toString();
+        binding.loginButton.setOnClickListener(v -> {
+            String username = Objects.requireNonNull(binding.userNameInput.getText()).toString();
+            String password = Objects.requireNonNull(binding.passwordInput.getText()).toString();
 
-                userService.logIn(username,password); // skilar user
-                Log.d("API", "LoginFragment");
+            User user = userService.logIn(username,password);
+            if(user == null){
+                mainActivity.makeToast(R.string.login_failed_toast, Toast.LENGTH_LONG);
+            }
+            else{
                 mainActivity.updateUser(username,password);
                 navController.navigate(R.id.navigation_user);
             }
+
         });
 
         return root;
     }
-
 
     @Override
     public void onDestroyView() {
