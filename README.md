@@ -12,3 +12,4 @@ Eingöngu er búið að útfæra login endapunkt hér, en til að prófa má not
 
 Alla notendur má sjá með https://hbv501g-26.onrender.com/user/all
 
+Fyrst þegar appið er opnað þá tekur tíma fyrir bakendann að taka við sér, og getur verið gott að prufa í browser hvort hann sé kominn inn.
