@@ -17,7 +17,7 @@ import hbv601g.recipeapp.networking.NetworkingService;
 
 public class UserService extends Service {
     private NetworkingService networkingService;
-    private JsonElement[] element;
+    private JsonElement element;
 
     public UserService(NetworkingService networkingService){
         this.networkingService=networkingService;
@@ -37,17 +37,14 @@ public class UserService extends Service {
             //throw new RuntimeException(e);
         }
 
-        Log.d("API", "back in userService");
 
-        if(element[0] != null){
+        if(element != null){
             Gson gson = new Gson();
-            user = gson.fromJson(element[0], User.class);
+            user = gson.fromJson(element, User.class);
             Log.d("API", "user object, name:" + user.getUsername());
         }
 
-
-
-        // skilar user
+        // return user;
 
     }
 

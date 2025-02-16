@@ -8,6 +8,7 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import java.io.IOException;
+import java.util.concurrent.CountDownLatch;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -33,17 +34,19 @@ public class NetworkingService extends Service {
 
     // cite your sources:
     // https://www.baeldung.com/guide-to-okhttp
-    public JsonElement[] getRequest(String reqURL) throws IOException {
+    public JsonElement getRequest(String reqURL) throws IOException {
         OkHttpClient client = new OkHttpClient();
 
         Request request = new Request.Builder()
                 .url(baseURL+reqURL)
                 .build();
 
+        // Til að bíða eftir response
+        CountDownLatch latch = new CountDownLatch(1);
+
         final JsonElement[] element = new JsonElement[1];
         Call call = client.newCall(request);
 
-        // enqueue = async
         call.enqueue(new Callback() {
             public void onResponse(Call call, Response response)
                     throws IOException {
@@ -51,19 +54,26 @@ public class NetworkingService extends Service {
                 Log.d("API", "code:" + response.code() + " og body:" + ret);
 
                 jsonElement = JsonParser.parseString(ret);
-                element[0] = JsonParser.parseString(ret);
-                Log.d("API", "JsonArray:" +  element[0].isJsonArray() + " JsonObject:"+element[0].isJsonObject());
+                Log.d("API", "JsonArray:" +  jsonElement.isJsonArray() + " JsonObject:"+jsonElement.isJsonObject());
+                latch.countDown();
             }
 
             public void onFailure(Call call, IOException e) {
                 Log.d("API", "onFailure");
-                //fail();
+                call.cancel(); // ?
             }
         });
 
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            Log.d("API", "Latch catch");
+            throw new RuntimeException(e);
+        }
 
-        Log.d("API", "method return");
-        return element;
+        Log.d("API", "jsonElement null: " + jsonElement.isJsonNull() );
+
+        return jsonElement;
     }
 
     public JsonElement postRequest(String reqURL, String data){
