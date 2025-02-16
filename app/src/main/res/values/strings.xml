@@ -15,5 +15,8 @@
     <string name="password_hint">Password</string>
     <string name="username_hint">Username</string>
 
+    <!-- Messages/toasts -->
+    <string name="login_failed_toast">Login failed. Please ensure username and password are correct.</string>
+    <string name="signup_not_implemented">Signup hasn\'t been implemented</string>
 
 </resources>

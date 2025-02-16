@@ -43,7 +43,16 @@ dependencies {
     implementation(libs.lifecycle.viewmodel.ktx)
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
+    implementation("com.squareup.okhttp3:okhttp:4.12.0") //com.squareup.okhttp3:okhttps:3.4.1
+    implementation("com.google.code.gson:gson:2.12.1")
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
+//    // define a BOM and its version
+//    implementation(platform("com.squareup.okhttp3:okhttp-bom:4.12.0"))
+//
+//    // define any required OkHttp artifacts without version
+//    implementation("com.squareup.okhttp3:okhttp")
+//    implementation("com.squareup.okhttp3:logging-interceptor")
 }
