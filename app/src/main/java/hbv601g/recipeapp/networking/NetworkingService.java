@@ -12,8 +12,10 @@ import java.util.concurrent.CountDownLatch;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 import com.google.gson.*;
 
@@ -80,9 +82,59 @@ public class NetworkingService extends Service {
         return jsonElement;
     }
 
-    public JsonElement postRequest(String reqURL, String data){
-        return null;
+
+    /**
+     * //TODO: Add the data to the formBody (see how that is done)
+     * //TODO: Find a better way to replace the latch
+     * Makes a Post Request to the external API
+     * @param reqURL a string containing the URL for the API call
+     * @param data a string containing the data to add to the requestbody of the call
+     * @return a JsonElement containing the result of the post request
+     * @throws IOException signals that something went wrong with the post request
+     */
+    public JsonElement postRequest(String reqURL, String data) throws IOException{
+        OkHttpClient client = new OkHttpClient();
+
+        RequestBody formBody = new FormBody.Builder().build();
+
+        Request request = new Request.Builder().url(baseURL+reqURL).post(formBody).build();
+
+        // Wait for response
+        CountDownLatch latch = new CountDownLatch(1);
+
+        Call call = client.newCall(request);
+
+        call.enqueue(new Callback() {
+            public void onResponse(Call call, Response response) throws IOException {
+                String ret = response.body().string();
+                code = response.code();
+                jsonElement = JsonParser.parseString(ret);
+                latch.countDown();
+            }
+
+
+            public void onFailure(Call call, IOException e) {
+                Log.d("API", "onFailure");
+                call.cancel(); // ?
+                latch.countDown(); // gott eða nah?
+            }
+        });
+
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            Log.d("API", "Latch catch");
+            throw new RuntimeException(e);
+        }
+
+        // See about implementation
+        if(code != 200) return null;
+
+        return jsonElement;
     }
+
+
+
     public JsonElement patchRequest(String reqURL, String data){
         return null;
     }

@@ -49,6 +49,26 @@ public class UserService extends Service {
 
     }
 
+    public User signup(String username, String password){
+        String url = "user/signup";
+        String params = String.format("?username=%s&password=%s",username, password);
+
+        User user = null;
+        try {
+            element = networkingService.postRequest(url + params, null);
+        } catch (IOException e) {
+            Log.d("Networking exception", "Signup failed");
+        }
+
+        if(element != null){
+            Gson gson = new Gson();
+            user = gson.fromJson(element, User.class);
+            Log.d("API", "user object, name:" + user.getUsername());
+        }
+
+        return user;
+    }
+
 
     @Nullable
     @Override

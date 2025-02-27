@@ -32,10 +32,7 @@ public class UserNoUserFragment extends Fragment {
 
         binding.loginButton.setOnClickListener(v -> navController.navigate(R.id.navigation_login));
 
-        binding.signupButton.setOnClickListener(v -> {
-            mainActivity.makeToast(R.string.signup_not_implemented, Toast.LENGTH_LONG);
-            //navController.navigate(R.id.navigation_signup);
-        });
+        binding.signupButton.setOnClickListener(v -> navController.navigate(R.id.navigation_signup));
 
         return root;
     }
