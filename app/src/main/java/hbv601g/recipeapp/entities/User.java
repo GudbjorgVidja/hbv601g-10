@@ -1,19 +1,22 @@
 package hbv601g.recipeapp.entities;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class User {
 
 
-    private long ID;
+    private long id;
 
     private String username;
     private String password;
     private String email;
 
 
-//    private List<IngredientMeasurement> pantry = new ArrayList<>();
-//    private List<Recipe> recipesByUser = new ArrayList<>();
-//    private List<Ingredient> ingredientsByUser = new ArrayList<>();
-//    private List<RecipeList> recipeLists = new ArrayList<>();
+    private List<IngredientMeasurement> pantry = new ArrayList<>();
+    private List<Recipe> recipesByUser = new ArrayList<>();
+    private List<Ingredient> ingredientsByUser = new ArrayList<>();
+    private List<RecipeList> recipeLists = new ArrayList<>();
 
     public User() {
 
@@ -54,48 +57,48 @@ public class User {
         this.email = email;
     }
 
-//    public List<IngredientMeasurement> getPantry() {
-//        return pantry;
-//    }
-//
-//    public void setPantry(List<IngredientMeasurement> pantry) {
-//        this.pantry = pantry;
-//    }
-//
-//    public List<Recipe> getRecipesByUser() {
-//        return recipesByUser;
-//    }
-//
-//    public void setRecipesByUser(List<Recipe> recipesByUser) {
-//        this.recipesByUser = recipesByUser;
-//    }
-//
-    public long getID() {
-        return ID;
+    public List<IngredientMeasurement> getPantry() {
+        return pantry;
     }
-//
-//    public void addIngredientMeasurement(IngredientMeasurement ingredientMeasurement) {
-//        pantry.add(ingredientMeasurement);
-//    }
-//
-//    public void addRecipeByUser(Recipe recipeByUser) {
-//        recipesByUser.add(recipeByUser);
-//    }
-//
-//    public List<Ingredient> getIngredientsByUser() {
-//        return ingredientsByUser;
-//    }
-//
-//    public void setIngredientsByUser(List<Ingredient> ingredientsByUser) {
-//        this.ingredientsByUser = ingredientsByUser;
-//    }
-//
-//    public List<RecipeList> getRecipeLists() {
-//        return recipeLists;
-//    }
-//
-//    public void setRecipeLists(List<RecipeList> recipeLists) {
-//        this.recipeLists = recipeLists;
-//    }
+
+    public void setPantry(List<IngredientMeasurement> pantry) {
+        this.pantry = pantry;
+    }
+
+    public List<Recipe> getRecipesByUser() {
+        return recipesByUser;
+    }
+
+    public void setRecipesByUser(List<Recipe> recipesByUser) {
+        this.recipesByUser = recipesByUser;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void addIngredientMeasurement(IngredientMeasurement ingredientMeasurement) {
+        pantry.add(ingredientMeasurement);
+    }
+
+    public void addRecipeByUser(Recipe recipeByUser) {
+        recipesByUser.add(recipeByUser);
+    }
+
+    public List<Ingredient> getIngredientsByUser() {
+        return ingredientsByUser;
+    }
+
+    public void setIngredientsByUser(List<Ingredient> ingredientsByUser) {
+        this.ingredientsByUser = ingredientsByUser;
+    }
+
+    public List<RecipeList> getRecipeLists() {
+        return recipeLists;
+    }
+
+    public void setRecipeLists(List<RecipeList> recipeLists) {
+        this.recipeLists = recipeLists;
+    }
 
 }

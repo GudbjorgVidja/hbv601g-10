@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
@@ -25,7 +24,6 @@ public class UserFragment extends Fragment{
                              ViewGroup container, Bundle savedInstanceState) {
 
         // Gæti verið betra að hafa user sem argument, og ef það er ekki til staðar þá enginn user
-        // athuga hvort það sé user loggaður inn
         MainActivity mainActivity = ((MainActivity) getActivity());
         assert mainActivity != null;
         NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
@@ -34,20 +32,16 @@ public class UserFragment extends Fragment{
         View root = binding.getRoot();
 
         Button mLogoutButton = binding.logoutButton;
-        mLogoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mainActivity.removeUser();
-                navController.navigate(R.id.navigation_user);
-            }
+        mLogoutButton.setOnClickListener(v -> {
+            mainActivity.removeCurrentUser();
+            navController.navigate(R.id.navigation_user);
         });
 
         if(mainActivity.getUserName() == null){
             navController.navigate(R.id.navigation_user_no_user);
         }
 
-        TextView tv = binding.userName;
-        tv.setText(mainActivity.getUserName());
+        binding.usernameDisplay.setText(mainActivity.getUserName());
 
         return root;
     }
