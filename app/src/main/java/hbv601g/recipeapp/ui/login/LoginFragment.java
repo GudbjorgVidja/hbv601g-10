@@ -1,18 +1,17 @@
 package hbv601g.recipeapp.ui.login;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-
-import java.util.Objects;
 
 import hbv601g.recipeapp.MainActivity;
 import hbv601g.recipeapp.R;
@@ -34,18 +33,26 @@ public class LoginFragment extends Fragment{
         MainActivity mainActivity = ((MainActivity) getActivity());
         assert mainActivity != null;
         NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
+        TextView usernameTextView = binding.userNameInput;
+        EditText passwordEditText = binding.userNameInput;
 
         binding.loginButton.setOnClickListener(v -> {
-            String username = Objects.requireNonNull(binding.userNameInput.getText()).toString();
-            String password = Objects.requireNonNull(binding.passwordInput.getText()).toString();
-
-            User user = userService.logIn(username,password);
-            if(user == null){
-                mainActivity.makeToast(R.string.login_failed_toast, Toast.LENGTH_LONG);
+            User user;
+            if(usernameTextView.getText() == null || passwordEditText.getText() == null){
+                mainActivity.makeToast(R.string.login_not_empty_toast, Toast.LENGTH_LONG);
             }
             else{
-                mainActivity.updateUser(username,password);
-                navController.navigate(R.id.navigation_user);
+                user = userService.logIn(
+                        usernameTextView.getText().toString(),
+                        passwordEditText.getText().toString());
+
+                if(user == null){
+                    mainActivity.makeToast(R.string.login_failed_toast, Toast.LENGTH_LONG);
+                }
+                else{
+                    mainActivity.updateCurrentUser(user);
+                    navController.navigate(R.id.navigation_user);
+                }
             }
 
         });

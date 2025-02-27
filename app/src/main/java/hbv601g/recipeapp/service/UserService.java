@@ -23,30 +23,26 @@ public class UserService extends Service {
         this.networkingService=networkingService;
     }
 
-    // TODO: skila boolean (virkar?) eða user (ekki null?)
     public User logIn(String username, String password){
         String url = "user/login";
 
-        //?username=${username}&password=${password}
-        String params = String.format("?username=%s&password=%s",username, password);
-        User user;
+        url += String.format("?username=%s&password=%s",username, password);
+
         try {
-            element = networkingService.getRequest(url + params);
+            element = networkingService.getRequest(url);
         } catch (IOException e) {
             Log.d("Networking exception", "Login failed");
             //throw new RuntimeException(e);
         }
 
-
+        User user = null;
         if(element != null){
             Gson gson = new Gson();
             user = gson.fromJson(element, User.class);
             Log.d("API", "user object, name:" + user.getUsername());
         }
-        else return null;
 
         return user;
-
     }
 
 
