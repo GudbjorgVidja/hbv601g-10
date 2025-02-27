@@ -23,9 +23,15 @@ public class UserService extends Service {
         this.networkingService=networkingService;
     }
 
+    /**
+     * Athugar hvort notandi með gefið notandanafn og lykilorð sé í gagnagrunninum,
+     * skilar honum ef hann er til en annars null
+     * @param username notandanafn til að skrá inn
+     * @param password lykilorð notanda
+     * @return User object ef innskráning tókst, annars null
+     */
     public User logIn(String username, String password){
         String url = "user/login";
-
         url += String.format("?username=%s&password=%s",username, password);
 
         try {
