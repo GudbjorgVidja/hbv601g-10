@@ -13,7 +13,8 @@ import hbv601g.recipeapp.R;
 import hbv601g.recipeapp.entities.Ingredient;
 
 /**
- * Til að setja ingredients í lista
+ * Adapter sem er settur á ListView hlut til að gera lista
+ * af ingredients.
  */
 public class IngredientAdapter extends BaseAdapter {
     private List<Ingredient> ingredientList;

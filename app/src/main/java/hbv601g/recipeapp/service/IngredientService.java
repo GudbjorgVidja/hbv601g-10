@@ -45,7 +45,7 @@ public class IngredientService extends Service {
             //throw new RuntimeException(e);
         }
 
-        ArrayList<Ingredient> ingredients = null;
+        ArrayList<Ingredient> ingredients = new ArrayList<>();
         if(element != null){
             Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
             if(!element.isJsonArray()) return null;
@@ -55,6 +55,7 @@ public class IngredientService extends Service {
             Type collectionType = new TypeToken<Collection<Ingredient>>(){}.getType();
             ingredients = gson.fromJson(array, collectionType);
         }
+        else throw new NullPointerException("Ingredient list is null");
 
         return ingredients;
     }

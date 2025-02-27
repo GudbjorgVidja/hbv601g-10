@@ -6,12 +6,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import hbv601g.recipeapp.MainActivity;
@@ -22,6 +24,9 @@ import hbv601g.recipeapp.entities.Ingredient;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.IngredientService;
 
+/**
+ * Fragment fyrir yfirlit yfir ingredients
+ */
 public class IngredientsFragment extends Fragment {
     private FragmentIngredientsBinding binding;
     private IngredientService mIngredientService;
@@ -42,7 +47,15 @@ public class IngredientsFragment extends Fragment {
         long uid = mainActivity.getUserId();
 
         mIngredientService = new IngredientService(new NetworkingService(), uid);
-        mAllIngredients = mIngredientService.getAllIngredients();
+
+        // Bregst við ef ekki fæst svar frá apa
+        try{
+            mAllIngredients = mIngredientService.getAllIngredients();
+        } catch (NullPointerException e) {
+            mAllIngredients = new ArrayList<>();
+            mainActivity.makeToast(R.string.null_ingredient_list, Toast.LENGTH_LONG);
+        }
+
         mIngredientsListView = binding.ingredientsListView;
 
         // Gera adapter til að tengja lista af ingredients við listView hlutinn
