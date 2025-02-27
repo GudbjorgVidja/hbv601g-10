@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,18 +32,18 @@ public class LoginFragment extends Fragment{
         MainActivity mainActivity = ((MainActivity) getActivity());
         assert mainActivity != null;
         NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
-        TextView usernameTextView = binding.userNameInput;
-        EditText passwordEditText = binding.userNameInput;
+        TextView usernameTextView = binding.usernameInput;
+        TextView passwordTextView = binding.passwordInput;
 
         binding.loginButton.setOnClickListener(v -> {
             User user;
-            if(usernameTextView.getText() == null || passwordEditText.getText() == null){
+            if(usernameTextView.getText() == null || passwordTextView.getText() == null){
                 mainActivity.makeToast(R.string.login_not_empty_toast, Toast.LENGTH_LONG);
             }
             else{
                 user = userService.logIn(
                         usernameTextView.getText().toString(),
-                        passwordEditText.getText().toString());
+                        passwordTextView.getText().toString());
 
                 if(user == null){
                     mainActivity.makeToast(R.string.login_failed_toast, Toast.LENGTH_LONG);
