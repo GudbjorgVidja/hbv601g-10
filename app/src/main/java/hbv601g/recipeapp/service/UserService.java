@@ -23,30 +23,32 @@ public class UserService extends Service {
         this.networkingService=networkingService;
     }
 
-    // TODO: skila boolean (virkar?) eða user (ekki null?)
+    /**
+     * Athugar hvort notandi með gefið notandanafn og lykilorð sé í gagnagrunninum,
+     * skilar honum ef hann er til en annars null
+     * @param username notandanafn til að skrá inn
+     * @param password lykilorð notanda
+     * @return User object ef innskráning tókst, annars null
+     */
     public User logIn(String username, String password){
         String url = "user/login";
+        url += String.format("?username=%s&password=%s",username, password);
 
-        //?username=${username}&password=${password}
-        String params = String.format("?username=%s&password=%s",username, password);
-        User user;
         try {
-            element = networkingService.getRequest(url + params);
+            element = networkingService.getRequest(url);
         } catch (IOException e) {
             Log.d("Networking exception", "Login failed");
             //throw new RuntimeException(e);
         }
 
-
+        User user = null;
         if(element != null){
             Gson gson = new Gson();
             user = gson.fromJson(element, User.class);
             Log.d("API", "user object, name:" + user.getUsername());
         }
-        else return null;
 
         return user;
-
     }
 
     public User signup(String username, String password){

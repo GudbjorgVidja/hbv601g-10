@@ -17,5 +17,7 @@
 
     <!-- Messages/toasts -->
     <string name="login_failed_toast">Login failed. Please ensure username and password are correct.</string>
+    <string name="signup_not_implemented">Signup hasn\'t been implemented</string>
+    <string name="login_not_empty_toast">Username and password cannot be empty</string>
     <string name="signup_failed_toast">Signup failed. I won\'t tell you why..</string>
 </resources>

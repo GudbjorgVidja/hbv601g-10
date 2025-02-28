@@ -1,10 +1,10 @@
 package hbv601g.recipeapp.ui.login;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -34,18 +34,27 @@ public class LoginFragment extends Fragment{
         MainActivity mainActivity = ((MainActivity) getActivity());
         assert mainActivity != null;
         NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
+        EditText usernameInput = binding.usernameInput;
+        EditText passwordInput = binding.passwordInput;
 
         binding.loginButton.setOnClickListener(v -> {
-            String username = Objects.requireNonNull(binding.userNameInput.getText()).toString();
-            String password = Objects.requireNonNull(binding.passwordInput.getText()).toString();
-
-            User user = userService.logIn(username,password);
-            if(user == null){
-                mainActivity.makeToast(R.string.login_failed_toast, Toast.LENGTH_LONG);
+            User user;
+            if(Objects.requireNonNull(usernameInput.getText()).toString().isEmpty() ||
+                    Objects.requireNonNull(passwordInput.getText()).toString().isEmpty()){
+                mainActivity.makeToast(R.string.login_not_empty_toast, Toast.LENGTH_LONG);
             }
             else{
-                mainActivity.updateUser(username,password);
-                navController.navigate(R.id.navigation_user);
+                user = userService.logIn(
+                        usernameInput.getText().toString(),
+                        passwordInput.getText().toString());
+
+                if(user == null){
+                    mainActivity.makeToast(R.string.login_failed_toast, Toast.LENGTH_LONG);
+                }
+                else{
+                    mainActivity.updateCurrentUser(user);
+                    navController.navigate(R.id.navigation_user);
+                }
             }
 
         });

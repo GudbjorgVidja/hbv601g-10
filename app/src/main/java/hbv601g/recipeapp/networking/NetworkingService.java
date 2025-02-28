@@ -23,7 +23,7 @@ public class NetworkingService extends Service {
 
     private final String baseURL;
     private JsonElement jsonElement;
-    private int code;
+    private int responseCode;
     public NetworkingService() {
         baseURL = "https://hbv501g-26.onrender.com/";
     }
@@ -54,17 +54,16 @@ public class NetworkingService extends Service {
                     throws IOException {
 
                 String ret = response.body().string();
-                code = response.code();
+                responseCode = response.code();
 
                 jsonElement = JsonParser.parseString(ret);
                 latch.countDown();
             }
 
-
             public void onFailure(Call call, IOException e) {
                 Log.d("API", "onFailure");
-                call.cancel(); // ?
-                latch.countDown(); // gott eða nah?
+                call.cancel();
+                latch.countDown();
             }
         });
 
@@ -75,9 +74,8 @@ public class NetworkingService extends Service {
             throw new RuntimeException(e);
         }
 
-
         // See about implementation
-        if(code != 200) return null;
+        if(responseCode != 200) return null;
 
         return jsonElement;
     }
