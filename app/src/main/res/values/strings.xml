@@ -19,4 +19,16 @@
     <string name="login_failed_toast">Login failed. Please ensure username and password are correct.</string>
     <string name="signup_not_implemented">Signup hasn\'t been implemented</string>
     <string name="login_not_empty_toast">Username and password cannot be empty</string>
+    <string name="get_recipes_failed_toast">Failed to get all recipes</string>
+
+
+
+    <!-- variables -->
+    <string name="selected_recipe">Recipe</string>
+    <string name="currency">kr.</string>
+    <string name="tic_string">tic:</string>
+    <string name="tpc_string">tpc:</string>
+
+
+
 </resources>

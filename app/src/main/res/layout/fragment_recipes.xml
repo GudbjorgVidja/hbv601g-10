@@ -6,17 +6,18 @@
     android:layout_height="match_parent"
     tools:context=".ui.recipes.RecipesFragment">
 
-    <TextView
-        android:id="@+id/text_recipes"
+    <ListView
+        android:id="@+id/recipes_list_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        tools:layout_editor_absoluteX="20dp"
+        tools:layout_editor_absoluteY="20dp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginVertical="20dp"
+        android:layout_marginHorizontal="20dp"
+        android:divider="#f00"
+        android:dividerHeight="1dp"
+        />
+        <!-- TODO: Passa að botninn sé ekki utan skjásins!-->
+
 </androidx.constraintlayout.widget.ConstraintLayout>
