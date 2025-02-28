@@ -3,35 +3,31 @@ package hbv601g.recipeapp;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import hbv601g.recipeapp.databinding.ActivityMainBinding;
+import hbv601g.recipeapp.entities.User;
 
 public class MainActivity extends AppCompatActivity {
 
-    // creating constant keys for shared preferences.
+    // Lyklar fyrir shared preferences (basically session)
     public static final String SHARED_PREFS = "shared_prefs";
-
-    // key for storing email.
     public static final String USERNAME_KEY = "username_key";
-
-    // key for storing password.
     public static final String PASSWORD_KEY = "password_key";
+    public static final String USER_ID_KEY = "uid_key";
 
-    // variable for shared preferences.
+    // breyta fyrir shared preferences.
     SharedPreferences sharedpreferences;
-    String username, password;
+
     private ActivityMainBinding binding;
 
     @Override
@@ -65,18 +61,31 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void updateUser(String username, String password){
-        // Nær í allar upplýsingar geymdar í shared preferences
+    /**
+     * Setur upplýsingar í shared preferences sem gefinn user,
+     * eða hreinsar ef user er null
+     * @param user innskráður notandi
+     */
+    public void updateCurrentUser(User user){
         sharedpreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedpreferences.edit();
-        editor.putString(USERNAME_KEY, username);
-        editor.putString(PASSWORD_KEY, password);
+
+        if(user != null){
+            editor.putString(USERNAME_KEY, user.getUsername());
+            editor.putString(PASSWORD_KEY, user.getPassword());
+            editor.putLong(USER_ID_KEY, user.getId());
+        }
+        else editor.clear();
+
         editor.apply();
     }
 
-    public void removeUser(){
-        sharedpreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
 
+    /**
+     * Fjarlægir user upplýsingar úr shared preferences til að logga út
+     */
+    public void removeCurrentUser(){
+        sharedpreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedpreferences.edit();
         editor.clear();
         editor.apply();
@@ -88,6 +97,9 @@ public class MainActivity extends AppCompatActivity {
 
     public String getUserName(){
         return sharedpreferences.getString(USERNAME_KEY, null);
+    }
+    public long getUserId(){
+        return sharedpreferences.getLong(USER_ID_KEY, 0);
     }
 
     @Override

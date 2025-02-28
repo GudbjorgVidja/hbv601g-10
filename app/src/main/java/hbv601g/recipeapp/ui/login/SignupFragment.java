@@ -34,7 +34,7 @@ public class SignupFragment extends Fragment {
             public void onClick(View v) {
                 String username = Objects.requireNonNull(binding.userNameInput.getText()).toString();
                 String password = Objects.requireNonNull(binding.passwordInput.getText()).toString();
-                mainActivity.updateUser(username,password);
+                //mainActivity.updateUser(username,password);
 
                 navController.navigate(R.id.navigation_user);
             }
