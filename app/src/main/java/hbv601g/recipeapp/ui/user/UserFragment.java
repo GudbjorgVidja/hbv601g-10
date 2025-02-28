@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import androidx.annotation.NonNull;
 
@@ -31,8 +30,7 @@ public class UserFragment extends Fragment{
         binding = FragmentUserBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        Button mLogoutButton = binding.logoutButton;
-        mLogoutButton.setOnClickListener(v -> {
+        binding.logoutButton.setOnClickListener(v -> {
             mainActivity.removeCurrentUser();
             navController.navigate(R.id.navigation_user);
         });

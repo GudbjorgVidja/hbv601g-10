@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -32,10 +31,7 @@ public class UserNoUserFragment extends Fragment {
 
         binding.loginButton.setOnClickListener(v -> navController.navigate(R.id.navigation_login));
 
-        binding.signupButton.setOnClickListener(v -> {
-            mainActivity.makeToast(R.string.signup_not_implemented, Toast.LENGTH_LONG);
-            //navController.navigate(R.id.navigation_signup);
-        });
+        binding.signupButton.setOnClickListener(v -> navController.navigate(R.id.navigation_signup));
 
         return root;
     }
