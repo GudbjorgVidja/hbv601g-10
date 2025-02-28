@@ -105,7 +105,7 @@ public class NetworkingService extends Service {
         call.enqueue(new Callback() {
             public void onResponse(Call call, Response response) throws IOException {
                 String ret = response.body().string();
-                code = response.code();
+                responseCode = response.code();
                 jsonElement = JsonParser.parseString(ret);
                 latch.countDown();
             }
@@ -125,8 +125,8 @@ public class NetworkingService extends Service {
             throw new RuntimeException(e);
         }
 
-        // See about implementation
-        if(code != 200) return null;
+        // See about implementation TODO: add exception to endpoint. Make sure that "null" gets treated as null
+        if(responseCode != 200 || jsonElement.isJsonNull()) return null;
 
         return jsonElement;
     }

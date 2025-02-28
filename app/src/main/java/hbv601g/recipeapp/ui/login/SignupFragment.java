@@ -40,13 +40,18 @@ public class SignupFragment extends Fragment {
             String username = Objects.requireNonNull(binding.userNameInput.getText()).toString();
             String password = Objects.requireNonNull(binding.passwordInput.getText()).toString();
 
-            User user = mUserService.signup(username,password);
-            if(user == null){
-                mainActivity.makeToast(R.string.signup_failed_toast, Toast.LENGTH_LONG);
+            if(username.isEmpty() || password.isEmpty()){
+                mainActivity.makeToast(R.string.login_not_empty_toast, Toast.LENGTH_LONG);
             }
             else{
-                mainActivity.updateUser(username,password);
-                navController.navigate(R.id.navigation_user);
+                User user = mUserService.signup(username,password);
+                if(user == null){
+                    mainActivity.makeToast(R.string.signup_failed_toast, Toast.LENGTH_LONG);
+                }
+                else{
+                    mainActivity.updateCurrentUser(user);
+                    navController.navigate(R.id.navigation_user);
+                }
             }
         });
         return root;
