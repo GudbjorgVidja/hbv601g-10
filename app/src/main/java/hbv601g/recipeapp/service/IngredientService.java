@@ -24,33 +24,32 @@ import hbv601g.recipeapp.networking.NetworkingService;
 
 public class IngredientService extends Service {
 
-    private NetworkingService networkingService;
-    private long uid;
-    private JsonElement element;
+    private NetworkingService mNetworkingService;
+    private long mUid;
+    private JsonElement mElement;
 
     public IngredientService(NetworkingService networkingService, long uid){
-        this.networkingService = networkingService;
-        this.uid = uid;
+        this.mNetworkingService = networkingService;
+        this.mUid = uid;
     }
 
 
     public List<Ingredient> getAllIngredients(){
         String url = "ingredient/all";
-        url += "?uid="+uid;
+        url += "?uid="+ mUid;
 
         try {
-            element = networkingService.getRequest(url);
+            mElement = mNetworkingService.getRequest(url);
         } catch (IOException e) {
             Log.d("Networking exception", "get ingredients failed");
-            //throw new RuntimeException(e);
         }
 
         ArrayList<Ingredient> ingredients = new ArrayList<>();
-        if(element != null){
+        if(mElement != null){
             Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-            if(!element.isJsonArray()) return null;
+            if(!mElement.isJsonArray()) return null;
 
-            JsonArray array = element.getAsJsonArray();
+            JsonArray array = mElement.getAsJsonArray();
 
             Type collectionType = new TypeToken<Collection<Ingredient>>(){}.getType();
             ingredients = gson.fromJson(array, collectionType);
