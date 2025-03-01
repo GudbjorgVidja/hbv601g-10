@@ -4,13 +4,15 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+
+import java.util.Objects;
 
 import hbv601g.recipeapp.MainActivity;
 import hbv601g.recipeapp.R;
@@ -35,18 +37,19 @@ public class LoginFragment extends Fragment{
         MainActivity mainActivity = ((MainActivity) getActivity());
         assert mainActivity != null;
         NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
-        TextView usernameTextView = binding.usernameInput;
-        TextView passwordTextView = binding.passwordInput;
+        EditText usernameInput = binding.usernameInput;
+        EditText passwordInput = binding.passwordInput;
 
         binding.loginButton.setOnClickListener(v -> {
             User user;
-            if(usernameTextView.getText() == null || passwordTextView.getText() == null){
+            if(Objects.requireNonNull(usernameInput.getText()).toString().isEmpty() ||
+                    Objects.requireNonNull(passwordInput.getText()).toString().isEmpty()){
                 mainActivity.makeToast(R.string.login_not_empty_toast, Toast.LENGTH_LONG);
             }
             else{
                 user = userService.logIn(
-                        usernameTextView.getText().toString(),
-                        passwordTextView.getText().toString());
+                        usernameInput.getText().toString(),
+                        passwordInput.getText().toString());
 
                 if(user == null){
                     mainActivity.makeToast(R.string.login_failed_toast, Toast.LENGTH_LONG);
