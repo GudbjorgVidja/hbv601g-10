@@ -56,20 +56,15 @@ public class RecipesFragment extends Fragment {
 
         mRecipeListView = binding.recipesListView;
 
-        // Gera adapter til að tengja lista af ingredients við listView hlutinn
         RecipeAdapter recipeAdapter = new RecipeAdapter(mainActivity.getApplicationContext(), mRecipeList);
         mRecipeListView.setAdapter(recipeAdapter);
 
         mRecipeListView.setOnItemClickListener((parent, view, position, id) -> {
-            Recipe ingredient = (Recipe) parent.getItemAtPosition(position);
-            Log.d("Selected", ingredient.toString());
+            Recipe recipe = (Recipe) parent.getItemAtPosition(position);
+            Log.d("Selected", recipe.toString());
 
             Bundle bundle = new Bundle();
-            bundle.putParcelable(getString(R.string.selected_recipe), ingredient);
-
-            //navController.navigate(R.id.navigation_ingredient, bundle);
-            //Log.d("Selected", "ingredient by " + ingredient.getCreatedBy().getUsername());
-
+            bundle.putParcelable(getString(R.string.selected_recipe), recipe);
         });
 
 

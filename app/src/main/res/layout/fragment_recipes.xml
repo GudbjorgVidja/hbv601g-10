@@ -9,15 +9,10 @@
     <ListView
         android:id="@+id/recipes_list_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:layout_editor_absoluteX="20dp"
-        tools:layout_editor_absoluteY="20dp"
+        android:layout_height="match_parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginVertical="20dp"
         android:layout_marginHorizontal="20dp"
-        android:divider="#f00"
-        android:dividerHeight="1dp"
         />
-        <!-- TODO: Passa að botninn sé ekki utan skjásins!-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
