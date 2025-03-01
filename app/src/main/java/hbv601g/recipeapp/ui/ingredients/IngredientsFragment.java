@@ -1,7 +1,6 @@
 package hbv601g.recipeapp.ui.ingredients;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,7 +44,6 @@ public class IngredientsFragment extends Fragment {
         NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
 
         long uid = mainActivity.getUserId();
-
         mIngredientService = new IngredientService(new NetworkingService(), uid);
 
         // Bregst við ef ekki fæst svar frá apa
@@ -64,14 +62,10 @@ public class IngredientsFragment extends Fragment {
 
         mIngredientsListView.setOnItemClickListener((parent, view, position, id) -> {
             Ingredient ingredient = (Ingredient) parent.getItemAtPosition(position);
-            Log.d("Selected", ingredient.toString());
-
+            //Log.d("Selected", ingredient.toString());
             Bundle bundle = new Bundle();
             bundle.putParcelable(getString(R.string.selected_ingredient), ingredient);
-
-            //navController.navigate(R.id.navigation_ingredient, bundle);
-            //Log.d("Selected", "ingredient by " + ingredient.getCreatedBy().getUsername());
-
+            navController.navigate(R.id.navigation_ingredient, bundle);
         });
 
         return root;

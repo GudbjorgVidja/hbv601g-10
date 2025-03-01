@@ -56,5 +56,14 @@
         android:label="@string/title_login"
         tools:layout="@layout/fragment_login"/>
 
+    <fragment
+        android:id="@+id/navigation_ingredient"
+        android:name="hbv601g.recipeapp.ui.ingredients.IngredientFragment"
+        android:label="@string/title_ingredient"
+        tools:layout="@layout/fragment_ingredient">
+        <argument
+            android:name="@string/selected_ingredient"
+            app:argType="hbv601g.recipeapp.entities.Ingredient" />
+    </fragment>
 
 </navigation>
