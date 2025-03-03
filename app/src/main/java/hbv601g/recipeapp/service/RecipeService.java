@@ -32,29 +32,40 @@ public class RecipeService extends Service {
     }
 
     /**
-     * This fuction takes in 6 parameters, String, User, 
-     * @param title
-     * @param author
-     * @param ingredients
-     * @param unit
-     * @param quantity
-     * @return
+     * This function takes in 7 parameters, 2 String, User, Ingredient array, Unit array and
+     * double array.
+     * All arrays must be the same length as they are use to create ingredientMeasurements variable
+     * that are in final recipe
+     *
+     * @param title         - String value, is the name of the recipe
+     * @param author        - User value, is the owner of the recipe
+     * @param instructions  - String value, is the step by step progress to make the recipe
+     * @param ingredients   - Ingredient array of size N, content all in ingredients
+     *                        that are in the recipe.
+     * @param unit          - Unit array of size N, content all unit of measurements supporting
+     *                        traditional to cooking, for the ingredient in the recipe
+     * @param quantity      - double array of size N, contents all the quantity of the units in the
+     *                        recipe
+     * @return Return the newly created recipe
      */
     public Recipe createRecipe(
-            String title, User author, Ingredient[] ingredients, Unit[] unit, double[] quantity
-                ){
-        //String url = "Recipe/create";
-        //url += String.format("?title=%s&author=%s", title, author);
-
+                                String title, User author, String instructions,
+                                Ingredient[] ingredients, Unit[] unit, double[] quantity
+                              )
+    {
         Gson gson = new Gson();
         Recipe rep = new Recipe(title, author);
         List<IngredientMeasurement> ingredList = new ArrayList<>();
 
         for(int i = 0; i < ingredients.length; i++){
-            IngredientMeasurement t = new IngredientMeasurement(ingredients[i], unit[i], quantity[i]);
+            IngredientMeasurement t = new IngredientMeasurement
+                                          (
+                                            ingredients[i], unit[i], quantity[i]
+                                          );
             ingredList.add(t);
         }
 
+        rep.setInstructions(instructions);
         rep.setIngredientMeasurements(ingredList);
 
         String url = "recipe/new";
@@ -73,8 +84,6 @@ public class RecipeService extends Service {
         }
 
         return rep;
-
-
     }
 
     @Nullable
