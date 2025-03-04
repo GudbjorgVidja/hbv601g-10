@@ -8,10 +8,15 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import hbv601g.recipeapp.entities.Ingredient;
@@ -22,13 +27,37 @@ import hbv601g.recipeapp.entities.User;
 import hbv601g.recipeapp.networking.NetworkingService;
 
 public class RecipeService extends Service {
-    private NetworkingService networkingService;
-    private JsonElement element;
+    private NetworkingService mNetworkingService;
+    private JsonElement mJsonElement;
     private long mUid;
 
     public RecipeService(NetworkingService networkingService, long uid){
-        this.networkingService = networkingService;
+        this.mNetworkingService = networkingService;
         this.mUid = uid;
+    }
+
+    public List<Recipe> getAllRecipes(){
+        String url = "recipe/all?uid=" + mUid;
+
+        try{
+            mJsonElement = mNetworkingService.getRequest(url);
+        } catch (IOException e){
+            Log.d("Networking exception", "Failed to get all recipes");
+        }
+
+        List<Recipe> recipes = new ArrayList<>();
+        if(mJsonElement != null){
+            Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+            if(!mJsonElement.isJsonArray()) return null;
+
+            JsonArray array = mJsonElement.getAsJsonArray();
+
+            Type collectionType = new TypeToken<Collection<Recipe>>(){}.getType();
+            recipes = gson.fromJson(array, collectionType);
+        }
+        else throw new NullPointerException("Recipe list is null");
+
+        return recipes;
     }
 
     /**
@@ -49,9 +78,9 @@ public class RecipeService extends Service {
      * @return Return the newly created recipe
      */
     public Recipe createRecipe(
-                                String title, User author, String instructions,
-                                Ingredient[] ingredients, Unit[] unit, double[] quantity
-                              )
+            String title, User author, String instructions,
+            Ingredient[] ingredients, Unit[] unit, double[] quantity
+    )
     {
         Gson gson = new Gson();
         Recipe rep = new Recipe(title, author);
@@ -59,9 +88,9 @@ public class RecipeService extends Service {
 
         for(int i = 0; i < ingredients.length; i++){
             IngredientMeasurement t = new IngredientMeasurement
-                                          (
-                                            ingredients[i], unit[i], quantity[i]
-                                          );
+                    (
+                            ingredients[i], unit[i], quantity[i]
+                    );
             ingredList.add(t);
         }
 
@@ -72,14 +101,14 @@ public class RecipeService extends Service {
         String data = gson.toJson(rep);
 
         try {
-            element = networkingService.postRequest(url, data);
+            mJsonElement = mNetworkingService.postRequest(url, data);
         } catch (IOException e) {
             Log.d("Networking exception", "Failed to create recipe");
             //throw new RuntimeException(e);
         }
 
-        if(element != null){
-            rep = gson.fromJson(element, Recipe.class);
+        if(mJsonElement != null){
+            rep = gson.fromJson(mJsonElement, Recipe.class);
             Log.d("API", "recipe object, title:" + rep.getTitle());
         }
 

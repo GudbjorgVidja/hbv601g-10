@@ -21,11 +21,17 @@
     <string name="login_not_empty_toast">Username and password cannot be empty</string>
     <string name="signup_failed_toast">Signup failed. I won\'t tell you why..</string>
     <string name="null_ingredient_list">Something went wrong displaying the ingredient list.</string>
+    <string name="get_recipes_failed_toast">Failed to get all recipes</string>
 
 
     <!-- variables -->
     <string name="selected_ingredient">Ingredient</string>
+    <string name="selected_recipe">Recipe</string>
+    <string name="tic_string">tic:</string>
+    <string name="tpc_string">tpc:</string>
 
     <!-- misc -->
     <string name="currency">kr.</string>
+
+
 </resources>
