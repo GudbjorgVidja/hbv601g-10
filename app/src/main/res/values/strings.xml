@@ -7,6 +7,7 @@
     <string name="title_ingredients">Ingredients</string>
     <string name="title_signup">Signup</string>
     <string name="title_login">Login</string>
+    <string name="title_ingredient">Ingredient</string>
 
     <!-- Buttons/textfields -->
     <string name="login_button_text">Login</string>
@@ -14,13 +15,15 @@
     <string name="logout_button_text">Log out</string>
     <string name="password_hint">Password</string>
     <string name="username_hint">Username</string>
+    <string name="ingredient_price_store">%1$dkr at %2$s</string>
+    <string name="ingredient_quantity_brand">%1$s%2$s, %3$s brand</string>
 
     <!-- Messages/toasts -->
     <string name="login_failed_toast">Login failed. Please ensure username and password are correct.</string>
     <string name="signup_not_implemented">Signup hasn\'t been implemented</string>
     <string name="login_not_empty_toast">Username and password cannot be empty</string>
     <string name="signup_failed_toast">Signup failed. I won\'t tell you why..</string>
-    <string name="null_ingredient_list">Something went wrong displaying the ingredient list.</string>
+    <string name="null_ingredient_list">Something went wrong displaying the ingredient list. The backend may not be running.</string>
 
 
     <!-- variables -->
