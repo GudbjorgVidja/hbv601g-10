@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -66,6 +67,11 @@ public class IngredientsFragment extends Fragment {
             Bundle bundle = new Bundle();
             bundle.putParcelable(getString(R.string.selected_ingredient), ingredient);
             navController.navigate(R.id.navigation_ingredient, bundle);
+        });
+
+        Button newIngredientButton = binding.newIngredientButton;
+        newIngredientButton.setOnClickListener(v -> {
+            navController.navigate(R.id.navigation_new_ingredient);
         });
 
         return root;

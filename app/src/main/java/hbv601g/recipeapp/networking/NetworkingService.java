@@ -13,6 +13,7 @@ import java.util.concurrent.CountDownLatch;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -82,7 +83,6 @@ public class NetworkingService extends Service {
 
 
     /**
-     * //TODO: Add the data to the formBody (see how that is done)
      * //TODO: Find a better way to replace the latch
      * Makes a Post Request to the external API
      * @param reqURL a string containing the URL for the API call
@@ -93,9 +93,9 @@ public class NetworkingService extends Service {
     public JsonElement postRequest(String reqURL, String data) throws IOException{
         OkHttpClient client = new OkHttpClient();
 
-        RequestBody formBody = new FormBody.Builder().build();
+        RequestBody requestBody = RequestBody.create(data, MediaType.parse("application/json"));
 
-        Request request = new Request.Builder().url(baseURL+reqURL).post(formBody).build();
+        Request request = new Request.Builder().url(baseURL+reqURL).post(requestBody).build();
 
         // Wait for response
         CountDownLatch latch = new CountDownLatch(1);
