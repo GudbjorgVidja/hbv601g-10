@@ -136,7 +136,42 @@ public class NetworkingService extends Service {
     public JsonElement patchRequest(String reqURL, String data){
         return null;
     }
-    public JsonElement deleteRequest(String reqURL){
-        return null;
+    public JsonElement deleteRequest(String reqURL)throws IOException{
+        OkHttpClient client = new OkHttpClient();
+
+
+        Request request = new Request.Builder().url(baseURL+reqURL).delete().build();
+
+        // Wait for response
+        CountDownLatch latch = new CountDownLatch(1);
+
+        Call call = client.newCall(request);
+
+        call.enqueue(new Callback() {
+            public void onResponse(Call call, Response response) throws IOException {
+                String ret = response.body().string();
+                responseCode = response.code();
+                jsonElement = JsonParser.parseString(ret);
+                latch.countDown();
+            }
+
+
+            public void onFailure(Call call, IOException e) {
+                Log.d("API", "onFailure");
+                call.cancel(); // ?
+                latch.countDown(); // gott eða nah?
+            }
+        });
+
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            Log.d("API", "Latch catch");
+            throw new RuntimeException(e);
+        }
+
+        if(responseCode != 200) return null;
+
+        return JsonParser.parseString("true");
     }
 }

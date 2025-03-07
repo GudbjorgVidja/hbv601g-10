@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.List;
 
 import hbv601g.recipeapp.entities.Ingredient;
+import hbv601g.recipeapp.entities.User;
 import hbv601g.recipeapp.networking.NetworkingService;
 
 public class IngredientService extends Service {
@@ -33,6 +34,25 @@ public class IngredientService extends Service {
         this.mUid = uid;
     }
 
+    public boolean deleteIngredient(long iid){
+        String url = String.format("ingredient/delete/%s?uid=%s",iid, mUid);
+        //Ingredient ingredient = null;
+        try {
+            mElement = mNetworkingService.deleteRequest(url);
+        } catch (IOException e) {
+            Log.d("Networking exception", "Delete ingredient failed");
+        }
+
+        boolean retVal=false;
+        if(mElement != null){
+            Gson gson = new Gson();
+            retVal = gson.fromJson(mElement,Boolean.class);
+            //ingredient = gson.fromJson(mElement, Ingredient.class);
+            //Log.d("API", "ingredient object, name:" + ingredient.getTitle());
+            Log.d("API", "ingredient deleted: " + retVal);
+        }
+        return retVal;
+    }
 
     public List<Ingredient> getAllIngredients(){
         String url = "ingredient/all";
