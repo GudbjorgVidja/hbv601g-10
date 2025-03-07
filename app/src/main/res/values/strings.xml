@@ -3,17 +3,28 @@
     <string name="app_name">Recipe App</string>
     <string name="title_home">Home</string>
     <string name="title_recipes">Recipes</string>
+    <string name="title_recipe_create">Create recipe</string>
+    <string name="title_add_ingredient_measurement_recipes">Create ingredient measurement</string>
     <string name="title_user">User</string>
     <string name="title_ingredients">Ingredients</string>
     <string name="title_signup">Signup</string>
     <string name="title_login">Login</string>
 
     <!-- Buttons/textfields -->
+    <string name="ingredients_text">Ingredients</string>
+    <string name="instructions_text">Instructions</string>
+    <string name="name_text">Name</string>
+    <string name="value_text">Value</string>
     <string name="login_button_text">Login</string>
     <string name="signup_button_text">Signup</string>
     <string name="logout_button_text">Log out</string>
+    <string name="cancel_button_text">Cancel</string>
+    <string name="create_button_text">Create</string>
     <string name="password_hint">Password</string>
     <string name="username_hint">Username</string>
+    <string name="recipe_hint">Name of recipe</string>
+    <string name="instructions_hint">Instructions steps</string>
+    <string name="ingredient_value_hint">Amont needed</string>
 
     <!-- Messages/toasts -->
     <string name="login_failed_toast">Login failed. Please ensure username and password are correct.</string>
@@ -27,6 +38,7 @@
     <!-- variables -->
     <string name="selected_ingredient">Ingredient</string>
     <string name="selected_recipe">Recipe</string>
+    <string name="selected_unit">Unit</string>
     <string name="tic_string">tic:</string>
     <string name="tpc_string">tpc:</string>
 

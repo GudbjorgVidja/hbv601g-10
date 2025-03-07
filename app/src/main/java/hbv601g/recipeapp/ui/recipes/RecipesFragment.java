@@ -67,9 +67,10 @@ public class RecipesFragment extends Fragment {
             bundle.putParcelable(getString(R.string.selected_recipe), recipe);
         });
 
-
         return  root;
     }
+
+
 
     @Override
     public void onDestroyView() {
