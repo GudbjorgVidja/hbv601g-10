@@ -76,8 +76,9 @@
         android:layout_marginTop="23dp"
         android:layout_marginEnd="40dp"
         android:clickable="true"
-        android:scaleX="0.5"
-        android:scaleY="0.5"
+        android:scaleX="1"
+        android:scaleY="1"
+        android:contentDescription="Create ingredint"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView"
         app:srcCompat="@android:drawable/ic_input_add" />
@@ -91,17 +92,17 @@
 
     <Spinner
         android:id="@+id/spinner"
-        android:layout_width="290dp"
-        android:layout_height="32dp"
-        android:layout_marginStart="80dp"
-        android:layout_marginTop="20dp"
+        android:layout_width="294dp"
+        android:layout_height="58dp"
+        android:layout_marginStart="68dp"
+        android:layout_marginTop="32dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
     <Spinner
         android:id="@+id/spinner2"
-        android:layout_width="290dp"
-        android:layout_height="32dp"
+        android:layout_width="294dp"
+        android:layout_height="58dp"
         android:layout_marginStart="71dp"
         android:layout_marginTop="20dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -130,8 +131,8 @@
 
     <EditText
         android:id="@+id/editTextNumber"
-        android:layout_width="290dp"
-        android:layout_height="43dp"
+        android:layout_width="293dp"
+        android:layout_height="49dp"
         android:layout_marginStart="71dp"
         android:layout_marginTop="20dp"
         android:ems="10"

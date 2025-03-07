@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -65,6 +66,14 @@ public class RecipesFragment extends Fragment {
 
             Bundle bundle = new Bundle();
             bundle.putParcelable(getString(R.string.selected_recipe), recipe);
+        });
+
+        Button button = (Button) mRecipeListView.findViewById(R.id.addRecipe);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
         });
 
         return  root;
