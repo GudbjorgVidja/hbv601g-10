@@ -83,7 +83,6 @@ public class NetworkingService extends Service {
 
     /**
      * //TODO: Add the data to the formBody (see how that is done)
-     * //TODO: Find a better way to replace the latch
      * Makes a Post Request to the external API
      * @param reqURL a string containing the URL for the API call
      * @param data a string containing the data to add to the requestbody of the call
@@ -125,7 +124,7 @@ public class NetworkingService extends Service {
             throw new RuntimeException(e);
         }
 
-        // See about implementation TODO: add exception to endpoint. Make sure that "null" gets treated as null
+        // See about implementation
         if(responseCode != 200 || jsonElement.isJsonNull()) return null;
 
         return jsonElement;
