@@ -34,24 +34,25 @@ public class IngredientService extends Service {
         this.mUid = uid;
     }
 
+    /**
+     * makes a delete request to send to the external API, to try to delete an ingredient
+     * @param iid - the id of the ingredient to delete
+     * @return boolean value indicating success
+     */
     public boolean deleteIngredient(long iid){
         String url = String.format("ingredient/delete/%s?uid=%s",iid, mUid);
-        //Ingredient ingredient = null;
         try {
             mElement = mNetworkingService.deleteRequest(url);
         } catch (IOException e) {
             Log.d("Networking exception", "Delete ingredient failed");
         }
 
-        boolean retVal=false;
+        boolean ingredientDeleted = false;
         if(mElement != null){
-            Gson gson = new Gson();
-            retVal = gson.fromJson(mElement,Boolean.class);
-            //ingredient = gson.fromJson(mElement, Ingredient.class);
-            //Log.d("API", "ingredient object, name:" + ingredient.getTitle());
-            Log.d("API", "ingredient deleted: " + retVal);
+            ingredientDeleted = mElement.getAsBoolean();
+            Log.d("API", "ingredient deleted: " + ingredientDeleted);
         }
-        return retVal;
+        return ingredientDeleted;
     }
 
     public List<Ingredient> getAllIngredients(){
