@@ -45,6 +45,8 @@ dependencies {
     implementation(libs.navigation.ui)
     implementation("com.squareup.okhttp3:okhttp:4.12.0") //com.squareup.okhttp3:okhttps:3.4.1
     implementation("com.google.code.gson:gson:2.12.1")
+    implementation(libs.legacy.support.v4)
+    implementation(libs.recyclerview)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

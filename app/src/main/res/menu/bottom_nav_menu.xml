@@ -21,4 +21,9 @@
         android:icon="@drawable/ic_user_black_24dp"
         android:title="@string/title_user" />
 
+    <item
+        android:id="@+id/navigation_pantry"
+        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:title="@string/title_pantry" />
+
 </menu>

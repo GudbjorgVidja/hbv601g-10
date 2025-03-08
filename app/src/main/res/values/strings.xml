@@ -7,6 +7,7 @@
     <string name="title_ingredients">Ingredients</string>
     <string name="title_signup">Signup</string>
     <string name="title_login">Login</string>
+    <string name="title_pantry">Pantry</string>
 
     <!-- Buttons/textfields -->
     <string name="login_button_text">Login</string>
@@ -14,6 +15,7 @@
     <string name="logout_button_text">Log out</string>
     <string name="password_hint">Password</string>
     <string name="username_hint">Username</string>
+    <string name="add_to_pantry">Add ingredient</string>
 
     <!-- Messages/toasts -->
     <string name="login_failed_toast">Login failed. Please ensure username and password are correct.</string>
@@ -25,7 +27,10 @@
 
     <!-- variables -->
     <string name="selected_ingredient">Ingredient</string>
+    <string name="selected_pantry_item">Pantry Item</string>
 
     <!-- misc -->
     <string name="currency">kr.</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

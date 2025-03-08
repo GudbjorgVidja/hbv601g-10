@@ -8,10 +8,19 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.reflect.TypeToken;
+
 
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
+import hbv601g.recipeapp.entities.IngredientMeasurement;
 import hbv601g.recipeapp.entities.User;
 import hbv601g.recipeapp.networking.NetworkingService;
 
@@ -69,6 +78,32 @@ public class UserService extends Service {
         }
 
         return user;
+    }
+
+    public List<IngredientMeasurement> getUserPantry() {
+        String url = "user/pantry";
+        ArrayList<IngredientMeasurement> pantry = new ArrayList<>();
+
+        try {
+            element = networkingService.getRequest(url);
+            Log.d("UserService", "fetched element is: " + element);
+        } catch (IOException e) {
+            Log.d("Networking exception", "Failed to get user pantry");
+            return pantry;
+        }
+
+        if(element != null){
+            Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+            if(!element.isJsonArray()) return null;
+            Log.d("UserService", "element: " + element);
+
+            JsonArray arr = element.getAsJsonArray();
+
+
+            Type collectionType = new TypeToken<Collection<IngredientMeasurement>>(){}.getType();
+            pantry = gson.fromJson(arr, collectionType);
+        }
+        return pantry;
     }
 
 
