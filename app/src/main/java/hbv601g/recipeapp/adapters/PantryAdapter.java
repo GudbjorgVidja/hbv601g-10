@@ -40,20 +40,27 @@ public class PantryAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if(convertView == null){
+        if (convertView == null) {
             convertView = inflater.inflate(R.layout.pantry_list_item, parent, false);
+        }
 
-            TextView title = convertView.findViewById(R.id.pantry_list_title);
-            TextView quantity = convertView.findViewById(R.id.pantry_list_quantity);
-            TextView unit = convertView.findViewById(R.id.ingredient_list_unit);
+        TextView title = convertView.findViewById(R.id.pantry_list_title);
+        TextView quantity = convertView.findViewById(R.id.pantry_list_quantity);
+        TextView unit = convertView.findViewById(R.id.pantry_list_unit);
 
-            IngredientMeasurement currentPantryItem = (IngredientMeasurement) getItem(position);
+        IngredientMeasurement currentPantryItem = (IngredientMeasurement) getItem(position);
 
+        if (currentPantryItem != null && currentPantryItem.getIngredient() != null) {
             title.setText(currentPantryItem.getIngredient().getTitle());
             quantity.setText(String.format("%s", currentPantryItem.getQuantity()));
             unit.setText(currentPantryItem.getUnit().toString());
+        } else {
+            title.setText("Unknown");
+            quantity.setText("-");
+            unit.setText("-");
         }
 
         return convertView;
     }
+
 }

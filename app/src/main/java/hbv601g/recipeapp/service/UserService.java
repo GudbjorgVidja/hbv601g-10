@@ -80,12 +80,13 @@ public class UserService extends Service {
         return user;
     }
 
-    public List<IngredientMeasurement> getUserPantry() {
+    public List<IngredientMeasurement> getUserPantry(long uid) {
         String url = "user/pantry";
+        String params ="?uid=" + uid;
         ArrayList<IngredientMeasurement> pantry = new ArrayList<>();
 
         try {
-            element = networkingService.getRequest(url);
+            element = networkingService.getRequest(url + params);
             Log.d("UserService", "fetched element is: " + element);
         } catch (IOException e) {
             Log.d("Networking exception", "Failed to get user pantry");

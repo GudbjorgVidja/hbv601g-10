@@ -16,6 +16,7 @@
     <string name="password_hint">Password</string>
     <string name="username_hint">Username</string>
     <string name="add_to_pantry">Add ingredient</string>
+    <string name="remove_from_pantry">Remove</string>
 
     <!-- Messages/toasts -->
     <string name="login_failed_toast">Login failed. Please ensure username and password are correct.</string>

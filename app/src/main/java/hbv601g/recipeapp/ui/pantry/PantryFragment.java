@@ -37,7 +37,7 @@ public class PantryFragment extends Fragment {
     private UserService mUserService;
     private List<IngredientMeasurement> mPantryIngredients;
     private ListView mPantryListView;
-
+    private long mUid;
 
 
 
@@ -52,20 +52,13 @@ public class PantryFragment extends Fragment {
         NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
 
         mUserService = new UserService(new NetworkingService());
+        mUid = mainActivity.getUserId();
 
-        User mUser = mainActivity.getCurrentUser();
-
-        mPantryIngredients = mUser.getPantry();
-
-        Log.d("PantryFragment", "User pantry: " + mPantryIngredients);
-
-
-
-        /*try{
-            mPantryIngredients = mUserService.getUserPantry();
+        try{
+            mPantryIngredients = mUserService.getUserPantry(mUid);
         } catch (NullPointerException e) {
             mPantryIngredients = new ArrayList<>();
-        }*/
+        }
 
 
 

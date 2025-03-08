@@ -80,20 +80,6 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
     }
 
-    public User getCurrentUser(){
-        sharedpreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
-
-        String username = sharedpreferences.getString(USERNAME_KEY, null);
-        String password = sharedpreferences.getString(PASSWORD_KEY, null);
-        long userId = sharedpreferences.getLong(USER_ID_KEY, 0);
-
-        if(username != null && userId != 0){
-            return new User(username, password);
-        }
-
-        return null;
-    }
-
 
     /**
      * Fjarlægir user upplýsingar úr shared preferences til að logga út

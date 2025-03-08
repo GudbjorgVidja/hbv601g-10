@@ -30,6 +30,23 @@ public class IngredientMeasurement implements Parcelable {
         this.quantity = quantity;
     }
 
+    protected IngredientMeasurement(Parcel in) {
+        ingredient = in.readParcelable(Ingredient.class.getClassLoader());
+        quantity = in.readDouble();
+    }
+
+    public static final Creator<IngredientMeasurement> CREATOR = new Creator<IngredientMeasurement>() {
+        @Override
+        public IngredientMeasurement createFromParcel(Parcel in) {
+            return new IngredientMeasurement(in);
+        }
+
+        @Override
+        public IngredientMeasurement[] newArray(int size) {
+            return new IngredientMeasurement[size];
+        }
+    };
+
     public Ingredient getIngredient() {
         return ingredient;
     }
