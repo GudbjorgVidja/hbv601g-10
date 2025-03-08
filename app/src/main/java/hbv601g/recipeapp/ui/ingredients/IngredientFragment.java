@@ -47,23 +47,16 @@ public class IngredientFragment extends Fragment{
 
         if(mIngredient != null) setIngredient();
 
-        if(mIngredient != null && mIngredient.getCreatedBy() != null &&
+        if(mIngredient != null && mIngredient.getCreatedBy() != null && mainActivity.getUserId() != 0 &&
                 mIngredient.getCreatedBy().getId() == mainActivity.getUserId() ){
             binding.deleteIngredientButton.setOnClickListener(v -> {
-                if(mainActivity.getUserId() != 0 && mIngredient != null && mIngredient.getCreatedBy()!= null
-                        && mIngredient.getCreatedBy().getId() == mainActivity.getUserId()){
                     AlertDialog.Builder alert = makeAlert(navController, mainActivity);
                     alert.show();
-                }
-                else {
-                    mainActivity.makeToast(R.string.unable_to_delete_ingredient_from_other, Toast.LENGTH_LONG);
-                }
             });
         }
         else {
             binding.deleteIngredientButton.setVisibility(GONE);
         }
-
 
         return root;
     }
