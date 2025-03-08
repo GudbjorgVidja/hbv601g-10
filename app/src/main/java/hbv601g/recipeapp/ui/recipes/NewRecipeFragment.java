@@ -22,6 +22,7 @@ import java.util.List;
 
 import hbv601g.recipeapp.MainActivity;
 import hbv601g.recipeapp.R;
+import hbv601g.recipeapp.adapters.IngredientMeasurementAdpater;
 import hbv601g.recipeapp.databinding.FragmentCreateRecipeBinding;
 import hbv601g.recipeapp.entities.IngredientMeasurement;
 import hbv601g.recipeapp.entities.Recipe;
@@ -32,24 +33,25 @@ import hbv601g.recipeapp.service.RecipeService;
 public class NewRecipeFragment extends Fragment {
     private RecipeService recipeService;
     private FragmentCreateRecipeBinding binding;
-    private ArrayList<IngredientMeasurement> list = new ArrayList<>();
-    private ArrayAdapter<IngredientMeasurement> adapter;
+    private List<IngredientMeasurement> list;
     private Recipe recipe;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-       binding = FragmentCreateRecipeBinding.inflate(inflater, container, false);
-       View root = binding.getRoot();
-       recipe = null;
+        binding = FragmentCreateRecipeBinding.inflate(inflater, container, false);
+        View root = binding.getRoot();
+        recipe = null;
+        list = new ArrayList<>();
 
         MainActivity mainActivity = (MainActivity) getActivity();
         assert mainActivity != null;
 
-        adapter = new ArrayAdapter<IngredientMeasurement>(
-                mainActivity.getApplicationContext(), android.R.layout.simple_list_item_1, list
-        );
+        IngredientMeasurementAdpater adapter = new IngredientMeasurementAdpater
+                (
+                        mainActivity.getApplicationContext(), list
+                );
         binding.ingredients.setAdapter(adapter);
 
         NavController navController = Navigation.findNavController(
