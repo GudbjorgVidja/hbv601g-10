@@ -48,7 +48,6 @@ public class NetworkingService extends Service {
 
     /**
      * //TODO: Add the data to the formBody (see how that is done)
-     * //TODO: Find a better way to replace the latch
      * Makes a Post Request to the external API
      * @param reqURL a string containing the URL for the API call
      * @param data a string containing the data to add to the requestbody of the call
