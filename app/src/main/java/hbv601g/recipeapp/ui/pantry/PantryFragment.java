@@ -73,7 +73,7 @@ public class PantryFragment extends Fragment {
 
         // Adapter til að tengja listann við ListView
         PantryAdapter pantryAdapter = new PantryAdapter(mainActivity.getApplicationContext(), Objects.requireNonNullElseGet(mPantryIngredients, ArrayList::new));
-
+        //PantryAdapter pantryAdapter = new PantryAdapter(mainActivity.getApplicationContext(), mPantryIngredients);
         mPantryListView.setAdapter(pantryAdapter);
 
 

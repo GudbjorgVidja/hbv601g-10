@@ -103,7 +103,7 @@ public class UserService extends Service {
             return pantry;
         }
 
-        if(element != null && element.getAsJsonArray().toString().equals("null")){
+        if(element != null && !element.getAsJsonArray().toString().equals("null")){
             Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
             if(!element.isJsonArray()) return null;
             Log.d("UserService", "element: " + element);
