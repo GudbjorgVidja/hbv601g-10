@@ -38,7 +38,6 @@
     <string name="signup_failed_toast">Signup failed. I won\'t tell you why..</string>
     <string name="null_ingredient_list">Something went wrong displaying the ingredient list.</string>
     <string name="get_recipes_failed_toast">Failed to get all recipes</string>
-    <string name="unable_to_delete_ingredient_from_other">Unable to delete ingredient, you can only delete ingredients that you create.</string>
     <string name="delete_ingredient_failed">Something went wrong when trying to delete the ingredient.</string>
     <string name="delete_ingredient_success">Ingredient deleted successfully.</string>
 
