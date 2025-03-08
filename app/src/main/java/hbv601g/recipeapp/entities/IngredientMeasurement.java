@@ -1,6 +1,11 @@
 package hbv601g.recipeapp.entities;
 
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
 /**
  * Klasinn heldur utan um sett af ingredient, unit og quantity, sem er notað í
  * ingredient lista í recipe og pantry hjá user.
@@ -8,7 +13,7 @@ package hbv601g.recipeapp.entities;
  * Klasinn er embeddable þó hann sé hvergi embedded, en er í staðinn notaður í
  * elementCollection á tveimur stöðum í mismunandi töflum.
  */
-public class IngredientMeasurement {
+public class IngredientMeasurement implements Parcelable {
     private Ingredient ingredient;
 
     private Unit unit;
@@ -24,6 +29,23 @@ public class IngredientMeasurement {
         this.unit = unit;
         this.quantity = quantity;
     }
+
+    protected IngredientMeasurement(Parcel in) {
+        ingredient = in.readParcelable(Ingredient.class.getClassLoader());
+        quantity = in.readDouble();
+    }
+
+    public static final Creator<IngredientMeasurement> CREATOR = new Creator<IngredientMeasurement>() {
+        @Override
+        public IngredientMeasurement createFromParcel(Parcel in) {
+            return new IngredientMeasurement(in);
+        }
+
+        @Override
+        public IngredientMeasurement[] newArray(int size) {
+            return new IngredientMeasurement[size];
+        }
+    };
 
     public Ingredient getIngredient() {
         return ingredient;
@@ -62,5 +84,15 @@ public class IngredientMeasurement {
     }
 
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeParcelable(ingredient, flags);
+        dest.writeDouble(quantity);
+        dest.writeString(unit.name());
+    }
 }
