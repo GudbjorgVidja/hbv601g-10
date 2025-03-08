@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
@@ -61,41 +62,47 @@ public class RecipeService extends Service {
     }
 
     /**
-     * This function takes in 7 parameters, 2 String, User, Ingredient array, Unit array and
-     * double array.
-     * All arrays must be the same length as they are use to create ingredientMeasurements variable
-     * that are in final recipe
+     * This function takes in 5 parameters, 2 String, int, arrayList and
+     * Boolean.
      *
-     * @param title         - String value, is the name of the recipe
-     * @param author        - User value, is the owner of the recipe
+     * @param title         - String value, is the name of the recipe.
      * @param instructions  - String value, is the step by step progress to make the recipe
-     * @param ingredients   - Ingredient array of size N, content all in ingredients
-     *                        that are in the recipe.
-     * @param unit          - Unit array of size N, content all unit of measurements supporting
-     *                        traditional to cooking, for the ingredient in the recipe
-     * @param quantity      - double array of size N, contents all the quantity of the units in the
-     *                        recipe
+     * @param ingredList    - IngredientMeasurement list array, content all in ingredients, unit and
+     *                        there quantity in the recipe.
+     * @param isPrivate     - Boolean, ture if the author want it to be private and false for the
+     *                        recipe to be public.
      * @return Return the newly created recipe
      */
     public Recipe createRecipe(
-            String title, User author, String instructions,
-            Ingredient[] ingredients, Unit[] unit, double[] quantity
+            String title, String instructions,
+            List<IngredientMeasurement> ingredList, Boolean isPrivate
     )
     {
-        Gson gson = new Gson();
-        Recipe rep = new Recipe(title, author);
-        List<IngredientMeasurement> ingredList = new ArrayList<>();
-
-        for(int i = 0; i < ingredients.length; i++){
-            IngredientMeasurement t = new IngredientMeasurement
-                    (
-                            ingredients[i], unit[i], quantity[i]
-                    );
-            ingredList.add(t);
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+        try{
+            mJsonElement = mNetworkingService.getRequest(
+                    String.format("/user/id/id=" + String.valueOf(mUid))
+            );
         }
+        catch (IOException e){
+            Log.d("Networking exception", "Failed to get User");
+        }
+
+        User author = null;
+        if(mJsonElement != null){
+            if(!mJsonElement.isJsonObject()) return null;
+
+            JsonObject jObj = mJsonElement.getAsJsonObject();
+
+            Type collectionType = new TypeToken<User>(){}.getType();
+            author = gson.fromJson(jObj, collectionType);
+        }
+
+        Recipe rep = new Recipe(title, author);
 
         rep.setInstructions(instructions);
         rep.setIngredientMeasurements(ingredList);
+        rep.setPrivate(isPrivate);
 
         String url = "recipe/new";
         String data = gson.toJson(rep);

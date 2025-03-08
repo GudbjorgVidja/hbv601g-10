@@ -5,6 +5,7 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    tools:context=".ui.recipes.AddIngredientMeasurementFragment"
     >
 
     <androidx.constraintlayout.widget.Guideline
@@ -70,7 +71,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton2"
+        android:id="@+id/create_ingredient"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="23dp"
@@ -142,17 +143,17 @@
         app:layout_constraintTop_toBottomOf="@+id/textView9" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/addIngredientToRecipe1"
         android:layout_width="123dp"
         android:layout_height="54dp"
         android:layout_marginStart="71dp"
         android:layout_marginBottom="41dp"
-        android:text="@string/create_button_text"
+        android:text="@string/add_button_text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/button4"
+        android:id="@+id/cancelAddIngredientToRecipe"
         android:layout_width="123dp"
         android:layout_height="54dp"
         android:layout_marginEnd="74dp"

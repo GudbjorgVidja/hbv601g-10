@@ -5,6 +5,7 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    tools:context=".ui.recipes.NewRecipeFragment"
     >
 
     <TextView
@@ -17,7 +18,7 @@
         android:scaleY="1.5
 "
         android:text="@string/instructions_text"
-        app:layout_constraintBottom_toTopOf="@+id/edit_text"
+        app:layout_constraintBottom_toTopOf="@+id/instructions"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
@@ -30,7 +31,7 @@
         android:scaleY="1.5
 "
         android:text="@string/ingredients_text"
-        app:layout_constraintBottom_toTopOf="@+id/listView"
+        app:layout_constraintBottom_toTopOf="@+id/ingredients"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
@@ -59,7 +60,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editTextText4"
+        android:id="@+id/recipe_name"
         android:layout_width="278dp"
         android:layout_height="49dp"
         android:layout_marginStart="71dp"
@@ -71,7 +72,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
     <EditText
-        android:id="@+id/edit_text"
+        android:id="@+id/instructions"
         android:layout_width="310dp"
         android:layout_height="90dp"
         android:layout_marginStart="64dp"
@@ -90,22 +91,22 @@
         android:scaleX="1"
         android:scaleY="1"
         android:contentDescription="@string/title_add_ingredient_measurement_recipes"
-        app:layout_constraintBottom_toTopOf="@+id/listView"
+        app:layout_constraintBottom_toTopOf="@+id/ingredients"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@android:drawable/ic_input_add" />
 
     <Switch
-        android:id="@+id/switch1"
+        android:id="@+id/is_private"
         android:layout_width="128dp"
         android:layout_height="49dp"
         android:layout_marginStart="64dp"
         android:layout_marginBottom="8dp"
         android:text="Private?"
-        app:layout_constraintBottom_toTopOf="@+id/button"
+        app:layout_constraintBottom_toTopOf="@+id/crate_recipe"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/crate_recipe"
         android:layout_width="123dp"
         android:layout_height="54dp"
         android:layout_marginStart="71dp"
@@ -115,7 +116,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/button4"
+        android:id="@+id/cancel_recipe"
         android:layout_width="123dp"
         android:layout_height="54dp"
         android:layout_marginEnd="74dp"
@@ -125,12 +126,12 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <ListView
-        android:id="@+id/listView"
+        android:id="@+id/ingredients"
         android:layout_width="294dp"
         android:layout_height="251dp"
         android:layout_marginStart="69dp"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/switch1"
+        app:layout_constraintBottom_toTopOf="@+id/is_private"
         app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
