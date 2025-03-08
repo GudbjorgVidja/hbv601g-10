@@ -32,8 +32,8 @@
     <string name="unable_to_delete_ingredient_from_other">Unable to delete ingredient, you can only delete ingredients that you create.</string>
     <string name="delete_ingredient_failed">Something went wrong when trying to delete the ingredient.</string>
     <string name="delete_ingredient_success">Ingredient deleted successfully.</string>
-
     <string name="null_pantry_list">Something went wrong displaying the pantry</string>
+    <string name="pantry_no_user">You must log in to view your pantry</string>
 
     <!-- variables -->
     <string name="selected_ingredient">Ingredient</string>
