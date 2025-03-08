@@ -46,28 +46,9 @@ public class IngredientFragment extends Fragment{
         if(mIngredient != null) setIngredient();
 
         binding.deleteIngredientButton.setOnClickListener(v -> {
-            if(mainActivity.getUserId()!=0 && mIngredient != null && mIngredient.getCreatedBy()!= null && mIngredient.getCreatedBy().getId()==mainActivity.getUserId()){
-                AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());
-                alert.setTitle("Delete entry");
-                alert.setMessage("Are you sure you want to delete?");
-                alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        boolean result= mIngredientService.deleteIngredient(mIngredient.getId());
-                        if (result){
-                            navController.popBackStack();
-                            mainActivity.makeToast(R.string.delete_ingredient_success, Toast.LENGTH_LONG);
-                        }
-
-                        else mainActivity.makeToast(R.string.delete_ingredient_failed, Toast.LENGTH_LONG);
-
-
-                    }
-                });
-                alert.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
+            if(mainActivity.getUserId() != 0 && mIngredient != null && mIngredient.getCreatedBy()!= null
+                    && mIngredient.getCreatedBy().getId() == mainActivity.getUserId()){
+                AlertDialog.Builder alert = makeAlert(navController, mainActivity);
                 alert.show();
             }
             else {
@@ -78,6 +59,34 @@ public class IngredientFragment extends Fragment{
         return root;
     }
 
+    /**
+     * Makes an alert dialog for deleting ingredients. After the user confirms their action
+     * an attempt is made to delete the ingredient. If the user cancels the action, nothing happens
+     * @param navController - the NavController being used for navigation
+     * @param mainActivity - the MainActivity of the app
+     * @return the alert (AlertDialog.Builder) that should be shown to the user
+     */
+    private AlertDialog.Builder makeAlert(NavController navController, MainActivity mainActivity) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());
+        alert.setTitle("Delete entry");
+        alert.setMessage("Are you sure you want to delete?");
+        alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                boolean result = mIngredientService.deleteIngredient(mIngredient.getId());
+                if (result){
+                    navController.popBackStack();
+                    mainActivity.makeToast(R.string.delete_ingredient_success, Toast.LENGTH_LONG);
+                }
+                else mainActivity.makeToast(R.string.delete_ingredient_failed, Toast.LENGTH_LONG);
+            }
+        });
+        alert.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        return alert;
+    }
 
     /**
      * Setur upplýsingar fyrir ingredientið í viðmóti
