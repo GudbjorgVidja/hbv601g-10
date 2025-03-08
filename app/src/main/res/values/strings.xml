@@ -44,6 +44,15 @@
 
     <!-- misc -->
     <string name="currency">kr.</string>
+    <string-array name="unit_array">
+        <item>ml</item>
+        <item>g</item>
+        <item>kg</item>
+        <item>dl</item>
+        <item>tsp</item>
+        <item>tbsp</item>
+        <item>cup</item>
+    </string-array>
 
 
 </resources>
