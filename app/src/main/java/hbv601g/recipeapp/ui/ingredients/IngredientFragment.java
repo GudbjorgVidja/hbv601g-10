@@ -1,5 +1,7 @@
 package hbv601g.recipeapp.ui.ingredients;
 
+import static android.view.View.GONE;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -45,16 +47,23 @@ public class IngredientFragment extends Fragment{
 
         if(mIngredient != null) setIngredient();
 
-        binding.deleteIngredientButton.setOnClickListener(v -> {
-            if(mainActivity.getUserId() != 0 && mIngredient != null && mIngredient.getCreatedBy()!= null
-                    && mIngredient.getCreatedBy().getId() == mainActivity.getUserId()){
-                AlertDialog.Builder alert = makeAlert(navController, mainActivity);
-                alert.show();
-            }
-            else {
-                mainActivity.makeToast(R.string.unable_to_delete_ingredient_from_other, Toast.LENGTH_LONG);
-            }
-        });
+        if(mIngredient != null && mIngredient.getCreatedBy() != null &&
+                mIngredient.getCreatedBy().getId() == mainActivity.getUserId() ){
+            binding.deleteIngredientButton.setOnClickListener(v -> {
+                if(mainActivity.getUserId() != 0 && mIngredient != null && mIngredient.getCreatedBy()!= null
+                        && mIngredient.getCreatedBy().getId() == mainActivity.getUserId()){
+                    AlertDialog.Builder alert = makeAlert(navController, mainActivity);
+                    alert.show();
+                }
+                else {
+                    mainActivity.makeToast(R.string.unable_to_delete_ingredient_from_other, Toast.LENGTH_LONG);
+                }
+            });
+        }
+        else {
+            binding.deleteIngredientButton.setVisibility(GONE);
+        }
+
 
         return root;
     }
