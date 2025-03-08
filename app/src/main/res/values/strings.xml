@@ -10,6 +10,7 @@
     <string name="title_signup">Signup</string>
     <string name="title_login">Login</string>
     <string name="title_ingredient">Ingredient</string>
+    <string name="title_pantry">Pantry</string>
 
     <!-- Buttons/textfields -->
     <string name="ingredients_text">Ingredients</string>
@@ -27,6 +28,8 @@
     <string name="recipe_hint">Name of recipe</string>
     <string name="instructions_hint">Instructions steps</string>
     <string name="ingredient_value_hint">Quantity needed</string>
+    <string name="add_to_pantry">Add ingredient</string>
+    <string name="remove_from_pantry">Remove</string>
     <string name="ingredient_price_store">%1$dkr at %2$s</string>
     <string name="ingredient_quantity_brand">%1$s%2$s, %3$s brand</string>
     <string name="delete_ingredient_button_text">Delete</string>
@@ -40,9 +43,12 @@
     <string name="get_recipes_failed_toast">Failed to get all recipes</string>
     <string name="delete_ingredient_failed">Something went wrong when trying to delete the ingredient.</string>
     <string name="delete_ingredient_success">Ingredient deleted successfully.</string>
+    <string name="null_pantry_list">Something went wrong displaying the pantry</string>
+    <string name="pantry_no_user">You must log in to view your pantry</string>
 
     <!-- variables -->
     <string name="selected_ingredient">Ingredient</string>
+    <string name="selected_pantry_item">Pantry Item</string>
     <string name="selected_recipe">Recipe</string>
     <string name="selected_unit">Unit</string>
     <string name="tic_string">tic:</string>

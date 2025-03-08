@@ -55,6 +55,11 @@
         android:name="hbv601g.recipeapp.ui.login.LoginFragment"
         android:label="@string/title_login"
         tools:layout="@layout/fragment_login"/>
+    <fragment
+        android:id="@+id/navigation_pantry"
+        android:name="hbv601g.recipeapp.ui.pantry.PantryFragment"
+        android:label="@string/title_pantry"
+        tools:layout="@layout/fragment_pantry" />
 
     <fragment
         android:id="@+id/navigation_ingredient"
