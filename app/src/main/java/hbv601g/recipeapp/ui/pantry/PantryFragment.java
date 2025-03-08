@@ -56,16 +56,19 @@ public class PantryFragment extends Fragment {
         NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
 
         mUserService = new UserService(new NetworkingService());
-        mUid = mainActivity.getUserId();
 
-
-        try{
-            mPantryIngredients = mUserService.getUserPantry(mUid);                  // Kallar á apa í gegnum service
-        } catch (NullPointerException e) {
-            mPantryIngredients = new ArrayList<>();                                 // Tómur listi ef ekkert svar
-            mainActivity.makeToast(R.string.null_pantry_list, Toast.LENGTH_LONG);
+        // Athuga hvort einhver sé skráður inn áður en pantry er sótt
+        if(mainActivity.getUserName() != null){
+            mUid = mainActivity.getUserId();
+            try{
+                mPantryIngredients = mUserService.getUserPantry(mUid);
+            } catch (NullPointerException e) {
+                mPantryIngredients = new ArrayList<>();
+                mainActivity.makeToast(R.string.null_pantry_list, Toast.LENGTH_LONG);
+            }
+        } else {
+            mainActivity.makeToast(R.string.pantry_no_user, Toast.LENGTH_LONG);
         }
-
 
 
         mPantryListView = binding.pantryListView;
