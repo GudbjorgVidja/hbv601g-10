@@ -7,6 +7,7 @@
     <string name="title_ingredients">Ingredients</string>
     <string name="title_signup">Signup</string>
     <string name="title_login">Login</string>
+    <string name="title_ingredient">Ingredient</string>
     <string name="title_pantry">Pantry</string>
 
     <!-- Buttons/textfields -->
@@ -17,6 +18,9 @@
     <string name="username_hint">Username</string>
     <string name="add_to_pantry">Add ingredient</string>
     <string name="remove_from_pantry">Remove</string>
+    <string name="ingredient_price_store">%1$dkr at %2$s</string>
+    <string name="ingredient_quantity_brand">%1$s%2$s, %3$s brand</string>
+    <string name="delete_ingredient_button_text">Delete</string>
 
     <!-- Messages/toasts -->
     <string name="login_failed_toast">Login failed. Please ensure username and password are correct.</string>
@@ -24,14 +28,22 @@
     <string name="login_not_empty_toast">Username and password cannot be empty</string>
     <string name="signup_failed_toast">Signup failed. I won\'t tell you why..</string>
     <string name="null_ingredient_list">Something went wrong displaying the ingredient list.</string>
+    <string name="get_recipes_failed_toast">Failed to get all recipes</string>
+    <string name="unable_to_delete_ingredient_from_other">Unable to delete ingredient, you can only delete ingredients that you create.</string>
+    <string name="delete_ingredient_failed">Something went wrong when trying to delete the ingredient.</string>
+    <string name="delete_ingredient_success">Ingredient deleted successfully.</string>
+
     <string name="null_pantry_list">Something went wrong displaying the pantry</string>
 
     <!-- variables -->
     <string name="selected_ingredient">Ingredient</string>
     <string name="selected_pantry_item">Pantry Item</string>
+    <string name="selected_recipe">Recipe</string>
+    <string name="tic_string">tic:</string>
+    <string name="tpc_string">tpc:</string>
 
     <!-- misc -->
     <string name="currency">kr.</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
 </resources>
