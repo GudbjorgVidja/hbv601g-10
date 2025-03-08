@@ -61,20 +61,21 @@ public class NewRecipeFragment extends Fragment {
         long uid = mainActivity.getUserId();
         recipeService = new RecipeService(new NetworkingService(), uid);
 
-
-        Button addIngredient = (Button) root.findViewById(R.id.addIngredientToRecipe);
-        addIngredient.setOnClickListener(new View.OnClickListener() {
+        binding.addIngredientToRecipe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AddIngredientMeasurementFragment nextFragment =
                         new AddIngredientMeasurementFragment();
-                list.add(nextFragment.getIngredientMeasurement());
-                adapter.notifyDataSetChanged();
+
+                IngredientMeasurement ingerMes = nextFragment.getIngredientMeasurement();
+                if(ingerMes != null) {
+                    list.add(nextFragment.getIngredientMeasurement());
+                    adapter.notifyDataSetChanged();
+                }
             }
         });
 
-        Button create = (Button) root.findViewById(R.id.crate_recipe);
-        create.setOnClickListener(new View.OnClickListener() {
+        binding.crateRecipe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 recipe = createRecipe();
@@ -82,8 +83,7 @@ public class NewRecipeFragment extends Fragment {
             }
         });
 
-        Button cancel = (Button) root.findViewById(R.id.cancel_recipe);
-        cancel.setOnClickListener(new View.OnClickListener() {
+        binding.cancelRecipe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onDestroyView();

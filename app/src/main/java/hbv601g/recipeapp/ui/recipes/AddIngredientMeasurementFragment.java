@@ -111,8 +111,7 @@ public class AddIngredientMeasurementFragment extends Fragment {
             }
         });
 
-        Button addIngert = (Button) root.findViewById(R.id.create_ingredient);
-        addIngert.setOnClickListener(new View.OnClickListener() {
+        binding.createIngredient.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(
@@ -121,8 +120,7 @@ public class AddIngredientMeasurementFragment extends Fragment {
                 ).show();            }
         });
 
-        Button add = (Button) root.findViewById(R.id.addIngredientToRecipe1);
-        add.setOnClickListener(new View.OnClickListener() {
+        binding.addIngredientToRecipe1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ingreMeas = addIngredientMeasurement();
@@ -130,8 +128,7 @@ public class AddIngredientMeasurementFragment extends Fragment {
             }
         });
 
-        Button cancel = (Button) root.findViewById(R.id.cancelAddIngredientToRecipe);
-        cancel.setOnClickListener(new View.OnClickListener() {
+        binding.createIngredient.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onDestroyView();

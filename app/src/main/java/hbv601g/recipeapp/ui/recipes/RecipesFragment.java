@@ -68,13 +68,15 @@ public class RecipesFragment extends Fragment {
             bundle.putParcelable(getString(R.string.selected_recipe), recipe);
         });
 
-        Button button = (Button) root.findViewById(R.id.addRecipe);
-        button.setOnClickListener(new View.OnClickListener() {
+        binding.addRecipe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 NewRecipeFragment nextFragment = new NewRecipeFragment();
-                mRecipeList.add(nextFragment.getRecipe());
-                recipeAdapter.notifyDataSetChanged();
+                Recipe recipe = nextFragment.getRecipe();
+                if(recipe != null){
+                    mRecipeList.add(nextFragment.getRecipe());
+                    recipeAdapter.notifyDataSetChanged();
+                }
             }
         });
 	
