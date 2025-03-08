@@ -30,6 +30,9 @@ import hbv601g.recipeapp.entities.User;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.UserService;
 
+/**
+ * Fragment fyrir pantry hjá user
+ */
 
 public class PantryFragment extends Fragment {
 
@@ -55,19 +58,21 @@ public class PantryFragment extends Fragment {
         mUid = mainActivity.getUserId();
 
         try{
-            mPantryIngredients = mUserService.getUserPantry(mUid);
+            mPantryIngredients = mUserService.getUserPantry(mUid);                  // Kallar á apa í gegnum service
         } catch (NullPointerException e) {
-            mPantryIngredients = new ArrayList<>();
+            mPantryIngredients = new ArrayList<>();                                 // Tómur listi ef ekkert svar
+            mainActivity.makeToast(R.string.null_pantry_list, Toast.LENGTH_LONG);
         }
 
 
 
         mPantryListView = binding.pantryListView;
 
+
+        // Adapter til að tengja listann við ListView
         PantryAdapter pantryAdapter = new PantryAdapter(mainActivity.getApplicationContext(), mPantryIngredients);
         mPantryListView.setAdapter(pantryAdapter);
 
-        Log.d("PantryFragment", "Adapter item count: " + pantryAdapter.getCount());
 
         mPantryListView.setOnItemClickListener((parent, view, position, id) -> {
             IngredientMeasurement pantryItem = (IngredientMeasurement) parent.getItemAtPosition(position);

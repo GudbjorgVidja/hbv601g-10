@@ -80,6 +80,12 @@ public class UserService extends Service {
         return user;
     }
 
+    /**
+     * Skilar pantry hjá notanda með gefið user id
+     *
+     * @param uid user id
+     * @return Lista af IngredientMeasurements
+     */
     public List<IngredientMeasurement> getUserPantry(long uid) {
         String url = "user/pantry";
         String params ="?uid=" + uid;

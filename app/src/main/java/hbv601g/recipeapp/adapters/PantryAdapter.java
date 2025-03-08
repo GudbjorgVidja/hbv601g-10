@@ -13,6 +13,10 @@ import java.util.List;
 import hbv601g.recipeapp.R;
 import hbv601g.recipeapp.entities.IngredientMeasurement;
 
+/**
+ * Adapter fyrir ListView til að gera lista af ingredients
+ * sem eru í pantry hjá notanda
+ */
 public class PantryAdapter extends BaseAdapter {
     private List<IngredientMeasurement> pantryList;
     private LayoutInflater inflater;
