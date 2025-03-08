@@ -68,7 +68,6 @@ public class RecipesFragment extends Fragment {
             bundle.putParcelable(getString(R.string.selected_recipe), recipe);
         });
 
-
         Button button = (Button) root.findViewById(R.id.addRecipe);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,7 +77,7 @@ public class RecipesFragment extends Fragment {
                 recipeAdapter.notifyDataSetChanged();
             }
         });
-
+	
         return  root;
     }
 

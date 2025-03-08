@@ -37,6 +37,11 @@ public class RecipeService extends Service {
         this.mUid = uid;
     }
 
+    /**
+     * Makes a get request for the external API, for the endpoint that gets all recipes
+     * and turns it from a JsonElement to a List of Recipes
+     * @return all recipes
+     */
     public List<Recipe> getAllRecipes(){
         String url = "recipe/all?uid=" + mUid;
 
