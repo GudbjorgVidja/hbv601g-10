@@ -54,15 +54,10 @@ public class PantryAdapter extends BaseAdapter {
 
         IngredientMeasurement currentPantryItem = (IngredientMeasurement) getItem(position);
 
-        if (currentPantryItem != null && currentPantryItem.getIngredient() != null) {
-            title.setText(currentPantryItem.getIngredient().getTitle());
-            quantity.setText(String.format("%s", currentPantryItem.getQuantity()));
-            unit.setText(currentPantryItem.getUnit().toString());
-        } else {
-            title.setText("Unknown");
-            quantity.setText("-");
-            unit.setText("-");
-        }
+        title.setText(currentPantryItem.getIngredient().getTitle());
+        quantity.setText(String.format("%s", currentPantryItem.getQuantity()));
+        unit.setText(currentPantryItem.getUnit().toString());
+
 
         return convertView;
     }

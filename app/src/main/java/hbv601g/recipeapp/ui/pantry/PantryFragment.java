@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import hbv601g.recipeapp.MainActivity;
 import hbv601g.recipeapp.R;
@@ -57,6 +58,7 @@ public class PantryFragment extends Fragment {
         mUserService = new UserService(new NetworkingService());
         mUid = mainActivity.getUserId();
 
+
         try{
             mPantryIngredients = mUserService.getUserPantry(mUid);                  // Kallar á apa í gegnum service
         } catch (NullPointerException e) {
@@ -70,13 +72,13 @@ public class PantryFragment extends Fragment {
 
 
         // Adapter til að tengja listann við ListView
-        PantryAdapter pantryAdapter = new PantryAdapter(mainActivity.getApplicationContext(), mPantryIngredients);
+        PantryAdapter pantryAdapter = new PantryAdapter(mainActivity.getApplicationContext(), Objects.requireNonNullElseGet(mPantryIngredients, ArrayList::new));
+
         mPantryListView.setAdapter(pantryAdapter);
 
 
         mPantryListView.setOnItemClickListener((parent, view, position, id) -> {
             IngredientMeasurement pantryItem = (IngredientMeasurement) parent.getItemAtPosition(position);
-            Log.d("Selected", pantryItem.toString());
 
             Bundle bundle = new Bundle();
             bundle.putParcelable(getString(R.string.selected_pantry_item), pantryItem);
