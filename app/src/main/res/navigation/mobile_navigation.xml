@@ -61,5 +61,19 @@
         android:label="@string/title_pantry"
         tools:layout="@layout/fragment_pantry" />
 
+    <fragment
+        android:id="@+id/navigation_ingredient"
+        android:name="hbv601g.recipeapp.ui.ingredients.IngredientFragment"
+        android:label="@string/title_ingredient"
+        tools:layout="@layout/fragment_ingredient">
+        <argument
+            android:name="@string/selected_ingredient"
+            app:argType="hbv601g.recipeapp.entities.Ingredient" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_pantry_ingredient"
+        android:name="hbv601g.recipeapp.ui.pantry.PantryIngredientFragment"
+        android:label="fragment_pantry_ingredient"
+        tools:layout="@layout/fragment_pantry_ingredient" />
 
 </navigation>
