@@ -85,6 +85,7 @@ public class PantryFragment extends Fragment {
 
             Bundle bundle = new Bundle();
             bundle.putParcelable(getString(R.string.selected_pantry_item), pantryItem);
+            navController.navigate(R.id.navigation_pantry_ingredient, bundle);
         });
 
         return root;

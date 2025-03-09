@@ -87,6 +87,21 @@ public class NetworkingService extends Service {
     }
 
     /**
+     * Makes a put request to the API and returns the result of the call
+     * @param reqURL endpoint url
+     * @param data data for the request body
+     * @return JsonElement with the result of the call
+     * @throws IOException if the calls fails
+     */
+    public JsonElement putRequest(String reqURL, String data) throws IOException {
+        RequestBody formBody = new FormBody.Builder().build();
+        Request request = new Request.Builder().url(baseURL + reqURL).put(formBody).build();
+
+        return callAPI(request);
+    }
+
+
+    /**
      * Method that calls the API, using the given request
      * @param request - the request to be used
      * @return a JsonElement with the response

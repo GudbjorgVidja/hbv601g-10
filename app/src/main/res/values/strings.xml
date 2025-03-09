@@ -9,6 +9,7 @@
     <string name="title_login">Login</string>
     <string name="title_ingredient">Ingredient</string>
     <string name="title_pantry">Pantry</string>
+    <string name="title_pantry_ingredient">Pantry Ingredient</string>
     <string name="title_new_ingredient">New ingredient</string>
 
     <!-- Buttons/textfields -->
@@ -21,6 +22,7 @@
     <string name="remove_from_pantry">Remove</string>
     <string name="ingredient_price_store">%1$dkr at %2$s</string>
     <string name="ingredient_quantity_brand">%1$s%2$s, %3$s brand</string>
+    <string name="pantry_ingredient_quantity_brand">%1$s%2$s, %3$s brand</string>
     <string name="delete_ingredient_button_text">Delete</string>
     <string name="new_ingredient_title_hint">Title</string>
     <string name="new_ingredient_quantity_hint">Qty.</string>
@@ -30,6 +32,7 @@
     <string name="create_new_ingredient_button">New ingredient</string>
     <string name="new_ingredient_brand_hint">Brand</string>
     <string name="privacy_selection_label">Make private</string>
+
 
     <!-- Messages/toasts -->
     <string name="login_failed_toast">Login failed. Please ensure username and password are correct.</string>
@@ -42,6 +45,8 @@
     <string name="delete_ingredient_success">Ingredient deleted successfully.</string>
     <string name="null_pantry_list">Something went wrong displaying the pantry</string>
     <string name="pantry_no_user">You must log in to view your pantry</string>
+    <string name="remove_from_pantry_failed">Failed to remove item from pantry.</string>
+    <string name="remove_from_pantry_successful">Successfully removed item from pantry.</string>
     <string name="field_required_error">This field is required</string>
     <string name="create_ingredient_failed_toast">Failed to create ingredient.</string>
 
