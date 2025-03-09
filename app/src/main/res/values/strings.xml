@@ -43,6 +43,7 @@
     <string name="null_pantry_list">Something went wrong displaying the pantry</string>
     <string name="pantry_no_user">You must log in to view your pantry</string>
     <string name="field_required_error">This field is required</string>
+    <string name="create_ingredient_failed_toast">Failed to create ingredient.</string>
 
     <!-- variables -->
     <string name="selected_ingredient">Ingredient</string>

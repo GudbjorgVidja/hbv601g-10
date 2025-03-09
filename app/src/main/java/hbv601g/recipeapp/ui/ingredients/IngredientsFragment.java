@@ -28,7 +28,7 @@ import hbv601g.recipeapp.service.IngredientService;
  * Fragment fyrir yfirlit yfir ingredients
  */
 public class IngredientsFragment extends Fragment {
-    private FragmentIngredientsBinding binding;
+    private FragmentIngredientsBinding mBinding;
     private IngredientService mIngredientService;
     private List<Ingredient> mAllIngredients;
     private ListView mIngredientsListView;
@@ -37,8 +37,8 @@ public class IngredientsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        binding = FragmentIngredientsBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
+        mBinding = FragmentIngredientsBinding.inflate(inflater, container, false);
+        View root = mBinding.getRoot();
 
         MainActivity mainActivity = ((MainActivity) getActivity());
         assert mainActivity != null;
@@ -55,7 +55,7 @@ public class IngredientsFragment extends Fragment {
             mainActivity.makeToast(R.string.null_ingredient_list, Toast.LENGTH_LONG);
         }
 
-        mIngredientsListView = binding.ingredientsListView;
+        mIngredientsListView = mBinding.ingredientsListView;
 
         // Gera adapter til að tengja lista af ingredients við listView hlutinn
         IngredientAdapter ingredientAdapter = new IngredientAdapter(mainActivity.getApplicationContext(), mAllIngredients);
@@ -69,7 +69,7 @@ public class IngredientsFragment extends Fragment {
             navController.navigate(R.id.navigation_ingredient, bundle);
         });
 
-        Button newIngredientButton = binding.newIngredientButton;
+        Button newIngredientButton = mBinding.newIngredientButton;
         newIngredientButton.setOnClickListener(v -> {
             navController.navigate(R.id.navigation_new_ingredient);
         });
@@ -80,6 +80,6 @@ public class IngredientsFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding = null;
+        mBinding = null;
     }
 }

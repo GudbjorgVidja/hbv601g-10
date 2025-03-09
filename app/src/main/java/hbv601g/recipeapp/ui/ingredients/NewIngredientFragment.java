@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -67,20 +68,26 @@ public class NewIngredientFragment extends Fragment{
 
         confirmButton.setOnClickListener(v -> {
             if(isValid()){
-                mIngredient = mIngredientService.createIngredient(
-                        mTitleField.getText().toString(),
-                        Double.parseDouble(mQuantityField.getText().toString()),
-                        (Unit) unitSpinner.getSelectedItem(),
-                        Double.parseDouble(mPriceField.getText().toString()),
-                        Objects.requireNonNull(storeField.getText()).toString(),
-                        Objects.requireNonNull(brandField.getText()).toString(),
-                        privateSwitch.isChecked()
-                );
+                try{
+                    mIngredient = mIngredientService.createIngredient(
+                            mTitleField.getText().toString(),
+                            Double.parseDouble(mQuantityField.getText().toString()),
+                            (Unit) unitSpinner.getSelectedItem(),
+                            Double.parseDouble(mPriceField.getText().toString()),
+                            Objects.requireNonNull(storeField.getText()).toString(),
+                            Objects.requireNonNull(brandField.getText()).toString(),
+                            privateSwitch.isChecked()
+                    );
+                } catch (NullPointerException e){
+                    mainActivity.makeToast(R.string.create_ingredient_failed_toast, Toast.LENGTH_LONG);
+                }
 
-                Bundle bundle = new Bundle();
-                bundle.putParcelable(getString(R.string.selected_ingredient), mIngredient);
-                navController.navigate(R.id.navigation_ingredient, bundle);
-                //navController.navigate(R.id.navigation_ingredients);
+
+                 Bundle bundle = new Bundle();
+                 bundle.putParcelable(getString(R.string.selected_ingredient), mIngredient);
+                 navController.popBackStack();
+                 navController.navigate(R.id.navigation_ingredient, bundle);
+
             }
         });
 
@@ -96,17 +103,18 @@ public class NewIngredientFragment extends Fragment{
      */
     private boolean isValid(){
         boolean isValid = true;
+        String errorMessage = getString(R.string.field_required_error);
 
         if(mTitleField.getText().toString().isEmpty()){
-            mTitleField.setError("oops, title cant be empty");
+            mTitleField.setError(errorMessage);
             isValid = false;
         }
         if(mQuantityField.getText().isEmpty()) {
-            mQuantityField.setError("oops, qty cant be empty");
+            mQuantityField.setError(errorMessage);
             isValid = false;
         }
         if(mPriceField.getText().isEmpty()){
-            mPriceField.setError("oops, price text cant be empty");
+            mPriceField.setError(errorMessage);
             isValid = false;
         }
 

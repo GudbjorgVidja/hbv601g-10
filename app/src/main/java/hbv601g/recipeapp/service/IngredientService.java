@@ -84,13 +84,10 @@ public class IngredientService extends Service {
     public Ingredient createIngredient(String title, double quantity, Unit unit, double price, String store, String brand, boolean isPrivate){
         String url = "ingredient/created?uid=" + mUid;
 
-        Log.d("CreateIngredient", "arg private:" + isPrivate);
-        if(store.trim().isEmpty()) {
-            store = null;
-            Log.d("CreateIngredient", "store er empty");
-        }
+        if(store.trim().isEmpty()) store = null;
         if(brand.trim().isEmpty()) brand = null;
         Ingredient ingredient = new Ingredient(title, unit, quantity, price, store, brand);
+        ingredient.setPrivate(isPrivate);
 
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
         String data = gson.toJson(ingredient, Ingredient.class);
@@ -99,20 +96,12 @@ public class IngredientService extends Service {
         } catch (IOException e) {
             Log.d("Networking exception", "create ingredient failed");
             mElement = null;
-            //throw new RuntimeException(e);
         }
 
-        Log.d("Ingredient", "createIngredient");
-
-        if(mElement != null){
-            if(!mElement.isJsonObject()) return null;
-
+        if(mElement != null && mElement.isJsonObject()){
             ingredient = gson.fromJson(mElement, Ingredient.class);
         }
-        else return null;
-
-        ingredient.setPrivate(isPrivate);
-        Log.d("CreateIngredient", "private:" + ingredient.isPrivate());
+        else throw new NullPointerException("Failed to create ingredient");
 
         return ingredient;
     }
