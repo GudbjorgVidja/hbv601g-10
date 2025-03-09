@@ -109,6 +109,11 @@
         android:name="hbv601g.recipeapp.ui.pantry.PantryIngredientFragment"
         android:label="@string/title_pantry_ingredient"
         tools:layout="@layout/fragment_pantry_ingredient" />
+    <fragment
+        android:id="@+id/navigation_add_to_pantry"
+        android:name="hbv601g.recipeapp.ui.pantry.AddToPantryFragment"
+        android:label="@string/add_to_pantry"
+        tools:layout="@layout/fragment_add_to_pantry" />
 
     <fragment
         android:id="@+id/navigation_new_ingredient"

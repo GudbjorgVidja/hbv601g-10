@@ -96,8 +96,9 @@ public class NetworkingService extends Service {
     public JsonElement putRequest(String reqURL, String data) throws IOException {
         RequestBody formBody = new FormBody.Builder().build();
         Request request = new Request.Builder().url(baseURL + reqURL).put(formBody).build();
-
-        return callAPI(request);
+        JsonElement res = callAPI(request);
+        Log.d("API", "Response code from put request: " + responseCode);
+        return res;
     }
 
 

@@ -12,6 +12,7 @@
     <string name="title_ingredient">Ingredient</string>
     <string name="title_pantry">Pantry</string>
     <string name="title_pantry_ingredient">Pantry Ingredient</string>
+    <string name="title_add_to_pantry">Add Ingredient to Pantry</string>
     <string name="title_new_ingredient">New ingredient</string>
 
     <!-- Buttons/textfields -->
@@ -31,6 +32,7 @@
     <string name="instructions_hint">Instructions steps</string>
     <string name="ingredient_value_hint">Quantity needed</string>
     <string name="add_to_pantry">Add ingredient</string>
+    <string name="add_to_pantry">Add to pantry</string>
     <string name="remove_from_pantry">Remove</string>
     <string name="ingredient_price_store">%1$dkr at %2$s</string>
     <string name="ingredient_quantity_brand">%1$s%2$s, %3$s brand</string>
@@ -44,6 +46,7 @@
     <string name="create_new_ingredient_button">New ingredient</string>
     <string name="new_ingredient_brand_hint">Brand</string>
     <string name="privacy_selection_label">Make private</string>
+    <string name="confirm_button">Confirm</string>
 
 
     <!-- Messages/toasts -->
@@ -60,6 +63,7 @@
     <string name="remove_from_pantry_failed">Failed to remove item from pantry.</string>
     <string name="remove_from_pantry_successful">Successfully removed item from pantry.</string>
     <string name="field_required_error">This field is required</string>
+    <string name="add_to_pantry_failed">Failed to add ingredient to pantry</string>
     <string name="create_ingredient_failed_toast">Failed to create ingredient.</string>
     <string name="user_not_logged_in">User is not logged in to the API</string>
 
