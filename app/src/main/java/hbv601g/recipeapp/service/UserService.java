@@ -145,9 +145,17 @@ public class UserService extends Service {
         return itemDeleted;
     }
 
+    /**
+     *
+     * @param uid - User ID
+     * @param iid - Ingredient ID
+     * @param unit - Unit
+     * @param qty - Quantity
+     * @return IngredientMeasurement that was added to the pantry
+     */
     public IngredientMeasurement addIngredientToPantry(long uid, long iid, Unit unit, double qty){
         String url = "user/pantry/add";
-        String params = String.format("?iid=%s&unit=%s&qty=%s&uid=%s", iid, unit, qty, uid);
+        String params = String.format("?iid=%s&unit=%s&qty=%s&uid=%s", iid, unit.toString().toUpperCase(), qty, uid);
 
         IngredientMeasurement ingredient = null;
 
@@ -160,11 +168,8 @@ public class UserService extends Service {
 
         if(element != null && !element.isJsonNull()){
             Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-
             JsonElement res = element.getAsJsonObject();
-            Type collectionType = new TypeToken<Collection<IngredientMeasurement>>(){}.getType();
-
-            ingredient = gson.fromJson(res, collectionType);
+            ingredient = gson.fromJson(res, IngredientMeasurement.class);
         }
         return ingredient;
     }

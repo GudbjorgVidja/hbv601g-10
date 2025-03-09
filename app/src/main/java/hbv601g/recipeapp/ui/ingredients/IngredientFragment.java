@@ -47,6 +47,16 @@ public class IngredientFragment extends Fragment{
 
         if(mIngredient != null) setIngredient();
 
+        if(mIngredient != null && mainActivity.getUserId() != 0) {
+            binding.addToPantryButton.setOnClickListener(v -> {
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(getString(R.string.selected_ingredient), mIngredient);
+                navController.navigate(R.id.navigation_add_to_pantry, bundle);
+            });
+        } else {
+            binding.addToPantryButton.setVisibility(GONE);
+        }
+
         if(mIngredient != null && mIngredient.getCreatedBy() != null && mainActivity.getUserId() != 0 &&
                 mIngredient.getCreatedBy().getId() == mainActivity.getUserId() ){
             binding.deleteIngredientButton.setOnClickListener(v -> {
