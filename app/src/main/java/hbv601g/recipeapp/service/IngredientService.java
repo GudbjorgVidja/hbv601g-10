@@ -81,6 +81,18 @@ public class IngredientService extends Service {
         return ingredients;
     }
 
+    /**
+     * makes a post request which is sent to the API, to create an
+     * ingredient with the specified attributes.
+     * @param title - title of the new ingredient
+     * @param quantity - quantity in a package of the ingredient
+     * @param unit - the unit of measure for the ingredient
+     * @param price - the price of this ingredient
+     * @param store - store name, can be empty or null
+     * @param brand - brand name, can be empty or null
+     * @param isPrivate - if the ingredient should be visible to only the creator
+     * @return the ingredient object
+     */
     public Ingredient createIngredient(String title, double quantity, Unit unit, double price, String store, String brand, boolean isPrivate){
         String url = "ingredient/created?uid=" + mUid;
 

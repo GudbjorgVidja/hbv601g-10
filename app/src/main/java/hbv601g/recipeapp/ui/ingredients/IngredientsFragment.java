@@ -1,5 +1,7 @@
 package hbv601g.recipeapp.ui.ingredients;
 
+import static android.view.View.GONE;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -70,6 +72,8 @@ public class IngredientsFragment extends Fragment {
         });
 
         Button newIngredientButton = mBinding.newIngredientButton;
+        if(mainActivity.getUserId() == 0) newIngredientButton.setVisibility(GONE);
+
         newIngredientButton.setOnClickListener(v -> {
             navController.navigate(R.id.navigation_new_ingredient);
         });

@@ -27,9 +27,12 @@ import hbv601g.recipeapp.entities.Unit;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.IngredientService;
 
+/**
+ * Fragment til að búa til nýtt ingredient, notandi slær inn upplýsingar.
+ */
 public class NewIngredientFragment extends Fragment{
 
-    private FragmentNewIngredientBinding binding;
+    private FragmentNewIngredientBinding mBinding;
     private EditText mQuantityField;
     private EditText mTitleField;
     private EditText mPriceField;
@@ -41,8 +44,8 @@ public class NewIngredientFragment extends Fragment{
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        binding = FragmentNewIngredientBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
+        mBinding = FragmentNewIngredientBinding.inflate(inflater, container, false);
+        View root = mBinding.getRoot();
 
         MainActivity mainActivity = ((MainActivity) getActivity());
         assert mainActivity != null;
@@ -50,16 +53,16 @@ public class NewIngredientFragment extends Fragment{
         mIngredientService = new IngredientService(new NetworkingService(), mainActivity.getUserId());
         NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
 
-        mQuantityField = binding.newIngredientQuantityInput;
-        mTitleField = binding.newIngredientTitleInput;
-        mPriceField = binding.newIngredientPriceInput;
+        mQuantityField = mBinding.newIngredientQuantityInput;
+        mTitleField = mBinding.newIngredientTitleInput;
+        mPriceField = mBinding.newIngredientPriceInput;
 
 
-        Button confirmButton = binding.confirmNewIngredientButton;
-        Spinner unitSpinner = binding.unitSpinner;
-        EditText storeField = binding.newIngredientStoreInput;
-        EditText brandField = binding.newIngredientBrandInput;
-        SwitchMaterial privateSwitch = binding.newIngredientPrivateSelection;
+        Button confirmButton = mBinding.confirmNewIngredientButton;
+        Spinner unitSpinner = mBinding.unitSpinner;
+        EditText storeField = mBinding.newIngredientStoreInput;
+        EditText brandField = mBinding.newIngredientBrandInput;
+        SwitchMaterial privateSwitch = mBinding.newIngredientPrivateSelection;
 
         unitSpinner.setAdapter(new ArrayAdapter<Unit>(
                 mainActivity.getApplicationContext(),
@@ -67,7 +70,10 @@ public class NewIngredientFragment extends Fragment{
                 Unit.values()));
 
         confirmButton.setOnClickListener(v -> {
-            if(isValid()){
+            if(mainActivity.getUserId() == 0)
+                navController.popBackStack();
+
+            else if(isValid()){
                 try{
                     mIngredient = mIngredientService.createIngredient(
                             mTitleField.getText().toString(),
@@ -109,11 +115,11 @@ public class NewIngredientFragment extends Fragment{
             mTitleField.setError(errorMessage);
             isValid = false;
         }
-        if(mQuantityField.getText().isEmpty()) {
+        if(mQuantityField.getText().toString().isEmpty()) {
             mQuantityField.setError(errorMessage);
             isValid = false;
         }
-        if(mPriceField.getText().isEmpty()){
+        if(mPriceField.getText().toString().isEmpty()){
             mPriceField.setError(errorMessage);
             isValid = false;
         }
@@ -124,6 +130,6 @@ public class NewIngredientFragment extends Fragment{
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding = null;
+        mBinding = null;
     }
 }
