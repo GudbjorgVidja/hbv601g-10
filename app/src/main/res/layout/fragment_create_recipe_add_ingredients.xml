@@ -147,7 +147,7 @@
         android:layout_width="123dp"
         android:layout_height="54dp"
         android:layout_marginStart="71dp"
-        android:layout_marginBottom="41dp"
+        android:layout_marginBottom="100dp"
         android:text="@string/add_button_text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -157,7 +157,7 @@
         android:layout_width="123dp"
         android:layout_height="54dp"
         android:layout_marginEnd="74dp"
-        android:layout_marginBottom="41dp"
+        android:layout_marginBottom="100dp"
         android:text="@string/cancel_button_text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

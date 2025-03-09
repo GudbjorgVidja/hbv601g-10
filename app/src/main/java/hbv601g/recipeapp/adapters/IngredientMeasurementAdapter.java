@@ -11,13 +11,12 @@ import java.util.List;
 
 import hbv601g.recipeapp.R;
 import hbv601g.recipeapp.entities.IngredientMeasurement;
-import hbv601g.recipeapp.entities.Recipe;
 
-public class IngredientMeasurementAdpater extends BaseAdapter {
+public class IngredientMeasurementAdapter extends BaseAdapter {
     private List<IngredientMeasurement> list;
     private LayoutInflater thisInflater;
 
-    public IngredientMeasurementAdpater(Context context, List<IngredientMeasurement> list){
+    public IngredientMeasurementAdapter(Context context, List<IngredientMeasurement> list){
         this.list = list;
         thisInflater = (LayoutInflater.from(context));
     }

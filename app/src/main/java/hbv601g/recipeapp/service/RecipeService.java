@@ -103,6 +103,11 @@ public class RecipeService extends Service {
             author = gson.fromJson(jObj, collectionType);
         }
 
+        if(author == null){
+            Log.d("User error", "User is not log in");
+            return null;
+        }
+
         Recipe rep = new Recipe(title, author);
 
         rep.setInstructions(instructions);

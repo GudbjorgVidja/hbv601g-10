@@ -5,7 +5,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -30,7 +29,8 @@ public class RecipesFragment extends Fragment {
     private FragmentRecipesBinding binding;
     private RecipeService mRecipeService;
     private List<Recipe> mRecipeList;
-
+    private NewRecipeFragment nextFragment;
+    private RecipeAdapter recipeAdapter;
     private ListView mRecipeListView;
 
 
@@ -57,7 +57,7 @@ public class RecipesFragment extends Fragment {
 
         mRecipeListView = binding.recipesListView;
 
-        RecipeAdapter recipeAdapter = new RecipeAdapter(mainActivity.getApplicationContext(), mRecipeList);
+        recipeAdapter = new RecipeAdapter(mainActivity.getApplicationContext(), mRecipeList);
         mRecipeListView.setAdapter(recipeAdapter);
 
         mRecipeListView.setOnItemClickListener((parent, view, position, id) -> {
@@ -68,22 +68,28 @@ public class RecipesFragment extends Fragment {
             bundle.putParcelable(getString(R.string.selected_recipe), recipe);
         });
 
-        binding.addRecipe.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                NewRecipeFragment nextFragment = new NewRecipeFragment();
-                Recipe recipe = nextFragment.getRecipe();
-                if(recipe != null){
-                    mRecipeList.add(nextFragment.getRecipe());
-                    recipeAdapter.notifyDataSetChanged();
-                }
-            }
+        binding.addRecipe.setOnClickListener(view -> {
+                nextFragment = new NewRecipeFragment();
+                navController.navigate(R.id.action_recipe_to_new_recipe);
+
         });
 	
         return  root;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(nextFragment != null){
+            Recipe recipe = nextFragment.getRecipe();
+            if(recipe != null) {
+                mRecipeList.add(nextFragment.getRecipe());
+                recipeAdapter.notifyDataSetChanged();
+                nextFragment = null;
+            }
+        }
 
+    }
 
     @Override
     public void onDestroyView() {

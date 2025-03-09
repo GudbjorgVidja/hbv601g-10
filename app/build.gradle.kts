@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    id("androidx.navigation.safeargs")
 }
 
 android {
@@ -50,6 +51,9 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    implementation("androidx.navigation:navigation-fragment-ktx:2.8.8")
+    implementation("androidx.navigation:navigation-ui-ktx:2.8.8")
+
 
 //    // define a BOM and its version
 //    implementation(platform("com.squareup.okhttp3:okhttp-bom:4.12.0"))
