@@ -82,8 +82,7 @@
     <fragment
         android:id="@+id/navigation_signup"
         android:name="hbv601g.recipeapp.ui.login.SignupFragment"
-        android:label="@string/title_signup"
-        tools:layout="@layout/fragment_signup"/>
+        tools:layout="@layout/fragment_signup" />
 
     <fragment
         android:id="@+id/navigation_login"
@@ -105,5 +104,16 @@
             android:name="@string/selected_ingredient"
             app:argType="hbv601g.recipeapp.entities.Ingredient" />
     </fragment>
+    <fragment
+        android:id="@+id/navigation_pantry_ingredient"
+        android:name="hbv601g.recipeapp.ui.pantry.PantryIngredientFragment"
+        android:label="@string/title_pantry_ingredient"
+        tools:layout="@layout/fragment_pantry_ingredient" />
+
+    <fragment
+        android:id="@+id/navigation_new_ingredient"
+        android:name="hbv601g.recipeapp.ui.ingredients.NewIngredientFragment"
+        android:label="@string/title_new_ingredient"
+        tools:layout="@layout/fragment_new_ingredient"/>
 
 </navigation>

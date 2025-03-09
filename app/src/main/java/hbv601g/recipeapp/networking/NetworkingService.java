@@ -13,6 +13,8 @@ import java.util.concurrent.CountDownLatch;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -47,7 +49,6 @@ public class NetworkingService extends Service {
 
 
     /**
-     * //TODO: Add the data to the formBody (see how that is done)
      * Makes a Post Request to the external API
      * @param reqURL a string containing the URL for the API call
      * @param data a string containing the data to add to the requestbody of the call
@@ -55,8 +56,9 @@ public class NetworkingService extends Service {
      * @throws IOException signals that something went wrong with the post request
      */
     public JsonElement postRequest(String reqURL, String data) throws IOException{
-        RequestBody formBody = new FormBody.Builder().build();
-        Request request = new Request.Builder().url(baseURL+reqURL).post(formBody).build();
+        RequestBody requestBody = RequestBody.create(data, MediaType.parse("application/json"));
+        Request request = new Request.Builder().url(baseURL+reqURL).post(requestBody).build();
+
         jsonElement=callAPI(request);
         if (jsonElement != null&& jsonElement.isJsonNull()) return null;
         return jsonElement;
@@ -83,6 +85,21 @@ public class NetworkingService extends Service {
 
         return JsonParser.parseString("true");
     }
+
+    /**
+     * Makes a put request to the API and returns the result of the call
+     * @param reqURL endpoint url
+     * @param data data for the request body
+     * @return JsonElement with the result of the call
+     * @throws IOException if the calls fails
+     */
+    public JsonElement putRequest(String reqURL, String data) throws IOException {
+        RequestBody formBody = new FormBody.Builder().build();
+        Request request = new Request.Builder().url(baseURL + reqURL).put(formBody).build();
+
+        return callAPI(request);
+    }
+
 
     /**
      * Method that calls the API, using the given request

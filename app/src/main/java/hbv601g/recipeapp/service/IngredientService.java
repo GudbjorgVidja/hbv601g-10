@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.List;
 
 import hbv601g.recipeapp.entities.Ingredient;
+import hbv601g.recipeapp.entities.Unit;
 import hbv601g.recipeapp.entities.User;
 import hbv601g.recipeapp.networking.NetworkingService;
 
@@ -78,6 +79,43 @@ public class IngredientService extends Service {
         else throw new NullPointerException("Ingredient list is null");
 
         return ingredients;
+    }
+
+    /**
+     * makes a post request which is sent to the API, to create an
+     * ingredient with the specified attributes.
+     * @param title - title of the new ingredient
+     * @param quantity - quantity in a package of the ingredient
+     * @param unit - the unit of measure for the ingredient
+     * @param price - the price of this ingredient
+     * @param store - store name, can be empty or null
+     * @param brand - brand name, can be empty or null
+     * @param isPrivate - if the ingredient should be visible to only the creator
+     * @return the ingredient object
+     */
+    public Ingredient createIngredient(String title, double quantity, Unit unit, double price, String store, String brand, boolean isPrivate){
+        String url = "ingredient/created?uid=" + mUid;
+
+        if(store.trim().isEmpty()) store = null;
+        if(brand.trim().isEmpty()) brand = null;
+        Ingredient ingredient = new Ingredient(title, unit, quantity, price, store, brand);
+        ingredient.setPrivate(isPrivate);
+
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+        String data = gson.toJson(ingredient, Ingredient.class);
+        try {
+        mElement = mNetworkingService.postRequest(url, data);
+        } catch (IOException e) {
+            Log.d("Networking exception", "create ingredient failed");
+            mElement = null;
+        }
+
+        if(mElement != null && mElement.isJsonObject()){
+            ingredient = gson.fromJson(mElement, Ingredient.class);
+        }
+        else throw new NullPointerException("Failed to create ingredient");
+
+        return ingredient;
     }
 
 
