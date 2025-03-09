@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.List;
 
 import hbv601g.recipeapp.entities.IngredientMeasurement;
+import hbv601g.recipeapp.entities.Unit;
 import hbv601g.recipeapp.entities.User;
 import hbv601g.recipeapp.networking.NetworkingService;
 
@@ -126,7 +127,8 @@ public class UserService extends Service {
     public boolean removeIngredientFromPantry(long uid, long iid){
         String url = "user/pantry/delete";
         String params = String.format("?iid=%s&uid=%s", iid, uid);
-        Log.d("UserService", "Params: " + iid +" " + uid);
+
+
         try {
             element = networkingService.putRequest(url + params, null);
             Log.d("API", "remove pantry response: " + element);
@@ -141,6 +143,30 @@ public class UserService extends Service {
             Log.d("API", "item deleted: " + itemDeleted);
         }
         return itemDeleted;
+    }
+
+    public IngredientMeasurement addIngredientToPantry(long uid, long iid, Unit unit, double qty){
+        String url = "user/pantry/add";
+        String params = String.format("?iid=%s&unit=%s&qty=%s&uid=%s", iid, unit, qty, uid);
+
+        IngredientMeasurement ingredient = null;
+
+        try{
+            element = networkingService.putRequest(url + params, null);
+            Log.d("API", "Ingredient added: " + element);
+        } catch (IOException e) {
+            Log.d("Networking exception", "Failed to add ingredient to pantry");
+        }
+
+        if(element != null && !element.isJsonNull()){
+            Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+
+            JsonElement res = element.getAsJsonObject();
+            Type collectionType = new TypeToken<Collection<IngredientMeasurement>>(){}.getType();
+
+            ingredient = gson.fromJson(res, collectionType);
+        }
+        return ingredient;
     }
 
 
