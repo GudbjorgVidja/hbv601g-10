@@ -113,11 +113,24 @@ public class UserService extends Service {
         return pantry;
     }
 
-    public void removeIngredientFromPantry(long uid, long iid){
-        String url = "/user/pantry/delete";
-        String params = "?iid=" + iid + "?uid=" + uid;
+    public boolean removeIngredientFromPantry(long uid, long iid){
+        String url = "user/pantry/delete";
+        String params = String.format("?iid=%s&uid=%s", iid, uid);
+        Log.d("UserService", "Params: " + iid +" " + uid);
+        try {
+            element = networkingService.putRequest(url + params, null);
+            Log.d("API", "remove pantry response: " + element);
+        } catch (IOException e) {
+            Log.d("Networking exception", "Failed to delete item from pantry");
+        }
 
+        boolean itemDeleted = false;
 
+        if(element == null || element.isJsonNull()){
+            itemDeleted = true;
+            Log.d("API", "item deleted: " + itemDeleted);
+        }
+        return itemDeleted;
     }
 
 
