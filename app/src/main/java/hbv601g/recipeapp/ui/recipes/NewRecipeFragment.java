@@ -6,15 +6,17 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.ListAdapter;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
@@ -23,25 +25,20 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.security.auth.callback.Callback;
-
 import hbv601g.recipeapp.MainActivity;
 import hbv601g.recipeapp.R;
 import hbv601g.recipeapp.adapters.IngredientMeasurementAdapter;
 import hbv601g.recipeapp.databinding.FragmentCreateRecipeBinding;
 import hbv601g.recipeapp.entities.IngredientMeasurement;
 import hbv601g.recipeapp.entities.Recipe;
-import hbv601g.recipeapp.entities.User;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.RecipeService;
 
 public class NewRecipeFragment extends Fragment {
     private RecipeService recipeService;
     private FragmentCreateRecipeBinding binding;
-    private List<IngredientMeasurement> list;
-    private AddIngredientMeasurementFragment nextFragment = null;
-    private IngredientMeasurementAdapter adapter;
-    private Recipe recipe;
+
+    private List<IngredientMeasurement> list = new ArrayList<>();
 
     @Nullable
     @Override
@@ -49,13 +46,11 @@ public class NewRecipeFragment extends Fragment {
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentCreateRecipeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-        recipe = null;
-        list = new ArrayList<>();
 
         MainActivity mainActivity = (MainActivity) getActivity();
         assert mainActivity != null;
 
-        adapter = new IngredientMeasurementAdapter
+        IngredientMeasurementAdapter adapter = new IngredientMeasurementAdapter
                         (
                             mainActivity.getApplicationContext(), list
                         );
@@ -73,27 +68,43 @@ public class NewRecipeFragment extends Fragment {
         });
 
         binding.crateRecipe.setOnClickListener(view -> {
-            recipe = createRecipe();
-            navController.popBackStack();
+            Recipe recipe = createRecipe();
+            if(recipe != null){
+                Gson gson = new Gson();
+                String newRecipe = gson.toJson(recipe);
+                navController.getPreviousBackStackEntry().getSavedStateHandle()
+                        .set("newRecipe", newRecipe);
+                navController.popBackStack();
+            }
+            else {
+                Toast.makeText(
+                        getActivity(),"User ins not longed in to the API", Toast.LENGTH_LONG
+                ).show();
+            }
         });
 
         binding.cancelRecipe.setOnClickListener(view -> {
             navController.popBackStack();
         });
 
-        if(getArguments() != null){
-            String temp = NewRecipeFragmentArgs.fromBundle(getArguments())
-                    .getIngredientMeasurement();
-            if(!temp.isEmpty()){
-                Gson gson = new Gson();
+        LifecycleOwner owner = getViewLifecycleOwner();
+        navController.getCurrentBackStackEntry().getSavedStateHandle().getLiveData("ingredientMeasurement")
+                .observe(owner, new Observer<Object>() {
+                    @Override
+                    public void onChanged(Object o) {
+                        String temp = (String) o;
+                        if(!temp.isEmpty()){
+                            Gson gson = new Gson();
 
-                Type collectionType = new TypeToken<IngredientMeasurement>(){}.getType();
-                JsonObject jsonObj = JsonParser.parseString(temp).getAsJsonObject();
+                            Type collectionType = new TypeToken<IngredientMeasurement>(){}.getType();
+                            JsonObject jsonObj = JsonParser.parseString(temp).getAsJsonObject();
 
-                list.add(gson.fromJson(jsonObj, collectionType));
-                adapter.notifyDataSetChanged();
-            }
-        }
+                            list.add(gson.fromJson(jsonObj, collectionType));
+                            adapter.notifyDataSetChanged();
+                        }
+                    }
+                });
+
 
         return root;
     }
@@ -113,26 +124,6 @@ public class NewRecipeFragment extends Fragment {
         return  recipeService.createRecipe(
                 title,instructions, ingredientMeasurementList, isPrivate
         );
-    }
-
-
-//    public void AddToViewList(Object data){
-//        if(data != null) {
-//            list.add((IngredientMeasurement) data);
-//            getActivity().runOnUiThread(()-> adapter.notifyDataSetChanged());
-//            binding.ingredients.showContextMenu();
-//            nextFragment = null;
-//        }
-//    }
-
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        adapter.notifyDataSetChanged();
-//    }
-
-    public Recipe getRecipe() {
-        return recipe;
     }
 
     @Override

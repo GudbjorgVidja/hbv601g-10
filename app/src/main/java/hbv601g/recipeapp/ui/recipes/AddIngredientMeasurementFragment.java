@@ -144,12 +144,11 @@ public class AddIngredientMeasurementFragment extends Fragment {
             IngredientMeasurement ingreMeas = addIngredientMeasurement();
             if(ingreMeas != null){
                 Gson gson = new Gson();
-
                 String ingredientMeasurement = gson.toJson(ingreMeas);
-                NewRecipeFragmentDirections.NewRecipeToAddIngredientMeasurement action;
-                action = NewRecipeFragmentDirections.newRecipeToAddIngredientMeasurement();
-                                //.addIngredientMeasurementToRecipe(ingredientMeasurement);
-                navController.navigate(action);
+
+                navController.getPreviousBackStackEntry().getSavedStateHandle()
+                        .set("ingredientMeasurement", ingredientMeasurement);
+                navController.popBackStack();
             }
             else {
                 Toast.makeText(getContext(), "Missing information", Toast.LENGTH_SHORT).show();

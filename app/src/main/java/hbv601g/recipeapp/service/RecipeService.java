@@ -20,10 +20,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import hbv601g.recipeapp.entities.Ingredient;
 import hbv601g.recipeapp.entities.IngredientMeasurement;
 import hbv601g.recipeapp.entities.Recipe;
-import hbv601g.recipeapp.entities.Unit;
 import hbv601g.recipeapp.entities.User;
 import hbv601g.recipeapp.networking.NetworkingService;
 

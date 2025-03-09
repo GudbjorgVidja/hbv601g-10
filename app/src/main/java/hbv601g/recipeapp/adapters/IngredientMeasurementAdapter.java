@@ -45,13 +45,12 @@ public class IngredientMeasurementAdapter extends BaseAdapter {
 
             TextView title = convertView.findViewById(R.id.ingredient_measurement_title);
             TextView quantity = convertView.findViewById(R.id.ingredient_measurement_quantity);
-            TextView unit = convertView.findViewById(R.id.ingredient_list_unit);
 
             IngredientMeasurement ingreMeas = (IngredientMeasurement) getItem(position);
 
             title.setText(ingreMeas.getIngredient().getTitle());
-            quantity.setText(String.format("%.2f", ingreMeas.getQuantity()));
-            unit.setText(ingreMeas.getUnit().toString());
+            quantity.setText(String.format("%.2f " + ingreMeas.getUnit().toString(),
+                    ingreMeas.getQuantity()));
         }
         return convertView;
     }
