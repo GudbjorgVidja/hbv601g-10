@@ -63,7 +63,14 @@ public class IngredientService extends Service {
     public Ingredient createIngredient(String title, double quantity, Unit unit, double price, String store, String brand, boolean isPrivate){
         String url = "ingredient/created?uid=" + mUid;
 
-        Ingredient ingredient = new Ingredient(title, unit, quantity, price, store, brand );
+        Log.d("CreateIngredient", "arg private:" + isPrivate);
+        if(store.trim().isEmpty()) {
+            store = null;
+            Log.d("CreateIngredient", "store er empty");
+        }
+        if(brand.trim().isEmpty()) brand = null;
+        Ingredient ingredient = new Ingredient(title, unit, quantity, price, store, brand);
+
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
         String data = gson.toJson(ingredient, Ingredient.class);
         try {
@@ -77,13 +84,14 @@ public class IngredientService extends Service {
         Log.d("Ingredient", "createIngredient");
 
         if(mElement != null){
-            //Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
             if(!mElement.isJsonObject()) return null;
 
             ingredient = gson.fromJson(mElement, Ingredient.class);
-
         }
         else return null;
+
+        ingredient.setPrivate(isPrivate);
+        Log.d("CreateIngredient", "private:" + ingredient.isPrivate());
 
         return ingredient;
     }

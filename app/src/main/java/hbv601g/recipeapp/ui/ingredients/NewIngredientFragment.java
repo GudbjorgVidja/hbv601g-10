@@ -6,13 +6,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+
+import com.google.android.material.switchmaterial.SwitchMaterial;
+
+import java.util.Objects;
 
 import hbv601g.recipeapp.MainActivity;
 import hbv601g.recipeapp.R;
@@ -25,18 +29,12 @@ import hbv601g.recipeapp.service.IngredientService;
 public class NewIngredientFragment extends Fragment{
 
     private FragmentNewIngredientBinding binding;
-    private Spinner unitSpinner;
-    private TextView qtyField;
-    private TextView titleField;
-    private TextView storeField;
-    private TextView priceField;
-
-    private Button confirmButton;
-
+    private EditText mQuantityField;
+    private EditText mTitleField;
+    private EditText mPriceField;
 
     private Ingredient mIngredient;
-
-    private IngredientService ingredientService;
+    private IngredientService mIngredientService;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -45,20 +43,22 @@ public class NewIngredientFragment extends Fragment{
         binding = FragmentNewIngredientBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-
         MainActivity mainActivity = ((MainActivity) getActivity());
         assert mainActivity != null;
 
-        ingredientService = new IngredientService(new NetworkingService(), mainActivity.getUserId());
+        mIngredientService = new IngredientService(new NetworkingService(), mainActivity.getUserId());
         NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
 
+        mQuantityField = binding.newIngredientQuantityInput;
+        mTitleField = binding.newIngredientTitleInput;
+        mPriceField = binding.newIngredientPriceInput;
 
-        unitSpinner = binding.unitSpinner;
-        qtyField = binding.newIngredientQuantityInput;
-        titleField = binding.newIngredientTitleInput;
-        storeField = binding.newIngredientStoreInput;
-        priceField = binding.newIngredientPriceInput;
-        confirmButton = binding.confirmNewIngredientButton;
+
+        Button confirmButton = binding.confirmNewIngredientButton;
+        Spinner unitSpinner = binding.unitSpinner;
+        EditText storeField = binding.newIngredientStoreInput;
+        EditText brandField = binding.newIngredientBrandInput;
+        SwitchMaterial privateSwitch = binding.newIngredientPrivateSelection;
 
         unitSpinner.setAdapter(new ArrayAdapter<Unit>(
                 mainActivity.getApplicationContext(),
@@ -66,26 +66,51 @@ public class NewIngredientFragment extends Fragment{
                 Unit.values()));
 
         confirmButton.setOnClickListener(v -> {
-            CharSequence qty = qtyField.getText();
-            CharSequence title = titleField.getText();
-            CharSequence price = priceField.getText();
-            Unit unit = (Unit) unitSpinner.getSelectedItem();
-            if(titleField.getText().toString().isEmpty()){
-                titleField.setError("oops, title cant be empty");
-            }
-            else if(qty != null && title != null && price != null){
-                mIngredient = ingredientService.createIngredient(
-                        title.toString(),
-                        Double.parseDouble(qty.toString()),
-                        unit,
-                        Double.parseDouble(price.toString()), storeField.getText().toString(), null, false);
+            if(isValid()){
+                mIngredient = mIngredientService.createIngredient(
+                        mTitleField.getText().toString(),
+                        Double.parseDouble(mQuantityField.getText().toString()),
+                        (Unit) unitSpinner.getSelectedItem(),
+                        Double.parseDouble(mPriceField.getText().toString()),
+                        Objects.requireNonNull(storeField.getText()).toString(),
+                        Objects.requireNonNull(brandField.getText()).toString(),
+                        privateSwitch.isChecked()
+                );
 
-                navController.navigate(R.id.navigation_ingredients);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(getString(R.string.selected_ingredient), mIngredient);
+                navController.navigate(R.id.navigation_ingredient, bundle);
+                //navController.navigate(R.id.navigation_ingredients);
             }
         });
 
 
         return root;
+    }
+
+
+    /**
+     * Staðfestir að titill, magn og verð séu skráð,
+     * kröfur fyrir valid ingredient
+     * @return hvort inntak sé valid
+     */
+    private boolean isValid(){
+        boolean isValid = true;
+
+        if(mTitleField.getText().toString().isEmpty()){
+            mTitleField.setError("oops, title cant be empty");
+            isValid = false;
+        }
+        if(mQuantityField.getText().isEmpty()) {
+            mQuantityField.setError("oops, qty cant be empty");
+            isValid = false;
+        }
+        if(mPriceField.getText().isEmpty()){
+            mPriceField.setError("oops, price text cant be empty");
+            isValid = false;
+        }
+
+        return isValid;
     }
 
     @Override
