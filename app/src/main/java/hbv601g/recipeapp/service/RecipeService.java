@@ -81,6 +81,7 @@ public class RecipeService extends Service {
             List<IngredientMeasurement> ingredList, Boolean isPrivate
     )
     {
+        mUid = 1;
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
         try{
             mJsonElement = mNetworkingService.getRequest(
@@ -109,7 +110,6 @@ public class RecipeService extends Service {
         Recipe rep = new Recipe(title, author);
 
         rep.setInstructions(instructions);
-        rep.setIngredientMeasurements(ingredList);
         rep.setPrivate(isPrivate);
 
         String url = "recipe/new?uid=" + String.valueOf(mUid);
@@ -119,6 +119,23 @@ public class RecipeService extends Service {
             mJsonElement = mNetworkingService.postRequest(url, data);
         } catch (IOException e) {
             Log.d("Networking exception", "Failed to create recipe");
+            //throw new RuntimeException(e);
+        }
+
+        if(mJsonElement != null){
+            rep = gson.fromJson(mJsonElement, Recipe.class);
+            Log.d("API", "recipe object, title:" + rep.getTitle());
+        }
+
+
+        url = "recipe/" + String.valueOf(rep.getId()) + "/update?uid=" + String.valueOf(mUid);
+        rep.setIngredientMeasurements(ingredList);
+        data = gson.toJson(rep);
+
+        try {
+            mJsonElement = mNetworkingService.putRequest(url, data);
+        } catch (IOException e) {
+            Log.d("Networking exception", "Failed to update recipe");
             //throw new RuntimeException(e);
         }
 

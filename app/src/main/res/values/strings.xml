@@ -31,7 +31,6 @@
     <string name="recipe_hint">Name of recipe</string>
     <string name="instructions_hint">Instructions steps</string>
     <string name="ingredient_value_hint">Quantity needed</string>
-    <string name="add_to_pantry">Add ingredient</string>
     <string name="add_to_pantry">Add to pantry</string>
     <string name="remove_from_pantry">Remove</string>
     <string name="ingredient_price_store">%1$dkr at %2$s</string>
