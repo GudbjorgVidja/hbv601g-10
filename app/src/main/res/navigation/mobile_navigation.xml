@@ -75,4 +75,10 @@
         android:label="@string/title_pantry_ingredient"
         tools:layout="@layout/fragment_pantry_ingredient" />
 
+    <fragment
+        android:id="@+id/navigation_new_ingredient"
+        android:name="hbv601g.recipeapp.ui.ingredients.NewIngredientFragment"
+        android:label="@string/title_new_ingredient"
+        tools:layout="@layout/fragment_new_ingredient"/>
+
 </navigation>
