@@ -52,8 +52,9 @@ public class PantryIngredientFragment extends Fragment {
             setPantryIngredient();
         }
 
+        // Takki til að eyða ingredient úr pantry
         binding.removeFromPantryButton.setOnClickListener(v -> {
-            if(mainActivity.getUserId() != 0 && mPantryIngredient != null){
+            if(mainActivity.getUserId() != 0 && mPantryIngredient != null && mPantryIngredient.getIngredient().getId() != 0){
                 AlertDialog.Builder alert = makeAlert(navController, mainActivity);
                 alert.show();
             } else {
@@ -65,6 +66,14 @@ public class PantryIngredientFragment extends Fragment {
 
     }
 
+    /**
+     * Alert dialog sem birtist notanda þegar hann ætlar að eyða ingredient úr pantry. Notandi staðfestir
+     * og þá eyðist ingredient úr pantry. Ef notandi hættir við gerist ekkert.
+     *
+     * @param navController NavController fyrir navigation
+     * @param mainActivity MainActivity í appinu
+     * @return alert sem user fær
+     */
     private AlertDialog.Builder makeAlert(NavController navController, MainActivity mainActivity) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());
         alert.setTitle("Remove from pantry");
@@ -87,6 +96,8 @@ public class PantryIngredientFragment extends Fragment {
         });
         return alert;
     }
+
+    //Stillir bara nafnið á ingredient eins og er
     private void setPantryIngredient() {
         binding.pantryIngredientTitle.setText(mPantryIngredient.getIngredient().getTitle());
     }

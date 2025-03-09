@@ -117,6 +117,12 @@ public class UserService extends Service {
         return pantry;
     }
 
+    /**
+     * API call to remove an ingredient from the users pantry.
+     * @param uid - User ID
+     * @param iid - Ingredient ID
+     * @return True if the API call returns an empty response, else false.
+     */
     public boolean removeIngredientFromPantry(long uid, long iid){
         String url = "user/pantry/delete";
         String params = String.format("?iid=%s&uid=%s", iid, uid);
