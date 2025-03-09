@@ -113,6 +113,13 @@ public class UserService extends Service {
         return pantry;
     }
 
+    public void removeIngredientFromPantry(long uid, long iid){
+        String url = "/user/pantry/delete";
+        String params = "?iid=" + iid + "?uid=" + uid;
+
+
+    }
+
 
     @Nullable
     @Override
