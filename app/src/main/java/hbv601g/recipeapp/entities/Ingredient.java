@@ -5,6 +5,8 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.Date;
 
 /**
@@ -22,6 +24,7 @@ public class Ingredient implements Parcelable {
     private double price;
     private String store;
     private String brand;
+    @SerializedName("private")
     private boolean isPrivate;
     private Date dateOfCreation;
 
