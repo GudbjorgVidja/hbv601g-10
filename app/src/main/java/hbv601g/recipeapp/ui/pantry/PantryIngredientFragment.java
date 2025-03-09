@@ -108,11 +108,6 @@ public class PantryIngredientFragment extends Fragment {
             tmp = mPantryIngredient.getQuantity() + mPantryIngredient.getUnit().toString();
         }
         binding.pantryIngredientQuantityUnit.setText(tmp);
-
-        tmp = (int) mPantryIngredient.getIngredient().getPrice() + getString(R.string.currency);
-
-        binding.pantryIngredientPrice.setText(tmp);
-
     }
 
     @Override
