@@ -84,7 +84,7 @@ public class RecipeService extends Service {
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
         try{
             mJsonElement = mNetworkingService.getRequest(
-                    String.format("/user/id/id=" + String.valueOf(mUid))
+                    String.format("user/id/" + String.valueOf(mUid))
             );
         }
         catch (IOException e){
@@ -112,7 +112,7 @@ public class RecipeService extends Service {
         rep.setIngredientMeasurements(ingredList);
         rep.setPrivate(isPrivate);
 
-        String url = "recipe/new";
+        String url = "recipe/new?uid=" + String.valueOf(mUid);
         String data = gson.toJson(rep);
 
         try {
