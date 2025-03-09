@@ -13,22 +13,22 @@ import hbv601g.recipeapp.R;
 import hbv601g.recipeapp.entities.IngredientMeasurement;
 
 public class IngredientMeasurementAdapter extends BaseAdapter {
-    private List<IngredientMeasurement> list;
+    private List<IngredientMeasurement> mIngredientMeasurementList;
     private LayoutInflater thisInflater;
 
     public IngredientMeasurementAdapter(Context context, List<IngredientMeasurement> list){
-        this.list = list;
+        this.mIngredientMeasurementList = list;
         thisInflater = (LayoutInflater.from(context));
     }
 
     @Override
     public int getCount() {
-        return list.size();
+        return mIngredientMeasurementList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return list.get(position);
+        return mIngredientMeasurementList.get(position);
     }
 
     @Override
@@ -40,8 +40,6 @@ public class IngredientMeasurementAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         if(convertView == null){
             convertView = thisInflater.inflate(R.layout.ingredient_measurement_list_item, parent, false);
-
-            //todo fix this.
 
             TextView title = convertView.findViewById(R.id.ingredient_measurement_title);
             TextView quantity = convertView.findViewById(R.id.ingredient_measurement_quantity);

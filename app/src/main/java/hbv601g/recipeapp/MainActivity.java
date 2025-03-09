@@ -15,11 +15,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import hbv601g.recipeapp.databinding.ActivityMainBinding;
-import hbv601g.recipeapp.entities.IngredientMeasurement;
 import hbv601g.recipeapp.entities.User;
-import hbv601g.recipeapp.ui.recipes.AddIngredientMeasurementFragment;
-import hbv601g.recipeapp.ui.recipes.NewRecipeFragment;
-import hbv601g.recipeapp.ui.recipes.RecipesFragment;
 
 public class MainActivity extends AppCompatActivity {
 
