@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import hbv601g.recipeapp.MainActivity;
 import hbv601g.recipeapp.R;
@@ -55,28 +56,32 @@ public class PantryFragment extends Fragment {
         NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
 
         mUserService = new UserService(new NetworkingService());
-        mUid = mainActivity.getUserId();
 
-        try{
-            mPantryIngredients = mUserService.getUserPantry(mUid);                  // Kallar á apa í gegnum service
-        } catch (NullPointerException e) {
-            mPantryIngredients = new ArrayList<>();                                 // Tómur listi ef ekkert svar
-            mainActivity.makeToast(R.string.null_pantry_list, Toast.LENGTH_LONG);
+        // Athuga hvort einhver sé skráður inn áður en pantry er sótt
+        if(mainActivity.getUserName() != null){
+            mUid = mainActivity.getUserId();
+            try{
+                mPantryIngredients = mUserService.getUserPantry(mUid);
+            } catch (NullPointerException e) {
+                mPantryIngredients = new ArrayList<>();
+                mainActivity.makeToast(R.string.null_pantry_list, Toast.LENGTH_LONG);
+            }
+        } else {
+            mainActivity.makeToast(R.string.pantry_no_user, Toast.LENGTH_LONG);
         }
-
 
 
         mPantryListView = binding.pantryListView;
 
 
         // Adapter til að tengja listann við ListView
-        PantryAdapter pantryAdapter = new PantryAdapter(mainActivity.getApplicationContext(), mPantryIngredients);
+        PantryAdapter pantryAdapter = new PantryAdapter(mainActivity.getApplicationContext(), Objects.requireNonNullElseGet(mPantryIngredients, ArrayList::new));
+        //PantryAdapter pantryAdapter = new PantryAdapter(mainActivity.getApplicationContext(), mPantryIngredients);
         mPantryListView.setAdapter(pantryAdapter);
 
 
         mPantryListView.setOnItemClickListener((parent, view, position, id) -> {
             IngredientMeasurement pantryItem = (IngredientMeasurement) parent.getItemAtPosition(position);
-            Log.d("Selected", pantryItem.toString());
 
             Bundle bundle = new Bundle();
             bundle.putParcelable(getString(R.string.selected_pantry_item), pantryItem);

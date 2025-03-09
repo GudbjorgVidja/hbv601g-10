@@ -91,6 +91,10 @@ public class UserService extends Service {
         String params ="?uid=" + uid;
         ArrayList<IngredientMeasurement> pantry = new ArrayList<>();
 
+        /*if(uid == 0){
+            return pantry;
+        }*/
+
         try {
             element = networkingService.getRequest(url + params);
             Log.d("UserService", "fetched element is: " + element);
@@ -99,7 +103,7 @@ public class UserService extends Service {
             return pantry;
         }
 
-        if(element != null){
+        if(element != null && !element.isJsonNull()){
             Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
             if(!element.isJsonArray()) return null;
             Log.d("UserService", "element: " + element);
