@@ -72,11 +72,11 @@
             android:layout_marginBottom="11dp"
             android:hint="@string/instructions_hint"
             android:inputType="textMultiLine"
-            app:layout_constraintBottom_toTopOf="@+id/addIngredientToRecipe"
+            app:layout_constraintBottom_toTopOf="@+id/add_ingredient_to_recipe"
             app:layout_constraintStart_toStartOf="parent" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/addIngredientToRecipe"
+            android:id="@+id/add_ingredient_to_recipe"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="48dp"

@@ -78,7 +78,7 @@ public class NewRecipeFragment extends Fragment {
             }
             else {
                 Toast.makeText(
-                        getActivity(),"User ins not longed in to the API", Toast.LENGTH_LONG
+                        getActivity(), R.string.user_not_logged_in, Toast.LENGTH_LONG
                 ).show();
             }
         });
