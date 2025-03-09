@@ -54,7 +54,8 @@ public class PantryIngredientFragment extends Fragment {
 
         // Takki til að eyða ingredient úr pantry
         binding.removeFromPantryButton.setOnClickListener(v -> {
-            if(mainActivity.getUserId() != 0 && mPantryIngredient != null && mPantryIngredient.getIngredient().getId() != 0){
+            if(mainActivity.getUserId() != 0 && mPantryIngredient != null && mPantryIngredient.getIngredient() != null
+                    && mPantryIngredient.getIngredient().getId() != 0){
                 AlertDialog.Builder alert = makeAlert(navController, mainActivity);
                 alert.show();
             } else {
@@ -97,9 +98,21 @@ public class PantryIngredientFragment extends Fragment {
         return alert;
     }
 
-    //Stillir bara nafnið á ingredient eins og er
+
     private void setPantryIngredient() {
         binding.pantryIngredientTitle.setText(mPantryIngredient.getIngredient().getTitle());
+        String tmp;
+        if (mPantryIngredient.getIngredient().getBrand() != null){
+            tmp = getString(R.string.pantry_ingredient_quantity_brand, mPantryIngredient.getQuantity()+"", mPantryIngredient.getUnit().toString(), mPantryIngredient.getIngredient().getBrand());
+        } else {
+            tmp = mPantryIngredient.getQuantity() + mPantryIngredient.getUnit().toString();
+        }
+        binding.pantryIngredientQuantityUnit.setText(tmp);
+
+        tmp = (int) mPantryIngredient.getIngredient().getPrice() + getString(R.string.currency);
+
+        binding.pantryIngredientPrice.setText(tmp);
+
     }
 
     @Override

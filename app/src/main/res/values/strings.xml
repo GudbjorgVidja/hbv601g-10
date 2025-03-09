@@ -9,6 +9,7 @@
     <string name="title_login">Login</string>
     <string name="title_ingredient">Ingredient</string>
     <string name="title_pantry">Pantry</string>
+    <string name="title_pantry_ingredient">Pantry Ingredient</string>
 
     <!-- Buttons/textfields -->
     <string name="login_button_text">Login</string>
@@ -20,6 +21,7 @@
     <string name="remove_from_pantry">Remove</string>
     <string name="ingredient_price_store">%1$dkr at %2$s</string>
     <string name="ingredient_quantity_brand">%1$s%2$s, %3$s brand</string>
+    <string name="pantry_ingredient_quantity_brand">%1$s%2$s, %3$s brand</string>
     <string name="delete_ingredient_button_text">Delete</string>
 
 
