@@ -25,7 +25,6 @@ public class IngredientAdapter extends BaseAdapter {
         thisInflater = (LayoutInflater.from(context));
     }
 
-
     @Override
     public int getCount() {
         return ingredientList.size();
