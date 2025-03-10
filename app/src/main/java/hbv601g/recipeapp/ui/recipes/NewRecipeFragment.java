@@ -67,7 +67,7 @@ public class NewRecipeFragment extends Fragment {
             navController.navigate(R.id.new_recipe_to_add_ingredient_measurement);
         });
 
-        binding.crateRecipe.setOnClickListener(view -> {
+        binding.createRecipe.setOnClickListener(view -> {
             Recipe recipe = createRecipe();
             if(recipe != null){
                 Gson gson = new Gson();

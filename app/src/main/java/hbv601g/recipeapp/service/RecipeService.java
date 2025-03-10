@@ -97,8 +97,7 @@ public class RecipeService extends Service {
 
             JsonObject jObj = mJsonElement.getAsJsonObject();
 
-            Type collectionType = new TypeToken<User>(){}.getType();
-            author = gson.fromJson(jObj, collectionType);
+            author = gson.fromJson(mJsonElement, User.class);
         }
 
         if(author == null){

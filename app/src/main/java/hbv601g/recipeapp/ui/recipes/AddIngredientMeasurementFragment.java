@@ -67,7 +67,7 @@ public class AddIngredientMeasurementFragment extends Fragment {
                                                     mainActivity.getApplicationContext(),
                                                     ingredientList
                                                 );
-        binding.spinner.setAdapter(inadApter);
+        binding.spinnerIngredient.setAdapter(inadApter);
 
         ArrayAdapter<CharSequence> unitApter = ArrayAdapter.createFromResource
                                                 (
@@ -76,9 +76,9 @@ public class AddIngredientMeasurementFragment extends Fragment {
                                                     android.R.layout.simple_spinner_item
                                                 );
         unitApter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        binding.spinner2.setAdapter(unitApter);
+        binding.spinnerUnit.setAdapter(unitApter);
 
-        binding.spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        binding.spinnerIngredient.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 ingredient = (Ingredient) parent.getItemAtPosition(position);
@@ -90,7 +90,7 @@ public class AddIngredientMeasurementFragment extends Fragment {
             }
         });
 
-        binding.spinner2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        binding.spinnerUnit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 switch ((String) parent.getItemAtPosition(position)){
