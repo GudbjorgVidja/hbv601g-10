@@ -81,7 +81,6 @@ public class RecipeService extends Service {
             List<IngredientMeasurement> ingredList, Boolean isPrivate
     )
     {
-        mUid = 1;
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
         try{
             mJsonElement = mNetworkingService.getRequest(
@@ -127,13 +126,30 @@ public class RecipeService extends Service {
             Log.d("API", "recipe object, title:" + rep.getTitle());
         }
 
+        String units = "";
+        String ingredientIDs = "";
+        String qty = "";
+        for(int i = 0; i < ingredList.size(); i++){
+            units += ingredList.get(i).getUnit().name() + ",";
+            ingredientIDs += String.valueOf(ingredList.get(i).getIngredient().getId()) + ",";
+            qty += String.valueOf(ingredList.get(i).getQuantity()) + ",";
+        }
 
-        url = "recipe/" + String.valueOf(rep.getId()) + "/update?uid=" + String.valueOf(mUid);
+        if(units.length() > 0 ){
+            units = units.substring(0, units.length() - 1);
+            ingredientIDs = ingredientIDs.substring(0, ingredientIDs.length() - 1);
+            qty = qty.substring(0, qty.length() - 1);
+        }
+
+        url = "recipe/addIngredients?recipeID=" + String.valueOf(rep.getId()) + "&uid=" + String.valueOf(mUid);
+        url += "&units="+units;
+        url += "&ingredientIDs="+ingredientIDs;
+        url += "&qty="+qty;
         rep.setIngredientMeasurements(ingredList);
-        data = gson.toJson(rep);
+        //data = gson.toJson(rep);
 
         try {
-            mJsonElement = mNetworkingService.putRequest(url, data);
+            mJsonElement = mNetworkingService.putRequest(url, null);
         } catch (IOException e) {
             Log.d("Networking exception", "Failed to update recipe");
             //throw new RuntimeException(e);
