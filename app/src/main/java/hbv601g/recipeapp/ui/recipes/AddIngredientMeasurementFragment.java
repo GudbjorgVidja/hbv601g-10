@@ -1,6 +1,5 @@
 package hbv601g.recipeapp.ui.recipes;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +11,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
@@ -33,8 +31,6 @@ import hbv601g.recipeapp.service.IngredientService;
 
 public class AddIngredientMeasurementFragment extends Fragment {
     private FragmentCreateRecipeAddIngredientsBinding binding;
-    private Ingredient ingredient;
-    private Unit unit;
 
     @Nullable
     @Override
@@ -69,76 +65,11 @@ public class AddIngredientMeasurementFragment extends Fragment {
                                                 );
         binding.spinnerIngredient.setAdapter(inadApter);
 
-        ArrayAdapter<CharSequence> unitApter = ArrayAdapter.createFromResource
-                                                (
-                                                    mainActivity.getApplicationContext(),
-                                                    R.array.unit_array,
-                                                    android.R.layout.simple_spinner_item
-                                                );
-        unitApter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        binding.spinnerUnit.setAdapter(unitApter);
+        binding.spinnerUnit.setAdapter(new ArrayAdapter<Unit>(
+                mainActivity.getApplicationContext(),
+                android.R.layout.simple_spinner_dropdown_item,
+                Unit.values()));
 
-        binding.spinnerIngredient.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                ingredient = (Ingredient) parent.getItemAtPosition(position);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                ingredient = null;
-            }
-        });
-
-        binding.spinnerUnit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                switch ((String) parent.getItemAtPosition(position)){
-                    case "ml":
-                        unit = Unit.ML;
-                        break;
-
-                    case "g":
-                        unit = Unit.G;
-                        break;
-
-                    case "kg":
-                        unit = Unit.KG;
-                        break;
-
-                    case "dl":
-                        unit = Unit.DL;
-                        break;
-
-                    case "tsp":
-                        unit = Unit.TSP;
-                        break;
-
-                    case "tbsp":
-                        unit = Unit.TBSP;
-                        break;
-
-                    case "cup":
-                        unit = Unit.CUP;
-                        break;
-
-                    default:
-                        unit = null;
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                unit = null;
-            }
-        });
-
-        binding.createIngredient.setOnClickListener(view -> {
-            Toast.makeText(
-                    getActivity(), "Missing dependency: User story 1",
-                    Toast.LENGTH_SHORT
-            ).show();
-        });
 
         binding.addIngredientToRecipe1.setOnClickListener(view -> {
             IngredientMeasurement ingreMeas = addIngredientMeasurement();
@@ -165,12 +96,15 @@ public class AddIngredientMeasurementFragment extends Fragment {
 
     private IngredientMeasurement addIngredientMeasurement(){
         String temp = binding.editTextNumber.getText().toString();
+        Unit unit = (Unit) binding.spinnerUnit.getSelectedItem();
+        Ingredient ingredient = (Ingredient) binding.spinnerIngredient.getSelectedItem();
+
         if(temp.isEmpty()){
             return null;
         }
 
         double value = Double.parseDouble(temp);
-        if(Double.isNaN(value)){
+        if(Double.isNaN(value) || unit == null || ingredient == null){
             return null;
         }
 
