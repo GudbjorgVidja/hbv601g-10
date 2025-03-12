@@ -10,9 +10,17 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +28,7 @@ import hbv601g.recipeapp.MainActivity;
 import hbv601g.recipeapp.R;
 import hbv601g.recipeapp.adapters.RecipeAdapter;
 import hbv601g.recipeapp.databinding.FragmentRecipesBinding;
+import hbv601g.recipeapp.entities.IngredientMeasurement;
 import hbv601g.recipeapp.entities.Recipe;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.RecipeService;
@@ -29,7 +38,6 @@ public class RecipesFragment extends Fragment {
     private FragmentRecipesBinding binding;
     private RecipeService mRecipeService;
     private List<Recipe> mRecipeList;
-
     private ListView mRecipeListView;
 
 
@@ -67,7 +75,33 @@ public class RecipesFragment extends Fragment {
             bundle.putParcelable(getString(R.string.selected_recipe), recipe);
         });
 
+        if(mainActivity.getUserId() != 0) {
+            binding.addRecipe.setOnClickListener(view -> {
+                navController.navigate(R.id.action_recipe_to_new_recipe);
+            });
+        }
+        else{
+            binding.addRecipe.hide();
+        }
 
+        LifecycleOwner owner = getViewLifecycleOwner();
+        navController.getCurrentBackStackEntry().getSavedStateHandle().getLiveData("ingredientMeasurement")
+                .observe(owner, new Observer<Object>() {
+                    @Override
+                    public void onChanged(Object o) {
+                        String temp = (String) o;
+                        if(!temp.isEmpty()){
+                            Gson gson = new Gson();
+
+                            Type collectionType = new TypeToken<Recipe>(){}.getType();
+                            JsonObject jsonObj = JsonParser.parseString(temp).getAsJsonObject();
+
+                            mRecipeList.add(gson.fromJson(jsonObj, collectionType));
+                            recipeAdapter.notifyDataSetChanged();
+                        }
+                    }
+                });
+	
         return  root;
     }
 
