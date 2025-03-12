@@ -81,14 +81,6 @@ public class RecipeService extends Service {
     )
     {
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-        try{
-            mJsonElement = mNetworkingService.getRequest(
-                    String.format("user/id/" + String.valueOf(mUid))
-            );
-        }
-        catch (IOException e){
-            Log.d("Networking exception", "Failed to get User");
-        }
 
         Recipe rep = new Recipe();
 
