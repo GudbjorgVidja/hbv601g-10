@@ -4,7 +4,6 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.ListView;
 
 import androidx.annotation.Nullable;
 
@@ -21,7 +20,6 @@ import java.util.List;
 import java.lang.reflect.Type;
 
 import hbv601g.recipeapp.entities.Recipe;
-import hbv601g.recipeapp.entities.User;
 import hbv601g.recipeapp.networking.NetworkingService;
 
 public class RecipeService extends Service {
@@ -36,6 +34,23 @@ public class RecipeService extends Service {
         mUid=uid;
     }
 
+    public double getPersonalizedPurchaseCost(long rid){
+        String url = String.format("recipe/id/%s/personal?uid=%s",rid,mUid);
+
+        try{
+            mJsonElement=mNetworkingService.getRequest(url);
+        } catch (IOException e){
+            Log.d("Networking exception", "Failed to get PPC");
+        }
+
+        double ppc = 0;
+
+        if(mJsonElement!=null){
+            ppc = mJsonElement.getAsDouble();
+            Log.d("API", "PPC: " + ppc);
+        }
+        return ppc;
+    }
     /**
      * Makes a get request for the external API, for the endpoint that gets all recipes
      * and turns it from a JsonElement to a List of Recipes
