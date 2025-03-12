@@ -65,6 +65,7 @@
     <string name="add_to_pantry_failed">Failed to add ingredient to pantry</string>
     <string name="create_ingredient_failed_toast">Failed to create ingredient.</string>
     <string name="user_not_logged_in">User is not logged, recipe can\'t be created</string>
+    <string name="recipe_unknown_error">Recipe could not be crated, unknown error</string>
 
     <!-- variables -->
     <string name="selected_ingredient">Ingredient</string>

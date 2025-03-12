@@ -68,13 +68,20 @@ public class NewRecipeFragment extends Fragment {
         });
 
         mBinding.createRecipe.setOnClickListener(view -> {
-            Recipe recipe = createRecipe();
-            if(recipe != null){
-                Gson gson = new Gson();
-                String newRecipe = gson.toJson(recipe);
-                navController.getPreviousBackStackEntry().getSavedStateHandle()
-                        .set("newRecipe", newRecipe);
-                navController.popBackStack();
+            if(((MainActivity) getActivity()).getUserId() != 0) {
+                Recipe recipe = createRecipe();
+                if (recipe != null) {
+                    Gson gson = new Gson();
+                    String newRecipe = gson.toJson(recipe);
+                    navController.getPreviousBackStackEntry().getSavedStateHandle()
+                            .set("newRecipe", newRecipe);
+                    navController.popBackStack();
+                }
+                else{
+                    Toast.makeText(
+                            getActivity(), R.string.recipe_unknown_error, Toast.LENGTH_LONG
+                    ).show();
+                }
             }
             else {
                 Toast.makeText(
