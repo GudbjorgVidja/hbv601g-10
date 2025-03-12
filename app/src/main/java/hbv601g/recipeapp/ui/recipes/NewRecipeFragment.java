@@ -28,15 +28,15 @@ import java.util.List;
 import hbv601g.recipeapp.MainActivity;
 import hbv601g.recipeapp.R;
 import hbv601g.recipeapp.adapters.IngredientMeasurementAdapter;
-import hbv601g.recipeapp.databinding.FragmentCreateRecipeBinding;
+import hbv601g.recipeapp.databinding.FragmentNewRecipeBinding;
 import hbv601g.recipeapp.entities.IngredientMeasurement;
 import hbv601g.recipeapp.entities.Recipe;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.RecipeService;
 
 public class NewRecipeFragment extends Fragment {
-    private RecipeService recipeService;
-    private FragmentCreateRecipeBinding binding;
+    private RecipeService mRecipeService;
+    private FragmentNewRecipeBinding mBinding;
 
     private List<IngredientMeasurement> list = new ArrayList<>();
 
@@ -44,8 +44,8 @@ public class NewRecipeFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = FragmentCreateRecipeBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
+        mBinding = FragmentNewRecipeBinding.inflate(inflater, container, false);
+        View root = mBinding.getRoot();
 
         MainActivity mainActivity = (MainActivity) getActivity();
         assert mainActivity != null;
@@ -54,20 +54,20 @@ public class NewRecipeFragment extends Fragment {
                         (
                             mainActivity.getApplicationContext(), list
                         );
-        binding.ingredients.setAdapter(adapter);
+        mBinding.ingredients.setAdapter(adapter);
 
         NavController navController = Navigation.findNavController(
                 mainActivity, R.id.nav_host_fragment_activity_main
         );
 
         long uid = mainActivity.getUserId();
-        recipeService = new RecipeService(new NetworkingService(), uid);
+        mRecipeService = new RecipeService(new NetworkingService(), uid);
 
-        binding.addIngredient.setOnClickListener(view -> {
+        mBinding.addIngredient.setOnClickListener(view -> {
             navController.navigate(R.id.new_recipe_to_add_ingredient_measurement);
         });
 
-        binding.createRecipe.setOnClickListener(view -> {
+        mBinding.createRecipe.setOnClickListener(view -> {
             Recipe recipe = createRecipe();
             if(recipe != null){
                 Gson gson = new Gson();
@@ -83,7 +83,7 @@ public class NewRecipeFragment extends Fragment {
             }
         });
 
-        binding.cancelRecipe.setOnClickListener(view -> {
+        mBinding.cancelRecipe.setOnClickListener(view -> {
             navController.popBackStack();
         });
 
@@ -110,18 +110,18 @@ public class NewRecipeFragment extends Fragment {
     }
 
     private Recipe createRecipe(){
-        String title =  binding.recipeName.getText().toString();
-        String instructions = binding.instructions.getText().toString();
-        Boolean isPrivate = binding.isPrivate.isActivated();
+        String title =  mBinding.recipeName.getText().toString();
+        String instructions = mBinding.instructions.getText().toString();
+        Boolean isPrivate = mBinding.isPrivate.isActivated();
         List<IngredientMeasurement> ingredientMeasurementList = new ArrayList<>();
 
-        ListAdapter ingredients= binding.ingredients.getAdapter();
+        ListAdapter ingredients= mBinding.ingredients.getAdapter();
         int size = ingredients.getCount();
         for(int i = 0; i < size; i++){
             ingredientMeasurementList.add((IngredientMeasurement) ingredients.getItem(i));
         }
 
-        return  recipeService.createRecipe(
+        return  mRecipeService.createRecipe(
                 title,instructions, ingredientMeasurementList, isPrivate
         );
     }
@@ -129,6 +129,6 @@ public class NewRecipeFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding = null;
+        mBinding = null;
     }
 }

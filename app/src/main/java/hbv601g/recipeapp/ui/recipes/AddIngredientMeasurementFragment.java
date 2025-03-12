@@ -21,7 +21,7 @@ import java.util.List;
 import hbv601g.recipeapp.MainActivity;
 import hbv601g.recipeapp.R;
 import hbv601g.recipeapp.adapters.IngredientAdapter;
-import hbv601g.recipeapp.databinding.FragmentAddIngredientsBinding;
+import hbv601g.recipeapp.databinding.FragmentAddIngredientsMeasurementBinding;
 import hbv601g.recipeapp.entities.Ingredient;
 import hbv601g.recipeapp.entities.IngredientMeasurement;
 import hbv601g.recipeapp.entities.Unit;
@@ -29,13 +29,13 @@ import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.IngredientService;
 
 public class AddIngredientMeasurementFragment extends Fragment {
-    private FragmentAddIngredientsBinding mBinding;
+    private FragmentAddIngredientsMeasurementBinding mBinding;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mBinding = FragmentAddIngredientsBinding.inflate(
+        mBinding = FragmentAddIngredientsMeasurementBinding.inflate(
                 inflater, container, false
         );
         View root = mBinding.getRoot();
