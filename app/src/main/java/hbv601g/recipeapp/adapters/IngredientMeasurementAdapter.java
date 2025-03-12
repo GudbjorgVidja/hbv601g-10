@@ -49,9 +49,11 @@ public class IngredientMeasurementAdapter extends BaseAdapter {
 
             IngredientMeasurement ingreMeas = (IngredientMeasurement) getItem(position);
 
-            title.setText(ingreMeas.getIngredient().getTitle());
-            quantity.setText(String.format("%.2f " + ingreMeas.getUnit().toString(),
-                    ingreMeas.getQuantity()));
+            if(ingreMeas != null && ingreMeas.getIngredient() != null && ingreMeas.getUnit() != null){
+                title.setText(ingreMeas.getIngredient().getTitle());
+                quantity.setText(String.format("%.2f " + ingreMeas.getUnit().toString(),
+                        ingreMeas.getQuantity()));
+            }
         }
         return convertView;
     }

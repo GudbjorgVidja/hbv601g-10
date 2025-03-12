@@ -112,8 +112,7 @@
     <ListView
         android:id="@+id/recipe_ingredients"
         android:layout_marginVertical="10dp"
-        android:layout_marginHorizontal="10dp"
-
+        android:layout_marginHorizontal="15dp"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintTop_toBottomOf="@id/recipe_ingredients_section"
