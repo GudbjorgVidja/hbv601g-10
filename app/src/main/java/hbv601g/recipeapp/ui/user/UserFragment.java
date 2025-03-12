@@ -39,6 +39,9 @@ public class UserFragment extends Fragment{
             navController.navigate(R.id.navigation_user_no_user);
         }
 
+        binding.createRecipeListButton.setOnClickListener(v -> {
+            navController.navigate(R.id.navigation_new_recipe_list);
+        });
         binding.usernameDisplay.setText(mainActivity.getUserName());
 
         return root;
