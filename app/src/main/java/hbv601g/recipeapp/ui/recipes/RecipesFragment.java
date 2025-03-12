@@ -75,9 +75,14 @@ public class RecipesFragment extends Fragment {
             bundle.putParcelable(getString(R.string.selected_recipe), recipe);
         });
 
-        binding.addRecipe.setOnClickListener(view -> {
-            navController.navigate(R.id.action_recipe_to_new_recipe);
-        });
+        if(mainActivity.getUserId() != 0) {
+            binding.addRecipe.setOnClickListener(view -> {
+                navController.navigate(R.id.action_recipe_to_new_recipe);
+            });
+        }
+        else{
+            binding.addRecipe.hide();
+        }
 
         LifecycleOwner owner = getViewLifecycleOwner();
         navController.getCurrentBackStackEntry().getSavedStateHandle().getLiveData("ingredientMeasurement")

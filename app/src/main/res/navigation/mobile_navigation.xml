@@ -54,7 +54,7 @@
         android:id="@+id/navigation_add_ingredient_measurement_to_recipe"
         android:name="hbv601g.recipeapp.ui.recipes.AddIngredientMeasurementFragment"
         android:label="@string/title_add_ingredient_measurement_recipes"
-        tools:layout="@layout/fragment_create_recipe_add_ingredients">
+        tools:layout="@layout/fragment_add_ingredients">
         <action
             android:id="@+id/add_ingredient_measurement_to_recipe"
             app:destination="@+id/navigation_new_recipe"/>

@@ -22,7 +22,6 @@ import java.util.List;
 
 import hbv601g.recipeapp.entities.IngredientMeasurement;
 import hbv601g.recipeapp.entities.Recipe;
-import hbv601g.recipeapp.entities.User;
 import hbv601g.recipeapp.networking.NetworkingService;
 
 public class RecipeService extends Service {
@@ -91,26 +90,13 @@ public class RecipeService extends Service {
             Log.d("Networking exception", "Failed to get User");
         }
 
-        User author = null;
-        if(mJsonElement != null){
-            if(!mJsonElement.isJsonObject()) return null;
+        Recipe rep = new Recipe();
 
-            JsonObject jObj = mJsonElement.getAsJsonObject();
-
-            author = gson.fromJson(mJsonElement, User.class);
-        }
-
-        if(author == null){
-            Log.d("User error", "User is not log in");
-            return null;
-        }
-
-        Recipe rep = new Recipe(title, author);
-
+        rep.setTitle(title);
         rep.setInstructions(instructions);
         rep.setPrivate(isPrivate);
 
-        String url = "recipe/new?uid=" + String.valueOf(mUid);
+        String url = "recipe/new?uid=" + mUid;
         String data = gson.toJson(rep);
 
         try {
@@ -125,27 +111,29 @@ public class RecipeService extends Service {
             Log.d("API", "recipe object, title:" + rep.getTitle());
         }
 
-        String units = "";
-        String ingredientIDs = "";
-        String qty = "";
+        StringBuilder units = new StringBuilder();
+        StringBuilder ingredientIDs = new StringBuilder();;
+        StringBuilder qty = new StringBuilder();;
+
         for(int i = 0; i < ingredList.size(); i++){
-            units += ingredList.get(i).getUnit().name() + ",";
-            ingredientIDs += String.valueOf(ingredList.get(i).getIngredient().getId()) + ",";
-            qty += String.valueOf(ingredList.get(i).getQuantity()) + ",";
+            units.append(ingredList.get(i).getUnit().name() + ",");
+            ingredientIDs.append(ingredList.get(i).getIngredient().getId() + ",");
+            qty.append(ingredList.get(i).getQuantity() + ",");
         }
 
-        if(units.length() > 0 ){
-            units = units.substring(0, units.length() - 1);
-            ingredientIDs = ingredientIDs.substring(0, ingredientIDs.length() - 1);
-            qty = qty.substring(0, qty.length() - 1);
+        if(!units.toString().isEmpty()){
+            units = units.deleteCharAt(units.length()-1);
+            ingredientIDs = ingredientIDs.deleteCharAt(ingredientIDs.length() - 1);
+            qty = qty.deleteCharAt(qty.length() - 1);
         }
 
-        url = "recipe/addIngredients?recipeID=" + String.valueOf(rep.getId()) + "&uid=" + String.valueOf(mUid);
-        url += "&units="+units;
-        url += "&ingredientIDs="+ingredientIDs;
-        url += "&qty="+qty;
+        url = "recipe/addIngredients?recipeID=" + rep.getId()
+                + "&uid=" + mUid
+                + "&units=" + units
+                + "&ingredientIDs="+ingredientIDs
+                + "&qty="+qty;
+
         rep.setIngredientMeasurements(ingredList);
-        //data = gson.toJson(rep);
 
         try {
             mJsonElement = mNetworkingService.putRequest(url, null);

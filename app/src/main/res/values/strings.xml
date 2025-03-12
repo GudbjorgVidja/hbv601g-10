@@ -64,7 +64,7 @@
     <string name="field_required_error">This field is required</string>
     <string name="add_to_pantry_failed">Failed to add ingredient to pantry</string>
     <string name="create_ingredient_failed_toast">Failed to create ingredient.</string>
-    <string name="user_not_logged_in">User is not logged in to the API</string>
+    <string name="user_not_logged_in">User is not logged, recipe can\'t be created</string>
 
     <!-- variables -->
     <string name="selected_ingredient">Ingredient</string>
@@ -76,14 +76,5 @@
 
     <!-- misc -->
     <string name="currency">kr.</string>
-    <string-array name="unit_array">
-        <item>ml</item>
-        <item>g</item>
-        <item>kg</item>
-        <item>dl</item>
-        <item>tsp</item>
-        <item>tbsp</item>
-        <item>cup</item>
-    </string-array>
 
 </resources>

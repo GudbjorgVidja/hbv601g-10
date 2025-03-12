@@ -13,7 +13,7 @@ import hbv601g.recipeapp.R;
 import hbv601g.recipeapp.entities.IngredientMeasurement;
 
 /**
- * Adapter fyrir ListView til að gera lista af IngredientMeasurementAdapter
+ * Adapter fyrir ListView til að gera lista af IngredientMeasurement
  */
 public class IngredientMeasurementAdapter extends BaseAdapter {
     private List<IngredientMeasurement> mIngredientMeasurementList;

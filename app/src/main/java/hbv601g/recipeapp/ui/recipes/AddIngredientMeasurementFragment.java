@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
@@ -22,24 +21,24 @@ import java.util.List;
 import hbv601g.recipeapp.MainActivity;
 import hbv601g.recipeapp.R;
 import hbv601g.recipeapp.adapters.IngredientAdapter;
+import hbv601g.recipeapp.databinding.FragmentAddIngredientsBinding;
 import hbv601g.recipeapp.entities.Ingredient;
-import hbv601g.recipeapp.databinding.FragmentCreateRecipeAddIngredientsBinding;
 import hbv601g.recipeapp.entities.IngredientMeasurement;
 import hbv601g.recipeapp.entities.Unit;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.IngredientService;
 
 public class AddIngredientMeasurementFragment extends Fragment {
-    private FragmentCreateRecipeAddIngredientsBinding binding;
+    private FragmentAddIngredientsBinding mBinding;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = FragmentCreateRecipeAddIngredientsBinding.inflate(
+        mBinding = FragmentAddIngredientsBinding.inflate(
                 inflater, container, false
         );
-        View root = binding.getRoot();
+        View root = mBinding.getRoot();
 
         MainActivity mainActivity = (MainActivity) getActivity();
         assert mainActivity != null;
@@ -63,15 +62,15 @@ public class AddIngredientMeasurementFragment extends Fragment {
                                                     mainActivity.getApplicationContext(),
                                                     ingredientList
                                                 );
-        binding.spinnerIngredient.setAdapter(inadApter);
+        mBinding.spinnerIngredient.setAdapter(inadApter);
 
-        binding.spinnerUnit.setAdapter(new ArrayAdapter<Unit>(
+        mBinding.spinnerUnit.setAdapter(new ArrayAdapter<Unit>(
                 mainActivity.getApplicationContext(),
                 android.R.layout.simple_spinner_dropdown_item,
                 Unit.values()));
 
 
-        binding.addIngredientToRecipe1.setOnClickListener(view -> {
+        mBinding.addIngredientToRecipe.setOnClickListener(view -> {
             IngredientMeasurement ingreMeas = addIngredientMeasurement();
             if(ingreMeas != null){
                 Gson gson = new Gson();
@@ -87,7 +86,7 @@ public class AddIngredientMeasurementFragment extends Fragment {
 
         });
 
-        binding.cancelAddIngredientToRecipe.setOnClickListener(view -> {
+        mBinding.cancelAddIngredientToRecipe.setOnClickListener(view -> {
             getParentFragmentManager().popBackStack();
         });
 
@@ -95,15 +94,17 @@ public class AddIngredientMeasurementFragment extends Fragment {
     }
 
     private IngredientMeasurement addIngredientMeasurement(){
-        String temp = binding.editTextNumber.getText().toString();
-        Unit unit = (Unit) binding.spinnerUnit.getSelectedItem();
-        Ingredient ingredient = (Ingredient) binding.spinnerIngredient.getSelectedItem();
+        double value;
+        Unit unit = (Unit) mBinding.spinnerUnit.getSelectedItem();
+        Ingredient ingredient = (Ingredient) mBinding.spinnerIngredient.getSelectedItem();
 
+        String temp = mBinding.ingredientQuantity.getText().toString();
         if(temp.isEmpty()){
             return null;
         }
 
-        double value = Double.parseDouble(temp);
+        value = Double.parseDouble(temp);
+
         if(Double.isNaN(value) || unit == null || ingredient == null){
             return null;
         }
@@ -114,6 +115,6 @@ public class AddIngredientMeasurementFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding = null;
+        mBinding = null;
     }
 }

@@ -48,7 +48,6 @@ public class NewRecipeFragment extends Fragment {
         View root = binding.getRoot();
 
         MainActivity mainActivity = (MainActivity) getActivity();
-        assert mainActivity != null;
 
         IngredientMeasurementAdapter adapter = new IngredientMeasurementAdapter
                         (
@@ -63,7 +62,7 @@ public class NewRecipeFragment extends Fragment {
         long uid = mainActivity.getUserId();
         recipeService = new RecipeService(new NetworkingService(), uid);
 
-        binding.addIngredientToRecipe.setOnClickListener(view -> {
+        binding.addIngredient.setOnClickListener(view -> {
             navController.navigate(R.id.new_recipe_to_add_ingredient_measurement);
         });
 
