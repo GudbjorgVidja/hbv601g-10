@@ -14,7 +14,6 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.MediaType;
-import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -23,11 +22,11 @@ import com.google.gson.*;
 
 public class NetworkingService extends Service {
 
-    private final String baseURL;
-    private JsonElement jsonElement;
-    private int responseCode;
+    private final String mBaseURL;
+    private JsonElement mJsonElement;
+    private int mResponseCode;
     public NetworkingService() {
-        baseURL = "https://hbv501g-26.onrender.com/";
+        mBaseURL = "https://hbv501g-26.onrender.com/";
     }
 
     // Required, dunno why
@@ -41,7 +40,7 @@ public class NetworkingService extends Service {
     // https://www.baeldung.com/guide-to-okhttp
     public JsonElement getRequest(String reqURL) throws IOException {
         Request request = new Request.Builder()
-                .url(baseURL+reqURL)
+                .url(mBaseURL +reqURL)
                 .build();
 
         return callAPI(request);
@@ -57,11 +56,11 @@ public class NetworkingService extends Service {
      */
     public JsonElement postRequest(String reqURL, String data) throws IOException{
         RequestBody requestBody = RequestBody.create(data, MediaType.parse("application/json"));
-        Request request = new Request.Builder().url(baseURL+reqURL).post(requestBody).build();
+        Request request = new Request.Builder().url(mBaseURL +reqURL).post(requestBody).build();
 
-        jsonElement=callAPI(request);
-        if (jsonElement != null&& jsonElement.isJsonNull()) return null;
-        return jsonElement;
+        mJsonElement =callAPI(request);
+        if (mJsonElement != null&& mJsonElement.isJsonNull()) return null;
+        return mJsonElement;
     }
 
 
@@ -78,10 +77,10 @@ public class NetworkingService extends Service {
      * @throws IOException if the call fails for some reason
      */
     public JsonElement deleteRequest(String reqURL)throws IOException{
-        Request request = new Request.Builder().url(baseURL+reqURL).delete().build();
-        jsonElement = callAPI(request);
+        Request request = new Request.Builder().url(mBaseURL +reqURL).delete().build();
+        mJsonElement = callAPI(request);
 
-        if(responseCode != 200) return null;
+        if(mResponseCode != 200) return null;
 
         return JsonParser.parseString("true");
     }
@@ -95,9 +94,9 @@ public class NetworkingService extends Service {
      */
     public JsonElement putRequest(String reqURL, String data) throws IOException {
         RequestBody formBody = new FormBody.Builder().build();
-        Request request = new Request.Builder().url(baseURL + reqURL).put(formBody).build();
+        Request request = new Request.Builder().url(mBaseURL + reqURL).put(formBody).build();
         JsonElement res = callAPI(request);
-        Log.d("API", "Response code from put request: " + responseCode);
+        Log.d("API", "Response code from put request: " + mResponseCode);
         return res;
     }
 
@@ -121,9 +120,9 @@ public class NetworkingService extends Service {
                     throws IOException {
 
                 String ret = response.body().string();
-                responseCode = response.code();
+                mResponseCode = response.code();
 
-                jsonElement = JsonParser.parseString(ret);
+                mJsonElement = JsonParser.parseString(ret);
                 latch.countDown();
             }
 
@@ -142,8 +141,8 @@ public class NetworkingService extends Service {
         }
 
         // See about implementation
-        if(responseCode != 200) return null;
+        if(mResponseCode != 200) return null;
 
-        return jsonElement;
+        return mJsonElement;
     }
 }

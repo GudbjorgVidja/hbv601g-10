@@ -28,14 +28,13 @@ import hbv601g.recipeapp.MainActivity;
 import hbv601g.recipeapp.R;
 import hbv601g.recipeapp.adapters.RecipeAdapter;
 import hbv601g.recipeapp.databinding.FragmentRecipesBinding;
-import hbv601g.recipeapp.entities.IngredientMeasurement;
 import hbv601g.recipeapp.entities.Recipe;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.RecipeService;
 
 public class RecipesFragment extends Fragment {
 
-    private FragmentRecipesBinding binding;
+    private FragmentRecipesBinding mBinding;
     private RecipeService mRecipeService;
     private List<Recipe> mRecipeList;
     private ListView mRecipeListView;
@@ -43,8 +42,8 @@ public class RecipesFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentRecipesBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
+        mBinding = FragmentRecipesBinding.inflate(inflater, container, false);
+        View root = mBinding.getRoot();
 
         MainActivity mainActivity = (MainActivity) getActivity();
         assert mainActivity != null;
@@ -62,7 +61,7 @@ public class RecipesFragment extends Fragment {
             mainActivity.makeToast(R.string.get_recipes_failed_toast, Toast.LENGTH_LONG);
         }
 
-        mRecipeListView = binding.recipesListView;
+        mRecipeListView = mBinding.recipesListView;
 
         RecipeAdapter recipeAdapter = new RecipeAdapter(mainActivity.getApplicationContext(), mRecipeList);
         mRecipeListView.setAdapter(recipeAdapter);
@@ -76,12 +75,12 @@ public class RecipesFragment extends Fragment {
         });
 
         if(mainActivity.getUserId() != 0) {
-            binding.addRecipe.setOnClickListener(view -> {
+            mBinding.addRecipe.setOnClickListener(view -> {
                 navController.navigate(R.id.action_recipe_to_new_recipe);
             });
         }
         else{
-            binding.addRecipe.hide();
+            mBinding.addRecipe.hide();
         }
 
         LifecycleOwner owner = getViewLifecycleOwner();
@@ -108,6 +107,6 @@ public class RecipesFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding = null;
+        mBinding = null;
     }
 }

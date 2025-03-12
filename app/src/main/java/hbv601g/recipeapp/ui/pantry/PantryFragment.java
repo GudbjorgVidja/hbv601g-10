@@ -7,12 +7,9 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import androidx.navigation.NavController;
 
-import android.os.Parcelable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -24,10 +21,7 @@ import hbv601g.recipeapp.MainActivity;
 import hbv601g.recipeapp.R;
 import hbv601g.recipeapp.adapters.PantryAdapter;
 import hbv601g.recipeapp.databinding.FragmentPantryBinding;
-import hbv601g.recipeapp.entities.Ingredient;
 import hbv601g.recipeapp.entities.IngredientMeasurement;
-import hbv601g.recipeapp.entities.Unit;
-import hbv601g.recipeapp.entities.User;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.UserService;
 
@@ -37,7 +31,7 @@ import hbv601g.recipeapp.service.UserService;
 
 public class PantryFragment extends Fragment {
 
-    private FragmentPantryBinding binding;
+    private FragmentPantryBinding mBinding;
     private UserService mUserService;
     private List<IngredientMeasurement> mPantryIngredients;
     private ListView mPantryListView;
@@ -48,10 +42,10 @@ public class PantryFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        binding = FragmentPantryBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
+        mBinding = FragmentPantryBinding.inflate(inflater, container, false);
+        View root = mBinding.getRoot();
 
-        MainActivity mainActivity = ((MainActivity) getActivity());
+        MainActivity mainActivity = (MainActivity) getActivity();
         assert mainActivity != null;
         NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
 
@@ -71,7 +65,7 @@ public class PantryFragment extends Fragment {
         }
 
 
-        mPantryListView = binding.pantryListView;
+        mPantryListView = mBinding.pantryListView;
 
 
         // Adapter til að tengja listann við ListView
@@ -95,7 +89,7 @@ public class PantryFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding = null;
+        mBinding = null;
     }
 
 }

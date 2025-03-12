@@ -38,7 +38,7 @@ public class NewRecipeFragment extends Fragment {
     private RecipeService mRecipeService;
     private FragmentNewRecipeBinding mBinding;
 
-    private List<IngredientMeasurement> list = new ArrayList<>();
+    private List<IngredientMeasurement> mList = new ArrayList<>();
 
     @Nullable
     @Override
@@ -52,7 +52,7 @@ public class NewRecipeFragment extends Fragment {
 
         IngredientMeasurementAdapter adapter = new IngredientMeasurementAdapter
                         (
-                            mainActivity.getApplicationContext(), list
+                            mainActivity.getApplicationContext(), mList
                         );
         mBinding.ingredients.setAdapter(adapter);
 
@@ -106,7 +106,7 @@ public class NewRecipeFragment extends Fragment {
                             Type collectionType = new TypeToken<IngredientMeasurement>(){}.getType();
                             JsonObject jsonObj = JsonParser.parseString(temp).getAsJsonObject();
 
-                            list.add(gson.fromJson(jsonObj, collectionType));
+                            mList.add(gson.fromJson(jsonObj, collectionType));
                             adapter.notifyDataSetChanged();
                         }
                     }

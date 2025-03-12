@@ -17,22 +17,22 @@ import hbv601g.recipeapp.entities.Ingredient;
  * af ingredients.
  */
 public class IngredientAdapter extends BaseAdapter {
-    private List<Ingredient> ingredientList;
-    private LayoutInflater thisInflater;
+    private List<Ingredient> mIngredientList;
+    private LayoutInflater mInflater;
 
     public IngredientAdapter(Context context, List<Ingredient> ingredients){
-        this.ingredientList = ingredients;
-        thisInflater = (LayoutInflater.from(context));
+        this.mIngredientList = ingredients;
+        mInflater = LayoutInflater.from(context);
     }
 
     @Override
     public int getCount() {
-        return ingredientList.size();
+        return mIngredientList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return ingredientList.get(position);
+        return mIngredientList.get(position);
     }
 
     @Override
@@ -43,7 +43,7 @@ public class IngredientAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if(convertView == null){
-            convertView = thisInflater.inflate(R.layout.ingredient_list_item, parent, false);
+            convertView = mInflater.inflate(R.layout.ingredient_list_item, parent, false);
 
             TextView title = convertView.findViewById(R.id.ingredient_list_title);
             TextView quantity = convertView.findViewById(R.id.ingredient_list_quantity);
