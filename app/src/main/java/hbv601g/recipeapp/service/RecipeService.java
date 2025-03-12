@@ -133,8 +133,6 @@ public class RecipeService extends Service {
                 + "&ingredientIDs="+ingredientIDs
                 + "&qty="+qty;
 
-        rep.setIngredientMeasurements(ingredList);
-
         try {
             mJsonElement = mNetworkingService.putRequest(url, null);
         } catch (IOException e) {
@@ -145,6 +143,9 @@ public class RecipeService extends Service {
         if(mJsonElement != null){
             rep = gson.fromJson(mJsonElement, Recipe.class);
             Log.d("API", "recipe object, title:" + rep.getTitle());
+        }
+        else {
+            rep = null;
         }
 
         return rep;
