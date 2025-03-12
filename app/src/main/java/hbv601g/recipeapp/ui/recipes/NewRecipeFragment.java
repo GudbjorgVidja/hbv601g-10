@@ -48,6 +48,7 @@ public class NewRecipeFragment extends Fragment {
         View root = binding.getRoot();
 
         MainActivity mainActivity = (MainActivity) getActivity();
+        assert mainActivity != null;
 
         IngredientMeasurementAdapter adapter = new IngredientMeasurementAdapter
                         (
