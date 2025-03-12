@@ -12,28 +12,26 @@ import java.util.List;
 import hbv601g.recipeapp.R;
 import hbv601g.recipeapp.entities.IngredientMeasurement;
 
-
 /**
- * Adapter to display a list of IngredientMeasurement in a ListView
+ * Adapter fyrir ListView til að gera lista af IngredientMeasurement
  */
 public class IngredientMeasurementAdapter extends BaseAdapter {
-    private final List<IngredientMeasurement> mIngredientMeasurements;
-    private final LayoutInflater mLayoutInflater;
+    private List<IngredientMeasurement> mIngredientMeasurementList;
+    private LayoutInflater mInflater;
 
-    public IngredientMeasurementAdapter(Context context, List<IngredientMeasurement> ingredientMeasurements){
-        this.mIngredientMeasurements = ingredientMeasurements;
-        mLayoutInflater = LayoutInflater.from(context);
+    public IngredientMeasurementAdapter(Context context, List<IngredientMeasurement> list){
+        this.mIngredientMeasurementList = list;
+        mInflater = LayoutInflater.from(context);
     }
-
 
     @Override
     public int getCount() {
-        return mIngredientMeasurements.size();
+        return mIngredientMeasurementList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return mIngredientMeasurements.get(position);
+        return mIngredientMeasurementList.get(position);
     }
 
     @Override
@@ -43,25 +41,18 @@ public class IngredientMeasurementAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if (convertView == null) {
-            convertView = mLayoutInflater.inflate(R.layout.ingredient_measurement_item, parent, false);
+        if(convertView == null){
+            convertView = mInflater.inflate(R.layout.ingredient_measurement_list_item, parent, false);
+
+            TextView title = convertView.findViewById(R.id.ingredient_measurement_title);
+            TextView quantity = convertView.findViewById(R.id.ingredient_measurement_quantity);
+
+            IngredientMeasurement ingreMeas = (IngredientMeasurement) getItem(position);
+
+            title.setText(ingreMeas.getIngredient().getTitle());
+            quantity.setText(String.format("%.2f " + ingreMeas.getUnit().toString(),
+                    ingreMeas.getQuantity()));
         }
-
-        TextView title = convertView.findViewById(R.id.ingredient_measurement_list_title);
-        TextView quantity = convertView.findViewById(R.id.ingredient_measurement_list_quantity);
-        TextView unit = convertView.findViewById(R.id.ingredient_measurement_list_unit);
-
-        IngredientMeasurement currIngMeas = (IngredientMeasurement) getItem(position);
-
-        if (currIngMeas.getIngredient()!=null && currIngMeas.getUnit() != null
-                && currIngMeas.getQuantity() != 0){
-            title.setText(currIngMeas.getIngredient().getTitle());
-            quantity.setText(String.format("%s", currIngMeas.getQuantity()));
-            unit.setText(currIngMeas.getUnit().toString());
-        }
-
-
         return convertView;
     }
-
 }

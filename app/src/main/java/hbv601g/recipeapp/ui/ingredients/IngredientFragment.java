@@ -27,7 +27,7 @@ import hbv601g.recipeapp.service.IngredientService;
  */
 public class IngredientFragment extends Fragment{
 
-    private FragmentIngredientBinding binding;
+    private FragmentIngredientBinding mBinding;
     private Ingredient mIngredient;
     private IngredientService mIngredientService;
 
@@ -37,9 +37,9 @@ public class IngredientFragment extends Fragment{
         if(getArguments()!=null){
             mIngredient = getArguments().getParcelable(getString(R.string.selected_ingredient));
         }
-        binding = FragmentIngredientBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
-        MainActivity mainActivity = ((MainActivity) getActivity());
+        mBinding = FragmentIngredientBinding.inflate(inflater, container, false);
+        View root = mBinding.getRoot();
+        MainActivity mainActivity = (MainActivity) getActivity();
         assert mainActivity != null;
         NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
         mIngredientService = new IngredientService(new NetworkingService(), mainActivity.getUserId());
@@ -48,24 +48,24 @@ public class IngredientFragment extends Fragment{
         if(mIngredient != null) setIngredient();
 
         if(mIngredient != null && mainActivity.getUserId() != 0) {
-            binding.addToPantryButton.setOnClickListener(v -> {
+            mBinding.addToPantryButton.setOnClickListener(v -> {
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(getString(R.string.selected_ingredient), mIngredient);
                 navController.navigate(R.id.navigation_add_to_pantry, bundle);
             });
         } else {
-            binding.addToPantryButton.setVisibility(GONE);
+            mBinding.addToPantryButton.setVisibility(GONE);
         }
 
         if(mIngredient != null && mIngredient.getCreatedBy() != null && mainActivity.getUserId() != 0 &&
                 mIngredient.getCreatedBy().getId() == mainActivity.getUserId() ){
-            binding.deleteIngredientButton.setOnClickListener(v -> {
+            mBinding.deleteIngredientButton.setOnClickListener(v -> {
                     AlertDialog.Builder alert = makeAlert(navController, mainActivity);
                     alert.show();
             });
         }
         else {
-            binding.deleteIngredientButton.setVisibility(GONE);
+            mBinding.deleteIngredientButton.setVisibility(GONE);
         }
 
         return root;
@@ -104,26 +104,26 @@ public class IngredientFragment extends Fragment{
      * Setur upplýsingar fyrir ingredientið í viðmóti
      */
     private void setIngredient(){
-        binding.ingredientTitle.setText(mIngredient.getTitle());
+        mBinding.ingredientTitle.setText(mIngredient.getTitle());
 
         String tmp = mIngredient.getCreatedBy()==null? "Unknown" : mIngredient.getCreatedBy().getUsername();
-        binding.ingredientCreator.setText(tmp);
+        mBinding.ingredientCreator.setText(tmp);
 
         if(mIngredient.getBrand() != null) tmp = getString(R.string.ingredient_quantity_brand, mIngredient.getQuantity()+"", mIngredient.getUnit().toString(), mIngredient.getBrand());
         else tmp = mIngredient.getQuantity() + mIngredient.getUnit().toString();
-        binding.ingredientQuantityUnit.setText(tmp);
+        mBinding.ingredientQuantityUnit.setText(tmp);
 
         if(mIngredient.getStore() == null) tmp = (int) mIngredient.getPrice()+getString(R.string.currency);
         else tmp = getString(R.string.ingredient_price_store, (int) mIngredient.getPrice(), mIngredient.getStore());
-        binding.ingredientPriceStore.setText(tmp);
+        mBinding.ingredientPriceStore.setText(tmp);
 
         tmp = mIngredient.isPrivate() ? "private" : "public";
-        binding.ingredientPrivate.setText(tmp);
+        mBinding.ingredientPrivate.setText(tmp);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding = null;
+        mBinding = null;
     }
 }

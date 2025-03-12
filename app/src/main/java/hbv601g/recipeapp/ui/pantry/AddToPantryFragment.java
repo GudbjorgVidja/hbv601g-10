@@ -15,15 +15,12 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import java.util.Objects;
-
 import hbv601g.recipeapp.MainActivity;
 import hbv601g.recipeapp.R;
 import hbv601g.recipeapp.databinding.FragmentAddToPantryBinding;
 import hbv601g.recipeapp.entities.Ingredient;
 import hbv601g.recipeapp.entities.IngredientMeasurement;
 import hbv601g.recipeapp.entities.Unit;
-import hbv601g.recipeapp.entities.User;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.UserService;
 
@@ -32,7 +29,7 @@ import hbv601g.recipeapp.service.UserService;
  */
 public class AddToPantryFragment extends Fragment {
 
-    private FragmentAddToPantryBinding binding;
+    private FragmentAddToPantryBinding mBinding;
     private EditText mQuantityInput;
     private Ingredient mIngredient;
     private UserService mUserService;
@@ -45,9 +42,9 @@ public class AddToPantryFragment extends Fragment {
         if(getArguments() != null) {
             mIngredient = getArguments().getParcelable(getString(R.string.selected_ingredient));
         }
-        binding = FragmentAddToPantryBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
-        MainActivity mainActivity = ((MainActivity) getActivity());
+        mBinding = FragmentAddToPantryBinding.inflate(inflater, container, false);
+        View root = mBinding.getRoot();
+        MainActivity mainActivity = (MainActivity) getActivity();
         assert mainActivity != null;
         NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
         mUserService = new UserService(new NetworkingService());
@@ -56,9 +53,9 @@ public class AddToPantryFragment extends Fragment {
             setIngredient();
         }
 
-        Button confirmButton = binding.addToPantryConfirmButton;
-        Spinner unitSpinner = binding.addToPantryUnitSpinner;
-        mQuantityInput = binding.addToPantryInputQuantity;
+        Button confirmButton = mBinding.addToPantryConfirmButton;
+        Spinner unitSpinner = mBinding.addToPantryUnitSpinner;
+        mQuantityInput = mBinding.addToPantryInputQuantity;
 
 
 
@@ -95,12 +92,12 @@ public class AddToPantryFragment extends Fragment {
     }
 
     private void setIngredient(){
-        binding.addToPantryItemTitle.setText(mIngredient.getTitle());
+        mBinding.addToPantryItemTitle.setText(mIngredient.getTitle());
     }
     @Override
     public void onDestroyView(){
         super.onDestroyView();
-        binding = null;
+        mBinding = null;
     }
 
 }

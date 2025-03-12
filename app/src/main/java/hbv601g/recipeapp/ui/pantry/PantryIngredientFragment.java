@@ -13,14 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import java.time.chrono.MinguoChronology;
-
 import hbv601g.recipeapp.MainActivity;
 import hbv601g.recipeapp.R;
 import hbv601g.recipeapp.databinding.FragmentPantryIngredientBinding;
-import hbv601g.recipeapp.entities.Ingredient;
 import hbv601g.recipeapp.entities.IngredientMeasurement;
-import hbv601g.recipeapp.entities.User;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.UserService;
 
@@ -29,7 +25,7 @@ import hbv601g.recipeapp.service.UserService;
  */
 public class PantryIngredientFragment extends Fragment {
 
-    FragmentPantryIngredientBinding binding;
+    FragmentPantryIngredientBinding mBinding;
     private IngredientMeasurement mPantryIngredient;
     private UserService mUserService;
 
@@ -40,9 +36,9 @@ public class PantryIngredientFragment extends Fragment {
         if(getArguments() != null){
             mPantryIngredient = getArguments().getParcelable(getString(R.string.selected_pantry_item));
         }
-        binding = FragmentPantryIngredientBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
-        MainActivity mainActivity = ((MainActivity) getActivity());
+        mBinding = FragmentPantryIngredientBinding.inflate(inflater, container, false);
+        View root = mBinding.getRoot();
+        MainActivity mainActivity = (MainActivity) getActivity();
 
         assert mainActivity != null;
         NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
@@ -53,7 +49,7 @@ public class PantryIngredientFragment extends Fragment {
         }
 
         // Takki til að eyða ingredient úr pantry
-        binding.removeFromPantryButton.setOnClickListener(v -> {
+        mBinding.removeFromPantryButton.setOnClickListener(v -> {
             if(mainActivity.getUserId() != 0 && mPantryIngredient != null && mPantryIngredient.getIngredient() != null
                     && mPantryIngredient.getIngredient().getId() != 0){
                 AlertDialog.Builder alert = makeAlert(navController, mainActivity);
@@ -100,19 +96,19 @@ public class PantryIngredientFragment extends Fragment {
 
 
     private void setPantryIngredient() {
-        binding.pantryIngredientTitle.setText(mPantryIngredient.getIngredient().getTitle());
+        mBinding.pantryIngredientTitle.setText(mPantryIngredient.getIngredient().getTitle());
         String tmp;
         if (mPantryIngredient.getIngredient().getBrand() != null){
             tmp = getString(R.string.pantry_ingredient_quantity_brand, mPantryIngredient.getQuantity()+"", mPantryIngredient.getUnit().toString(), mPantryIngredient.getIngredient().getBrand());
         } else {
             tmp = mPantryIngredient.getQuantity() + mPantryIngredient.getUnit().toString();
         }
-        binding.pantryIngredientQuantityUnit.setText(tmp);
+        mBinding.pantryIngredientQuantityUnit.setText(tmp);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding = null;
+        mBinding = null;
     }
 }

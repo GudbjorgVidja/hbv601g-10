@@ -16,22 +16,22 @@ import hbv601g.recipeapp.databinding.FragmentUserNoUserBinding;
 
 public class UserNoUserFragment extends Fragment {
 
-    private FragmentUserNoUserBinding binding;
+    private FragmentUserNoUserBinding mBinding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        binding = FragmentUserNoUserBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
+        mBinding = FragmentUserNoUserBinding.inflate(inflater, container, false);
+        View root = mBinding.getRoot();
 
-        MainActivity mainActivity = ((MainActivity) getActivity());
+        MainActivity mainActivity = (MainActivity) getActivity();
 
         assert mainActivity != null;
         NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
 
-        binding.loginButton.setOnClickListener(v -> navController.navigate(R.id.navigation_login));
+        mBinding.loginButton.setOnClickListener(v -> navController.navigate(R.id.navigation_login));
 
-        binding.signupButton.setOnClickListener(v -> navController.navigate(R.id.navigation_signup));
+        mBinding.signupButton.setOnClickListener(v -> navController.navigate(R.id.navigation_signup));
 
         return root;
     }
@@ -39,6 +39,6 @@ public class UserNoUserFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding = null;
+        mBinding = null;
     }
 }

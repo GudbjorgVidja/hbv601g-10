@@ -21,7 +21,7 @@ import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.UserService;
 
 public class SignupFragment extends Fragment {
-    private FragmentSignupBinding binding;
+    private FragmentSignupBinding mBinding;
 
     private UserService mUserService;
 
@@ -29,16 +29,16 @@ public class SignupFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         mUserService = new UserService(new NetworkingService());
-        binding = FragmentSignupBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
+        mBinding = FragmentSignupBinding.inflate(inflater, container, false);
+        View root = mBinding.getRoot();
 
-        MainActivity mainActivity = ((MainActivity) getActivity());
+        MainActivity mainActivity = (MainActivity) getActivity();
         assert mainActivity != null;
         NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
 
-        binding.signupButton.setOnClickListener(v -> {
-            String username = Objects.requireNonNull(binding.userNameInput.getText()).toString();
-            String password = Objects.requireNonNull(binding.passwordInput.getText()).toString();
+        mBinding.signupButton.setOnClickListener(v -> {
+            String username = Objects.requireNonNull(mBinding.userNameInput.getText()).toString();
+            String password = Objects.requireNonNull(mBinding.passwordInput.getText()).toString();
 
             if(username.isEmpty() || password.isEmpty()){
                 mainActivity.makeToast(R.string.login_not_empty_toast, Toast.LENGTH_LONG);
@@ -60,6 +60,6 @@ public class SignupFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding = null;
+        mBinding = null;
     }
 }

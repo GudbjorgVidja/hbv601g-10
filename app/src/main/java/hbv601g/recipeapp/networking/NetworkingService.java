@@ -58,7 +58,7 @@ public class NetworkingService extends Service {
     /**
      * Makes a Post Request to the external API
      * @param reqURL a string containing the URL for the API call
-     * @param data a string containing the data to add to the requestbody of the call
+     * @param data a string containing the data to add to the request body of the call
      * @return a JsonElement containing the result of the post request
      * @throws IOException signals that something went wrong with the post request
      */

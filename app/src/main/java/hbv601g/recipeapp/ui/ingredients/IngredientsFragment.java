@@ -42,7 +42,7 @@ public class IngredientsFragment extends Fragment {
         mBinding = FragmentIngredientsBinding.inflate(inflater, container, false);
         View root = mBinding.getRoot();
 
-        MainActivity mainActivity = ((MainActivity) getActivity());
+        MainActivity mainActivity = (MainActivity) getActivity();
         assert mainActivity != null;
         NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
 

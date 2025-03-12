@@ -47,7 +47,7 @@ public class NewIngredientFragment extends Fragment{
         mBinding = FragmentNewIngredientBinding.inflate(inflater, container, false);
         View root = mBinding.getRoot();
 
-        MainActivity mainActivity = ((MainActivity) getActivity());
+        MainActivity mainActivity = (MainActivity) getActivity();
         assert mainActivity != null;
 
         mIngredientService = new IngredientService(new NetworkingService(), mainActivity.getUserId());

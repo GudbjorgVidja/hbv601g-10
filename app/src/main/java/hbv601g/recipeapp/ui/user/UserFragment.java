@@ -17,20 +17,20 @@ import hbv601g.recipeapp.databinding.FragmentUserBinding;
 
 public class UserFragment extends Fragment{
 
-    private FragmentUserBinding binding;
+    private FragmentUserBinding mBinding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         // Gæti verið betra að hafa user sem argument, og ef það er ekki til staðar þá enginn user
-        MainActivity mainActivity = ((MainActivity) getActivity());
+        MainActivity mainActivity = (MainActivity) getActivity();
         assert mainActivity != null;
         NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
 
-        binding = FragmentUserBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
+        mBinding = FragmentUserBinding.inflate(inflater, container, false);
+        View root = mBinding.getRoot();
 
-        binding.logoutButton.setOnClickListener(v -> {
+        mBinding.logoutButton.setOnClickListener(v -> {
             mainActivity.removeCurrentUser();
             navController.navigate(R.id.navigation_user);
         });
@@ -39,7 +39,7 @@ public class UserFragment extends Fragment{
             navController.navigate(R.id.navigation_user_no_user);
         }
 
-        binding.usernameDisplay.setText(mainActivity.getUserName());
+        mBinding.usernameDisplay.setText(mainActivity.getUserName());
 
         return root;
     }
@@ -47,6 +47,6 @@ public class UserFragment extends Fragment{
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding = null;
+        mBinding = null;
     }
 }
