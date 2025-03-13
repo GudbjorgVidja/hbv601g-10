@@ -63,6 +63,8 @@
     <string name="get_recipes_failed_toast">Failed to get all recipes</string>
     <string name="delete_ingredient_failed">Something went wrong when trying to delete the ingredient.</string>
     <string name="delete_ingredient_success">Ingredient deleted successfully.</string>
+    <string name="delete_recipe_failed">Something went wrong when trying to delete the Recipe.</string>
+    <string name="delete_recipe_success">Recipe deleted successfully.</string>
     <string name="null_pantry_list">Something went wrong displaying the pantry</string>
     <string name="pantry_no_user">You must log in to view your pantry</string>
     <string name="remove_from_pantry_failed">Failed to remove item from pantry.</string>
@@ -83,5 +85,6 @@
 
     <!-- misc -->
     <string name="currency">kr.</string>
+    <string name="delete_icon_description">Trash</string>
 
 </resources>
