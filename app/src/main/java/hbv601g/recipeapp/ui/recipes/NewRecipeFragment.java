@@ -64,7 +64,7 @@ public class NewRecipeFragment extends Fragment {
         mRecipeService = new RecipeService(new NetworkingService(), uid);
 
         mBinding.addIngredient.setOnClickListener(view -> {
-            navController.navigate(R.id.new_recipe_to_add_ingredient_measurement);
+            navController.navigate(R.id.nav_add_ingredient_measurement_to_recipe);
         });
 
         mBinding.createRecipe.setOnClickListener(view -> {

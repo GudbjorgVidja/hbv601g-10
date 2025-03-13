@@ -72,12 +72,12 @@ public class RecipesFragment extends Fragment {
 
             Bundle bundle = new Bundle();
             bundle.putParcelable(getString(R.string.selected_recipe), recipe);
-            navController.navigate(R.id.action_recipes_to_recipe, bundle);
+            navController.navigate(R.id.nav_recipe, bundle);
         });
 
         if(mainActivity.getUserId() != 0) {
             mBinding.addRecipe.setOnClickListener(view -> {
-                navController.navigate(R.id.action_recipe_to_new_recipe);
+                navController.navigate(R.id.nav_new_recipe);
             });
         }
         else{
@@ -101,7 +101,7 @@ public class RecipesFragment extends Fragment {
                         }
                     }
                 });
-	
+
         return  root;
     }
 
