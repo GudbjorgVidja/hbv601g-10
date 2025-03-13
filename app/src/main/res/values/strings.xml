@@ -52,6 +52,7 @@
     <string name="recipe_ppc">Personalized purchase cost: %1$s kr</string>
     <string name="recipe_instructions">Instructions</string>
     <string name="recipe_ingredients">Ingredients</string>
+    <string name="delete_recipe_tooltip">Delete recipe</string>
 
 
     <!-- Messages/toasts -->
