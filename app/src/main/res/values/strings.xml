@@ -79,6 +79,8 @@
     <string name="selected_pantry_item">Pantry Item</string>
     <string name="selected_recipe">Recipe</string>
     <string name="selected_unit">Unit</string>
+    <string name="selected_ingredient_measurement">Ingredient measurement</string>
+    <string name="request_msmt">Ingredient measurement result</string>
     <string name="tic_string">tic:</string>
     <string name="tpc_string">tpc:</string>
 

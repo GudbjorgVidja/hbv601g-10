@@ -24,10 +24,6 @@
         android:name="hbv601g.recipeapp.ui.recipes.RecipesFragment"
         android:label="@string/title_recipes"
         tools:layout="@layout/fragment_recipes">
-        <argument
-            android:name="new_recipe"
-            app:argType="string"
-            android:defaultValue=""/>
     </fragment>
 
     <fragment
@@ -36,9 +32,9 @@
         android:label="@string/title_recipe_create"
         tools:layout="@layout/fragment_new_recipe">
         <argument
-            android:name="ingredientMeasurement"
-            app:argType="string"
-            android:defaultValue=""/>
+            android:name="@string/selected_ingredient_measurement"
+            app:argType="hbv601g.recipeapp.entities.IngredientMeasurement"
+            />
     </fragment>
 
     <fragment
