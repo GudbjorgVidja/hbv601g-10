@@ -37,8 +37,13 @@ public class NetworkingService extends Service {
         return null;
     }
 
-    // cite your sources:
-    // https://www.baeldung.com/guide-to-okhttp
+
+    /**
+     * Makes a get request to the external api
+     * @param reqURL - a string containing the URL for the call
+     * @return a JsonElement containing the response body from the request
+     * @throws IOException signalling that something went wrong with the request
+     */
     public JsonElement getRequest(String reqURL) throws IOException {
         Request request = new Request.Builder()
                 .url(baseURL+reqURL)

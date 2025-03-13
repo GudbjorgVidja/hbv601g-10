@@ -56,6 +56,7 @@
     <string name="field_required_error">This field is required</string>
     <string name="add_to_pantry_failed">Failed to add ingredient to pantry</string>
     <string name="create_ingredient_failed_toast">Failed to create ingredient.</string>
+    <string name="create_recipe_list_failed_toast">Failed to create recipe list.</string>
 
     <!-- variables -->
     <string name="selected_ingredient">Ingredient</string>
