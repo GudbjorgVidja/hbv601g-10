@@ -92,7 +92,7 @@ public class NewIngredientFragment extends Fragment{
                  Bundle bundle = new Bundle();
                  bundle.putParcelable(getString(R.string.selected_ingredient), mIngredient);
                  navController.popBackStack();
-                 navController.navigate(R.id.navigation_ingredient, bundle);
+                 navController.navigate(R.id.nav_ingredient, bundle);
 
             }
         });

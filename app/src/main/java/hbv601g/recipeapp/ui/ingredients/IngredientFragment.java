@@ -51,7 +51,7 @@ public class IngredientFragment extends Fragment{
             mBinding.addToPantryButton.setOnClickListener(v -> {
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(getString(R.string.selected_ingredient), mIngredient);
-                navController.navigate(R.id.navigation_add_to_pantry, bundle);
+                navController.navigate(R.id.nav_add_to_pantry, bundle);
             });
         } else {
             mBinding.addToPantryButton.setVisibility(GONE);

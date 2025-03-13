@@ -32,11 +32,11 @@ public class UserFragment extends Fragment{
 
         mBinding.logoutButton.setOnClickListener(v -> {
             mainActivity.removeCurrentUser();
-            navController.navigate(R.id.navigation_user);
+            navController.navigate(R.id.nav_user);
         });
 
         if(mainActivity.getUserName() == null){
-            navController.navigate(R.id.navigation_user_no_user);
+            navController.navigate(R.id.nav_user_no_user);
         }
 
         mBinding.usernameDisplay.setText(mainActivity.getUserName());

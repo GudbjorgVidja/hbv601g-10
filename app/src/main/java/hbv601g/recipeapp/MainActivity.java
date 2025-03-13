@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_home, R.id.navigation_recipes, R.id.navigation_ingredients, R.id.navigation_user)
+                R.id.nav_home, R.id.nav_recipes, R.id.nav_ingredients, R.id.nav_user)
                 .build();
 
         // setur navController sem view-ið fyrir fragmentið í activity_main
