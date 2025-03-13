@@ -27,6 +27,9 @@
         <action
             android:id="@+id/action_recipe_to_new_recipe"
             app:destination="@+id/navigation_new_recipe"/>
+        <action
+            android:id="@+id/action_recipes_to_recipe"
+            app:destination="@id/navigation_recipe"/>
         <argument
             android:name="new_recipe"
             app:argType="string"
@@ -59,6 +62,7 @@
             android:id="@+id/add_ingredient_measurement_to_recipe"
             app:destination="@+id/navigation_new_recipe"/>
     </fragment>
+
 
     <fragment
         android:id="@+id/navigation_ingredients"
@@ -120,5 +124,15 @@
         android:name="hbv601g.recipeapp.ui.ingredients.NewIngredientFragment"
         android:label="@string/title_new_ingredient"
         tools:layout="@layout/fragment_new_ingredient"/>
+
+    <fragment
+        android:id="@+id/navigation_recipe"
+        android:name="hbv601g.recipeapp.ui.recipes.RecipeFragment"
+        android:label="@string/title_recipe"
+        tools:layout="@layout/fragment_recipe">
+        <argument
+            android:name="@string/selected_recipe"
+            app:argType="hbv601g.recipeapp.entities.Recipe" />
+    </fragment>
 
 </navigation>

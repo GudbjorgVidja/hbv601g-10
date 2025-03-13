@@ -72,6 +72,7 @@ public class RecipesFragment extends Fragment {
 
             Bundle bundle = new Bundle();
             bundle.putParcelable(getString(R.string.selected_recipe), recipe);
+            navController.navigate(R.id.action_recipes_to_recipe, bundle);
         });
 
         if(mainActivity.getUserId() != 0) {

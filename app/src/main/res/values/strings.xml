@@ -14,6 +14,7 @@
     <string name="title_pantry_ingredient">Pantry Ingredient</string>
     <string name="title_add_to_pantry">Add Ingredient to Pantry</string>
     <string name="title_new_ingredient">New ingredient</string>
+    <string name="title_recipe">Recipe</string>
 
     <!-- Buttons/textfields -->
     <string name="ingredients_text">Ingredients</string>
@@ -46,6 +47,11 @@
     <string name="new_ingredient_brand_hint">Brand</string>
     <string name="privacy_selection_label">Make private</string>
     <string name="confirm_button">Confirm</string>
+    <string name="recipe_tpc">Total purchase cost: %1$s kr</string>
+    <string name="recipe_tic">Total ingredient cost: %1$s kr</string>
+    <string name="recipe_ppc">Personalized purchase cost: %1$s kr</string>
+    <string name="recipe_instructions">Instructions</string>
+    <string name="recipe_ingredients">Ingredients</string>
 
 
     <!-- Messages/toasts -->
