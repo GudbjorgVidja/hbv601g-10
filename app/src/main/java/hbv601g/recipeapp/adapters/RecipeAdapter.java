@@ -17,11 +17,11 @@ import hbv601g.recipeapp.entities.Recipe;
  */
 public class RecipeAdapter extends BaseAdapter {
     private List<Recipe> mRecipeList;
-    private LayoutInflater thisInflater;
+    private LayoutInflater mInflater;
 
     public RecipeAdapter(Context context, List<Recipe> recipes){
         this.mRecipeList = recipes;
-        thisInflater = (LayoutInflater.from(context));
+        mInflater = LayoutInflater.from(context);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class RecipeAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if(convertView == null){
-            convertView = thisInflater.inflate(R.layout.recipe_list_item, parent, false);
+            convertView = mInflater.inflate(R.layout.recipe_list_item, parent, false);
 
             TextView title = convertView.findViewById(R.id.recipe_overview_name);
             TextView createdBy = convertView.findViewById(R.id.recipe_overview_created_by);

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.io.IOException;
@@ -12,8 +13,6 @@ import java.util.concurrent.CountDownLatch;
 
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.FormBody;
-import okhttp3.MediaType;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -21,32 +20,35 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import com.google.gson.*;
 
+/**
+ * A service class which makes requests to the external API.
+ * cite your sources:
+ * <a href="https://www.baeldung.com/guide-to-okhttp">...</a>
+ */
 public class NetworkingService extends Service {
+    private final String mBaseURL;
+    private JsonElement mJsonElement;
+    private int mResponseCode;
 
-    private final String baseURL;
-    private JsonElement jsonElement;
-    private int responseCode;
     public NetworkingService() {
-        baseURL = "https://hbv501g-26.onrender.com/";
+        mBaseURL = "https://hbv501g-26.onrender.com/";
     }
 
-    // Required, dunno why
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return null;
     }
 
-
     /**
-     * Makes a get request to the external api
-     * @param reqURL - a string containing the URL for the call
-     * @return a JsonElement containing the response body from the request
-     * @throws IOException signalling that something went wrong with the request
+     * Makes a get request to the API
+     * @param reqURL - the path to use, which is appended to the base url
+     * @return - a json element with the result of the call
+     * @throws IOException signals that something went wrong with the request
      */
     public JsonElement getRequest(String reqURL) throws IOException {
         Request request = new Request.Builder()
-                .url(baseURL+reqURL)
+                .url(mBaseURL +reqURL)
                 .build();
 
         return callAPI(request);
@@ -56,17 +58,15 @@ public class NetworkingService extends Service {
     /**
      * Makes a Post Request to the external API
      * @param reqURL a string containing the URL for the API call
-     * @param data a string containing the data to add to the requestbody of the call
+     * @param data a string containing the data to add to the request body of the call
      * @return a JsonElement containing the result of the post request
      * @throws IOException signals that something went wrong with the post request
      */
     public JsonElement postRequest(String reqURL, String data) throws IOException{
-        RequestBody requestBody = RequestBody.create(data, MediaType.parse("application/json"));
-        Request request = new Request.Builder().url(baseURL+reqURL).post(requestBody).build();
-
-        jsonElement=callAPI(request);
-        if (jsonElement != null&& jsonElement.isJsonNull()) return null;
-        return jsonElement;
+        RequestBody requestBody = RequestBody.create(data == null ? "" : data,
+                MediaType.parse("application/json"));
+        Request request = new Request.Builder().url(mBaseURL +reqURL).post(requestBody).build();
+        return callAPI(request);
     }
 
 
@@ -79,14 +79,14 @@ public class NetworkingService extends Service {
      * Makes a delete request using the given url, calls the API and interprets the result into
      * a json element
      * @param reqURL - the url to the endpoint that is being called
-     * @return - a jsonelement with the result of the call
+     * @return - a json element with the result of the call
      * @throws IOException if the call fails for some reason
      */
     public JsonElement deleteRequest(String reqURL)throws IOException{
-        Request request = new Request.Builder().url(baseURL+reqURL).delete().build();
-        jsonElement = callAPI(request);
+        Request request = new Request.Builder().url(mBaseURL +reqURL).delete().build();
+        mJsonElement = callAPI(request);
 
-        if(responseCode != 200) return null;
+        if(mResponseCode != 200) return null;
 
         return JsonParser.parseString("true");
     }
@@ -99,11 +99,12 @@ public class NetworkingService extends Service {
      * @throws IOException if the calls fails
      */
     public JsonElement putRequest(String reqURL, String data) throws IOException {
-        RequestBody formBody = new FormBody.Builder().build();
-        Request request = new Request.Builder().url(baseURL + reqURL).put(formBody).build();
-        JsonElement res = callAPI(request);
-        Log.d("API", "Response code from put request: " + responseCode);
-        return res;
+        RequestBody requestBody = RequestBody.create(data == null ? "" : data,
+                MediaType.parse("application/json"));
+        Request request = new Request.Builder().url(mBaseURL + reqURL).put(requestBody).build();
+        mJsonElement = callAPI(request);
+        Log.d("API", "Response code from put request: " + mResponseCode);
+        return mJsonElement;
     }
 
 
@@ -115,24 +116,24 @@ public class NetworkingService extends Service {
     private JsonElement callAPI(Request request){
         OkHttpClient client = new OkHttpClient();
 
-
         // Wait for response
         CountDownLatch latch = new CountDownLatch(1);
 
         Call call = client.newCall(request);
 
         call.enqueue(new Callback() {
-            public void onResponse(Call call, Response response)
+            public void onResponse(@NonNull Call call, @NonNull Response response)
                     throws IOException {
 
+                assert response.body() != null;
                 String ret = response.body().string();
-                responseCode = response.code();
+                mResponseCode = response.code();
 
-                jsonElement = JsonParser.parseString(ret);
+                mJsonElement = JsonParser.parseString(ret);
                 latch.countDown();
             }
 
-            public void onFailure(Call call, IOException e) {
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 Log.d("API", "onFailure");
                 call.cancel();
                 latch.countDown();
@@ -147,8 +148,8 @@ public class NetworkingService extends Service {
         }
 
         // See about implementation
-        if(responseCode != 200) return null;
+        if(mResponseCode != 200 || mJsonElement == null || mJsonElement.isJsonNull()) return null;
 
-        return jsonElement;
+        return mJsonElement;
     }
 }

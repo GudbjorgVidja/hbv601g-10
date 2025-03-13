@@ -3,6 +3,8 @@
     <string name="app_name">Recipe App</string>
     <string name="title_home">Home</string>
     <string name="title_recipes">Recipes</string>
+    <string name="title_recipe_create">Create recipe</string>
+    <string name="title_add_ingredient_measurement_recipes">Create ingredient measurement</string>
     <string name="title_user">User</string>
     <string name="title_ingredients">Ingredients</string>
     <string name="title_signup">Signup</string>
@@ -12,14 +14,25 @@
     <string name="title_pantry_ingredient">Pantry Ingredient</string>
     <string name="title_add_to_pantry">Add Ingredient to Pantry</string>
     <string name="title_new_ingredient">New ingredient</string>
+    <string name="title_recipe">Recipe</string>
     <string name="title_new_recipe_list">New recipe list</string>
 
     <!-- Buttons/textfields -->
+    <string name="ingredients_text">Ingredients</string>
+    <string name="instructions_text">Instructions</string>
+    <string name="name_text">Name</string>
+    <string name="value_text">Value</string>
     <string name="login_button_text">Login</string>
     <string name="signup_button_text">Signup</string>
     <string name="logout_button_text">Log out</string>
+    <string name="cancel_button_text">Cancel</string>
+    <string name="create_button_text">Create</string>
+    <string name="add_button_text">Add</string>
     <string name="password_hint">Password</string>
     <string name="username_hint">Username</string>
+    <string name="recipe_hint">Name of recipe</string>
+    <string name="instructions_hint">Instructions steps</string>
+    <string name="ingredient_value_hint">Quantity needed</string>
     <string name="add_to_pantry">Add to pantry</string>
     <string name="remove_from_pantry">Remove</string>
     <string name="ingredient_price_store">%1$dkr at %2$s</string>
@@ -35,10 +48,16 @@
     <string name="new_ingredient_brand_hint">Brand</string>
     <string name="privacy_selection_label">Make private</string>
     <string name="confirm_button">Confirm</string>
+    <string name="recipe_tpc">Total purchase cost: %1$s kr</string>
+    <string name="recipe_tic">Total ingredient cost: %1$s kr</string>
+    <string name="recipe_ppc">Personalized purchase cost: %1$s kr</string>
+    <string name="recipe_instructions">Instructions</string>
+    <string name="recipe_ingredients">Ingredients</string>
     <string name="create_new_recipe_list_button">New Recipe List</string>
     <string name="new_recipe_list_title_hint">Title</string>
     <string name="new_recipe_list_description_hint">Description</string>
     <string name="confirm_create_recipe_list_button">Create recipe list</string>
+
 
     <!-- Messages/toasts -->
     <string name="login_failed_toast">Login failed. Please ensure username and password are correct.</string>
@@ -56,17 +75,19 @@
     <string name="field_required_error">This field is required</string>
     <string name="add_to_pantry_failed">Failed to add ingredient to pantry</string>
     <string name="create_ingredient_failed_toast">Failed to create ingredient.</string>
+    <string name="user_not_logged_in">User is not logged, recipe can\'t be created</string>
+    <string name="recipe_unknown_error">Recipe could not be crated, unknown error</string>
     <string name="create_recipe_list_failed_toast">Failed to create recipe list.</string>
 
     <!-- variables -->
     <string name="selected_ingredient">Ingredient</string>
     <string name="selected_pantry_item">Pantry Item</string>
     <string name="selected_recipe">Recipe</string>
+    <string name="selected_unit">Unit</string>
     <string name="tic_string">tic:</string>
     <string name="tpc_string">tpc:</string>
 
     <!-- misc -->
     <string name="currency">kr.</string>
-
 
 </resources>

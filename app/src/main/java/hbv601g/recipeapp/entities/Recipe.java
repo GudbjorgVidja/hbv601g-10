@@ -4,6 +4,8 @@ package hbv601g.recipeapp.entities;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -15,6 +17,7 @@ public class Recipe implements Parcelable {
 
     private String title;
     private String instructions;
+    @SerializedName("private")
     private boolean isPrivate;
     private Date dateOfCreation;
     /** Total price for all groceries bought new */
