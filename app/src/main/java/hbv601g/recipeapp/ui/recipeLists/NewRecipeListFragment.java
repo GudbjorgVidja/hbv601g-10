@@ -22,8 +22,8 @@ import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.RecipeListService;
 
 /**
- * Fragment for creating a new recipe list, title required and description optional.
- * The list is public by default, but can be made private.
+ * Fragment for creating a new recipe list, title required and description optional. The list is
+ * public by default, but can be made private.
  */
 public class NewRecipeListFragment extends Fragment {
     private FragmentNewRecipeListBinding mBinding;
@@ -46,16 +46,17 @@ public class NewRecipeListFragment extends Fragment {
         EditText descriptionInput = mBinding.newRecipeListDescriptionInput;
 
         mBinding.confirmNewRecipeListButton.setOnClickListener(v -> {
-            if(Objects.requireNonNull(titleInput.getText()).toString().isEmpty())
+            if (Objects.requireNonNull(titleInput.getText()).toString().isEmpty())
                 titleInput.setError(getString(R.string.field_required_error));
-            else{
+            else {
                 try {
                     mRecipeList = mRecipeListService.createRecipeList(
                             titleInput.getText().toString(),
                             Objects.requireNonNull(descriptionInput.getText()).toString(),
                             mBinding.newRecipeListPrivateSelection.isChecked());
+                    mainActivity.makeToast(R.string.create_recipe_list_success_toast, Toast.LENGTH_LONG);
                     navController.navigate(R.id.navigation_user);
-                } catch (NullPointerException e){
+                } catch (NullPointerException e) {
                     mainActivity.makeToast(R.string.create_recipe_list_failed_toast, Toast.LENGTH_LONG);
                 }
             }

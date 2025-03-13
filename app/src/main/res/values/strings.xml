@@ -78,6 +78,7 @@
     <string name="user_not_logged_in">User is not logged, recipe can\'t be created</string>
     <string name="recipe_unknown_error">Recipe could not be crated, unknown error</string>
     <string name="create_recipe_list_failed_toast">Failed to create recipe list.</string>
+    <string name="create_recipe_list_success_toast">Successfully created recipe list.</string>
 
     <!-- variables -->
     <string name="selected_ingredient">Ingredient</string>
