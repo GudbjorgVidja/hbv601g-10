@@ -56,6 +56,8 @@ public class LoginFragment extends Fragment{
                 }
                 else{
                     mainActivity.updateCurrentUser(user);
+                    navController.popBackStack();
+                    navController.popBackStack();
                     navController.navigate(R.id.nav_user);
                 }
             }

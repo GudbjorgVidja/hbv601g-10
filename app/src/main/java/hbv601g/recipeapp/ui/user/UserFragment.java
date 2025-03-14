@@ -30,12 +30,10 @@ public class UserFragment extends Fragment{
         mBinding = FragmentUserBinding.inflate(inflater, container, false);
         View root = mBinding.getRoot();
 
-        mBinding.logoutButton.setOnClickListener(v -> {
-            mainActivity.removeCurrentUser();
-            navController.navigate(R.id.nav_user);
-        });
+        mBinding.logoutButton.setOnClickListener(v -> mainActivity.removeCurrentUser());
 
         if(mainActivity.getUserName() == null){
+            navController.popBackStack();
             navController.navigate(R.id.nav_user_no_user);
         }
 
