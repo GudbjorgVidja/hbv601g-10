@@ -60,7 +60,6 @@ public class NewRecipeFragment extends Fragment {
         });
 
         mBinding.createRecipe.setOnClickListener(view -> {
-            if(((MainActivity) getActivity()).getUserId() != 0) {
                 Recipe recipe = createRecipe();
                 if (recipe != null) {
                     navController.popBackStack();
@@ -70,12 +69,6 @@ public class NewRecipeFragment extends Fragment {
                             getActivity(), R.string.recipe_unknown_error, Toast.LENGTH_LONG
                     ).show();
                 }
-            }
-            else {
-                Toast.makeText(
-                        getActivity(), R.string.user_not_logged_in, Toast.LENGTH_LONG
-                ).show();
-            }
         });
 
         mBinding.cancelRecipe.setOnClickListener(view -> {

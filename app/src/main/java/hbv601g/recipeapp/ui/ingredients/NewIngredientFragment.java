@@ -70,10 +70,7 @@ public class NewIngredientFragment extends Fragment{
                 Unit.values()));
 
         confirmButton.setOnClickListener(v -> {
-            if(mainActivity.getUserId() == 0)
-                navController.popBackStack();
-
-            else if(isValid()){
+            if(isValid()){
                 try{
                     mIngredient = mIngredientService.createIngredient(
                             mTitleField.getText().toString(),
