@@ -63,12 +63,12 @@ public class RecipeFragment extends Fragment {
         setRecipe();
 
         if (mRecipe != null && mRecipe.getCreatedBy() != null && mainActivity.getUserId() != 0 && mRecipe.getCreatedBy().getId() == mainActivity.getUserId()){
-            binding.deleteRecipe.setOnClickListener(v -> {
+            binding.deleteRecipeButton.setOnClickListener(v -> {
                 AlertDialog.Builder alert = makeAlert(navController, mainActivity);
                 alert.show();
             });
         }
-        else binding.deleteRecipe.setVisibility(GONE);
+        else binding.deleteRecipeButton.setVisibility(GONE);
 
 
 

@@ -37,7 +37,7 @@
     <string name="ingredient_price_store">%1$dkr at %2$s</string>
     <string name="ingredient_quantity_brand">%1$s%2$s, %3$s brand</string>
     <string name="pantry_ingredient_quantity_brand">%1$s%2$s, %3$s brand</string>
-    <string name="delete_ingredient_button_text">Delete</string>
+    <string name="delete_button_text">Delete</string>
     <string name="new_ingredient_title_hint">Title</string>
     <string name="new_ingredient_quantity_hint">Qty.</string>
     <string name="new_ingredient_price_hint">Price</string>
