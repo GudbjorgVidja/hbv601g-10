@@ -99,7 +99,8 @@
     <string name="delete_recipe_alert_message">Are you sure you want to delete this recipe?</string>
     <string name="delete_ingredient_alert_title">Delete ingredient</string>
     <string name="delete_ingredient_alert_message">Are you sure you want to delete this ingredient?</string>
-
+    <string name="rename_ingredient_alert_title">Rename Ingredient</string>
+    <string name="rename_ingredient_alert_message">Please enter the new name of the ingredient:</string>
 
     <!-- misc -->
     <string name="currency">kr.</string>

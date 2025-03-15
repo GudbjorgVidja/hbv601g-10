@@ -4,7 +4,6 @@ import static android.view.View.GONE;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
-import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,9 +62,8 @@ public class IngredientFragment extends Fragment{
             mBinding.deleteIngredientButton.setOnClickListener(
                     v -> makeDeleteIngredientAlert(navController, mainActivity));
 
-            mBinding.renameIngredientButton.setOnClickListener(v -> {
-                    makeRenameAlert(navController,mainActivity);
-            });
+            mBinding.renameIngredientButton.setOnClickListener(
+                    v -> makeRenameAlert(navController,mainActivity));
         }
         else {
             mBinding.deleteIngredientButton.setVisibility(GONE);
@@ -75,13 +73,17 @@ public class IngredientFragment extends Fragment{
         return root;
     }
 
+    /**
+     * Makes and shows an alert dialog for renaming ingredients. After the user confirms their action
+     * an attempt is made to rename the ingredient. If the user cancels the action, nothing happens
+     * @param navController - the NavController being used for navigation
+     * @param mainActivity - the MainActivity of the app
+     */
     private void makeRenameAlert(NavController navController, MainActivity mainActivity){
         final EditText editText = new EditText(mainActivity.getApplicationContext());
         AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());
-
-        alert.setTitle("Rename Ingredient");
-        alert.setMessage("Please enter the new name of the ingredient:");
-
+        alert.setTitle(getString(R.string.rename_ingredient_alert_title));
+        alert.setMessage(getString(R.string.rename_ingredient_alert_message));
         alert.setView(editText);
 
         alert.setPositiveButton(getString(R.string.confirm_button), (dialog, whichButton) -> {
@@ -99,14 +101,10 @@ public class IngredientFragment extends Fragment{
                     navController.popBackStack();
                     navController.navigate(R.id.nav_ingredient, bundle);
                 }
-
             }
         });
 
-        alert.setNegativeButton(getString(R.string.cancel_button_text), (dialog, whichButton) -> {
-            dialog.cancel();
-        });
-
+        alert.setNegativeButton(getString(R.string.cancel_button_text), null);
         alert.show();
     }
     /**
