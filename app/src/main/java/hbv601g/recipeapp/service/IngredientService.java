@@ -17,11 +17,12 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import hbv601g.recipeapp.entities.Ingredient;
 import hbv601g.recipeapp.entities.Unit;
-import hbv601g.recipeapp.entities.User;
 import hbv601g.recipeapp.networking.NetworkingService;
 
 public class IngredientService extends Service {
@@ -54,6 +55,33 @@ public class IngredientService extends Service {
             Log.d("API", "ingredient deleted: " + ingredientDeleted);
         }
         return ingredientDeleted;
+    }
+
+    /**
+     * Makes a patch request to change the title of an ingredient
+     * @param iid - the id of the ingredient to be renamed
+     * @param newTitle - the new title of the ingredient
+     * @return - the ingredient with the updated title
+     */
+    public Ingredient changeIngredientTitle(long iid, String newTitle){
+        String url = String.format("ingredient/updateTitle/%s?uid=%s",iid,mUid);
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+        Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("title",newTitle);
+        String data = gson.toJson(requestBody);
+
+        try {
+            mElement = mNetworkingService.patchRequest(url, data);
+        } catch (IOException e) {
+            Log.d("Networking exception", "rename ingredient failed");
+            mElement = null;
+        }
+
+        Ingredient ingredient = null;
+        if(mElement != null){
+            ingredient = gson.fromJson(mElement, Ingredient.class);
+        }
+        return ingredient;
     }
 
     public List<Ingredient> getAllIngredients(){

@@ -10,17 +10,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.reflect.TypeToken;
-
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,36 +64,18 @@ public class RecipesFragment extends Fragment {
 
             Bundle bundle = new Bundle();
             bundle.putParcelable(getString(R.string.selected_recipe), recipe);
-            navController.navigate(R.id.action_recipes_to_recipe, bundle);
+            navController.navigate(R.id.nav_recipe, bundle);
         });
 
         if(mainActivity.getUserId() != 0) {
             mBinding.addRecipe.setOnClickListener(view -> {
-                navController.navigate(R.id.action_recipe_to_new_recipe);
+                navController.navigate(R.id.nav_new_recipe);
             });
         }
         else{
             mBinding.addRecipe.hide();
         }
 
-        LifecycleOwner owner = getViewLifecycleOwner();
-        navController.getCurrentBackStackEntry().getSavedStateHandle().getLiveData("ingredientMeasurement")
-                .observe(owner, new Observer<Object>() {
-                    @Override
-                    public void onChanged(Object o) {
-                        String temp = (String) o;
-                        if(!temp.isEmpty()){
-                            Gson gson = new Gson();
-
-                            Type collectionType = new TypeToken<Recipe>(){}.getType();
-                            JsonObject jsonObj = JsonParser.parseString(temp).getAsJsonObject();
-
-                            mRecipeList.add(gson.fromJson(jsonObj, collectionType));
-                            recipeAdapter.notifyDataSetChanged();
-                        }
-                    }
-                });
-	
         return  root;
     }
 

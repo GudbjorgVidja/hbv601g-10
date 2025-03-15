@@ -50,7 +50,9 @@ public class SignupFragment extends Fragment {
                 }
                 else{
                     mainActivity.updateCurrentUser(user);
-                    navController.navigate(R.id.navigation_user);
+                    navController.popBackStack();
+                    navController.popBackStack();
+                    navController.navigate(R.id.nav_user);
                 }
             }
         });

@@ -70,9 +70,19 @@ public class NetworkingService extends Service {
     }
 
 
-
-    public JsonElement patchRequest(String reqURL, String data){
-        return null;
+    /**
+     * Makes a patch request using the given url and data, calls the API and interprets the result
+     * into a JsonElement to return
+     * @param reqURL - the url of the request
+     * @param data - data to include in the request body
+     * @return a JsonElement with the result of the call
+     * @throws IOException indicates that something went wrong with the patch request
+     */
+    public JsonElement patchRequest(String reqURL, String data) throws  IOException{
+        RequestBody requestBody = RequestBody.create(data == null ? "" : data,
+                MediaType.parse("application/json"));
+        Request request = new Request.Builder().url(mBaseURL +reqURL).patch(requestBody).build();
+        return callAPI(request);
     }
 
     /**

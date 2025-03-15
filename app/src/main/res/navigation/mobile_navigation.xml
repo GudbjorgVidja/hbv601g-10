@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@id/nav_home">
 
     <!--
     <fragment // tegund hlutarins
@@ -14,93 +14,75 @@
     -->
 
     <fragment
-        android:id="@+id/navigation_home"
+        android:id="@+id/nav_home"
         android:name="hbv601g.recipeapp.ui.home.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/navigation_recipes"
+        android:id="@+id/nav_recipes"
         android:name="hbv601g.recipeapp.ui.recipes.RecipesFragment"
         android:label="@string/title_recipes"
         tools:layout="@layout/fragment_recipes">
-        <action
-            android:id="@+id/action_recipe_to_new_recipe"
-            app:destination="@+id/navigation_new_recipe"/>
-        <action
-            android:id="@+id/action_recipes_to_recipe"
-            app:destination="@id/navigation_recipe"/>
-        <argument
-            android:name="new_recipe"
-            app:argType="string"
-            android:defaultValue=""/>
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_new_recipe"
+        android:id="@+id/nav_new_recipe"
         android:name="hbv601g.recipeapp.ui.recipes.NewRecipeFragment"
         android:label="@string/title_recipe_create"
         tools:layout="@layout/fragment_new_recipe">
-        <action
-            android:id="@+id/new_recipe_to_add_ingredient_measurement"
-            app:destination="@+id/navigation_add_ingredient_measurement_to_recipe"/>
-        <action
-            android:id="@+id/add_new_recipe_to_recipe"
-            app:destination="@+id/navigation_recipes"/>
         <argument
-            android:name="ingredientMeasurement"
-            app:argType="string"
-            android:defaultValue=""/>
+            android:name="@string/selected_ingredient_measurement"
+            app:argType="hbv601g.recipeapp.entities.IngredientMeasurement"
+            />
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_add_ingredient_measurement_to_recipe"
+        android:id="@+id/nav_add_ingredient_measurement_to_recipe"
         android:name="hbv601g.recipeapp.ui.recipes.AddIngredientMeasurementFragment"
         android:label="@string/title_add_ingredient_measurement_recipes"
         tools:layout="@layout/fragment_add_ingredient_measurement">
-        <action
-            android:id="@+id/add_ingredient_measurement_to_recipe"
-            app:destination="@+id/navigation_new_recipe"/>
     </fragment>
 
 
     <fragment
-        android:id="@+id/navigation_ingredients"
+        android:id="@+id/nav_ingredients"
         android:name="hbv601g.recipeapp.ui.ingredients.IngredientsFragment"
         android:label="@string/title_ingredients"
         tools:layout="@layout/fragment_ingredients" />
 
     <fragment
-        android:id="@+id/navigation_user"
+        android:id="@+id/nav_user"
         android:name="hbv601g.recipeapp.ui.user.UserFragment"
         android:label="@string/title_user"
         tools:layout="@layout/fragment_user"/>
 
     <!-- fragments  -->
     <fragment
-        android:id="@+id/navigation_user_no_user"
+        android:id="@+id/nav_user_no_user"
         android:name="hbv601g.recipeapp.ui.user.UserNoUserFragment"
-        android:label="No user"
+        android:label="@string/title_user_no_user"
         tools:layout="@layout/fragment_user_no_user"/>
 
     <fragment
-        android:id="@+id/navigation_signup"
+        android:id="@+id/nav_signup"
         android:name="hbv601g.recipeapp.ui.login.SignupFragment"
+        android:label="@string/title_signup"
         tools:layout="@layout/fragment_signup" />
 
     <fragment
-        android:id="@+id/navigation_login"
+        android:id="@+id/nav_login"
         android:name="hbv601g.recipeapp.ui.login.LoginFragment"
         android:label="@string/title_login"
         tools:layout="@layout/fragment_login"/>
     <fragment
-        android:id="@+id/navigation_pantry"
+        android:id="@+id/nav_pantry"
         android:name="hbv601g.recipeapp.ui.pantry.PantryFragment"
         android:label="@string/title_pantry"
         tools:layout="@layout/fragment_pantry" />
 
     <fragment
-        android:id="@+id/navigation_ingredient"
+        android:id="@+id/nav_ingredient"
         android:name="hbv601g.recipeapp.ui.ingredients.IngredientFragment"
         android:label="@string/title_ingredient"
         tools:layout="@layout/fragment_ingredient">
@@ -109,24 +91,24 @@
             app:argType="hbv601g.recipeapp.entities.Ingredient" />
     </fragment>
     <fragment
-        android:id="@+id/navigation_pantry_ingredient"
+        android:id="@+id/nav_pantry_ingredient"
         android:name="hbv601g.recipeapp.ui.pantry.PantryIngredientFragment"
         android:label="@string/title_pantry_ingredient"
         tools:layout="@layout/fragment_pantry_ingredient" />
     <fragment
-        android:id="@+id/navigation_add_to_pantry"
+        android:id="@+id/nav_add_to_pantry"
         android:name="hbv601g.recipeapp.ui.pantry.AddToPantryFragment"
-        android:label="@string/add_to_pantry"
+        android:label="@string/title_add_to_pantry"
         tools:layout="@layout/fragment_add_to_pantry" />
 
     <fragment
-        android:id="@+id/navigation_new_ingredient"
+        android:id="@+id/nav_new_ingredient"
         android:name="hbv601g.recipeapp.ui.ingredients.NewIngredientFragment"
         android:label="@string/title_new_ingredient"
         tools:layout="@layout/fragment_new_ingredient"/>
 
     <fragment
-        android:id="@+id/navigation_recipe"
+        android:id="@+id/nav_recipe"
         android:name="hbv601g.recipeapp.ui.recipes.RecipeFragment"
         android:label="@string/title_recipe"
         tools:layout="@layout/fragment_recipe">

@@ -2,16 +2,20 @@ package hbv601g.recipeapp.ui.recipes;
 
 import static android.view.View.GONE;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -33,7 +37,6 @@ public class RecipeFragment extends Fragment {
     private Recipe mRecipe;
     private RecipeService mRecipeService;
 
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -41,12 +44,14 @@ public class RecipeFragment extends Fragment {
 
         mBinding = FragmentRecipeBinding.inflate(inflater,container,false);
         View root = mBinding.getRoot();
-         MainActivity mainActivity = (MainActivity) getActivity();
+        MainActivity mainActivity = (MainActivity) getActivity();
+
         if (mainActivity == null) {
             Log.e("RecipeFragment", "MainActivity is null. Navigation failed.");
             return root;
         }
 
+        NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
         mRecipeService = new RecipeService(new NetworkingService(), mainActivity.getUserId());
 
         if (getArguments() == null ||
@@ -63,9 +68,38 @@ public class RecipeFragment extends Fragment {
         mRecipe = getArguments().getParcelable(getString(R.string.selected_recipe));
         setRecipe();
 
+        if (mRecipe != null && mRecipe.getCreatedBy() != null && mainActivity.getUserId() != 0 && mRecipe.getCreatedBy().getId() == mainActivity.getUserId()){
+            mBinding.deleteRecipeButton.setOnClickListener(
+                    v -> makeDeleteRecipeAlert(navController, mainActivity));
+        }
+        else mBinding.deleteRecipeButton.setVisibility(GONE);
+
+
+
         return root;
     }
 
+    /**
+     * Makes and shows an alert dialog for deleting recipes. After the user confirms their action
+     * an attempt is made to delete the recipe. If the user cancels the action, nothing happens
+     * @param navController - the NavController being used for navigation
+     * @param mainActivity - the MainActivity of the app
+     */
+    private void makeDeleteRecipeAlert(NavController navController, MainActivity mainActivity) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());
+        alert.setTitle(getString(R.string.delete_recipe_alert_title));
+        alert.setMessage(getString(R.string.delete_recipe_alert_message));
+        alert.setPositiveButton(android.R.string.yes, (dialog, which) -> {
+            boolean result = mRecipeService.deleteRecipe(mRecipe.getId());
+            if (result){
+                navController.popBackStack();
+                mainActivity.makeToast(R.string.delete_recipe_success, Toast.LENGTH_LONG);
+            }
+            else mainActivity.makeToast(R.string.delete_recipe_failed, Toast.LENGTH_LONG);
+        });
+        alert.setNegativeButton(android.R.string.no, (dialog, which) -> {});
+        alert.show();
+    }
     /**
      * Puts information from a selected recipe into the user interface
      */
