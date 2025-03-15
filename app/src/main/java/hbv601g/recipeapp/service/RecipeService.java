@@ -11,7 +11,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
@@ -34,6 +33,11 @@ public class RecipeService extends Service {
         this.mUid = uid;
     }
 
+    /**
+     * Makes a request to get the personalized purchase cost (ppc) of a recipe
+     * @param rid - the id of the recipe
+     * @return the personalized purchase cost for the current user
+     */
     public double getPersonalizedPurchaseCost(long rid){
         String url = String.format("recipe/id/%s/personal?uid=%s",rid,mUid);
 
@@ -51,6 +55,29 @@ public class RecipeService extends Service {
         }
         return ppc;
     }
+
+    /**
+     * makes a delete request to send to the external API, to try to delete a recipe
+     * @param rid - the id of the recipe to delete
+     * @return boolean value indicating success
+     */
+    public boolean deleteRecipe(long rid){
+        String url = String.format("recipe/delete/%s?uid=%s",rid, mUid);
+        try {
+            mJsonElement = mNetworkingService.deleteRequest(url);
+        } catch (IOException e) {
+            Log.d("Networking exception", "Delete recipe failed");
+        }
+
+        boolean recipeDeleted = false;
+        if(mJsonElement != null){
+            recipeDeleted = mJsonElement.getAsBoolean();
+            Log.d("API", "recipe deleted: " + recipeDeleted);
+        }
+        return recipeDeleted;
+    }
+
+
     /**
      * Makes a get request for the external API, for the endpoint that gets all recipes
      * and turns it from a JsonElement to a List of Recipes
