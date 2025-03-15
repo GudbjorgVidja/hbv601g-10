@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -60,14 +61,52 @@ public class IngredientFragment extends Fragment{
                 mIngredient.getCreatedBy().getId() == mainActivity.getUserId() ){
             mBinding.deleteIngredientButton.setOnClickListener(
                     v -> makeDeleteIngredientAlert(navController, mainActivity));
+
+            mBinding.renameIngredientButton.setOnClickListener(
+                    v -> makeRenameAlert(navController,mainActivity));
         }
         else {
             mBinding.deleteIngredientButton.setVisibility(GONE);
+            mBinding.renameIngredientButton.setVisibility(GONE);
         }
 
         return root;
     }
 
+    /**
+     * Makes and shows an alert dialog for renaming ingredients. After the user confirms their action
+     * an attempt is made to rename the ingredient. If the user cancels the action, nothing happens
+     * @param navController - the NavController being used for navigation
+     * @param mainActivity - the MainActivity of the app
+     */
+    private void makeRenameAlert(NavController navController, MainActivity mainActivity){
+        final EditText editText = new EditText(mainActivity.getApplicationContext());
+        AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());
+        alert.setTitle(getString(R.string.rename_ingredient_alert_title));
+        alert.setMessage(getString(R.string.rename_ingredient_alert_message));
+        alert.setView(editText);
+
+        alert.setPositiveButton(getString(R.string.confirm_button), (dialog, whichButton) -> {
+            String errorMessage = getString(R.string.field_required_error);
+            String newTitle = editText.getText().toString();
+            if (newTitle.isEmpty()) editText.setError(errorMessage);
+            else {
+                Ingredient ingredient = mIngredientService.changeIngredientTitle(mIngredient.getId(), newTitle);
+                if (ingredient == null){
+                    mainActivity.makeToast(R.string.rename_ingredient_failed_toast, Toast.LENGTH_LONG);
+                }
+                else{
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable(getString(R.string.selected_ingredient), ingredient);
+                    navController.popBackStack();
+                    navController.navigate(R.id.nav_ingredient, bundle);
+                }
+            }
+        });
+
+        alert.setNegativeButton(getString(R.string.cancel_button_text), null);
+        alert.show();
+    }
     /**
      * Makes and shows an alert dialog for deleting ingredients. After the user confirms their action
      * an attempt is made to delete the ingredient. If the user cancels the action, nothing happens
