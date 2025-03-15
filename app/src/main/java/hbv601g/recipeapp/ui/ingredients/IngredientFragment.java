@@ -3,7 +3,6 @@ package hbv601g.recipeapp.ui.ingredients;
 import static android.view.View.GONE;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.view.LayoutInflater;
@@ -61,10 +60,9 @@ public class IngredientFragment extends Fragment{
 
         if(mIngredient != null && mIngredient.getCreatedBy() != null && mainActivity.getUserId() != 0 &&
                 mIngredient.getCreatedBy().getId() == mainActivity.getUserId() ){
-            mBinding.deleteIngredientButton.setOnClickListener(v -> {
-                    AlertDialog.Builder alert = makeAlert(navController, mainActivity);
-                    alert.show();
-            });
+            mBinding.deleteIngredientButton.setOnClickListener(
+                    v -> makeDeleteIngredientAlert(navController, mainActivity));
+
             mBinding.renameIngredientButton.setOnClickListener(v -> {
                     makeRenameAlert(navController,mainActivity);
             });
@@ -112,32 +110,25 @@ public class IngredientFragment extends Fragment{
         alert.show();
     }
     /**
-     * Makes an alert dialog for deleting ingredients. After the user confirms their action
+     * Makes and shows an alert dialog for deleting ingredients. After the user confirms their action
      * an attempt is made to delete the ingredient. If the user cancels the action, nothing happens
      * @param navController - the NavController being used for navigation
      * @param mainActivity - the MainActivity of the app
-     * @return the alert (AlertDialog.Builder) that should be shown to the user
      */
-    private AlertDialog.Builder makeAlert(NavController navController, MainActivity mainActivity) {
+    private void makeDeleteIngredientAlert(NavController navController, MainActivity mainActivity) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());
-        alert.setTitle("Delete entry");
-        alert.setMessage("Are you sure you want to delete?");
-        alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                boolean result = mIngredientService.deleteIngredient(mIngredient.getId());
-                if (result){
-                    navController.popBackStack();
-                    mainActivity.makeToast(R.string.delete_ingredient_success, Toast.LENGTH_LONG);
-                }
-                else mainActivity.makeToast(R.string.delete_ingredient_failed, Toast.LENGTH_LONG);
+        alert.setTitle(getString(R.string.delete_ingredient_alert_title));
+        alert.setMessage(getString(R.string.delete_ingredient_alert_message));
+        alert.setPositiveButton(android.R.string.yes, (dialog, which) -> {
+            boolean result = mIngredientService.deleteIngredient(mIngredient.getId());
+            if (result){
+                navController.popBackStack();
+                mainActivity.makeToast(R.string.delete_ingredient_success, Toast.LENGTH_LONG);
             }
+            else mainActivity.makeToast(R.string.delete_ingredient_failed, Toast.LENGTH_LONG);
         });
-        alert.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-        return alert;
+        alert.setNegativeButton(android.R.string.no, (dialog, which) -> {});
+        alert.show();
     }
 
     /**

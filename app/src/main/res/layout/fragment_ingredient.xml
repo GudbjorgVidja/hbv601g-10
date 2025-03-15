@@ -30,7 +30,7 @@
         android:id="@+id/delete_ingredient_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/delete_ingredient_button_text"
+        android:text="@string/delete_button_text"
         app:layout_constraintTop_toBottomOf="@id/ingredient_creator"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/rename_ingredient_button"
