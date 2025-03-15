@@ -32,7 +32,7 @@ import hbv601g.recipeapp.service.RecipeService;
  * A fragment for single recipes
  */
 public class RecipeFragment extends Fragment {
-    private FragmentRecipeBinding binding;
+    private FragmentRecipeBinding mBinding;
     private Recipe mRecipe;
     private RecipeService mRecipeService;
 
@@ -41,8 +41,8 @@ public class RecipeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        binding = FragmentRecipeBinding.inflate(inflater,container,false);
-        View root = binding.getRoot();
+        mBinding = FragmentRecipeBinding.inflate(inflater,container,false);
+        View root = mBinding.getRoot();
         MainActivity mainActivity = (MainActivity) getActivity();
 
         if (mainActivity == null) {
@@ -63,12 +63,10 @@ public class RecipeFragment extends Fragment {
         setRecipe();
 
         if (mRecipe != null && mRecipe.getCreatedBy() != null && mainActivity.getUserId() != 0 && mRecipe.getCreatedBy().getId() == mainActivity.getUserId()){
-            binding.deleteRecipeButton.setOnClickListener(v -> {
-                AlertDialog.Builder alert = makeAlert(navController, mainActivity);
-                alert.show();
-            });
+            mBinding.deleteRecipeButton.setOnClickListener(
+                    v -> makeDeleteRecipeAlert(navController, mainActivity));
         }
-        else binding.deleteRecipeButton.setVisibility(GONE);
+        else mBinding.deleteRecipeButton.setVisibility(GONE);
 
 
 
@@ -76,16 +74,15 @@ public class RecipeFragment extends Fragment {
     }
 
     /**
-     * Makes an alert dialog for deleting ingredients. After the user confirms their action
-     * an attempt is made to delete the ingredient. If the user cancels the action, nothing happens
+     * Makes and shows an alert dialog for deleting recipes. After the user confirms their action
+     * an attempt is made to delete the recipe. If the user cancels the action, nothing happens
      * @param navController - the NavController being used for navigation
      * @param mainActivity - the MainActivity of the app
-     * @return the alert (AlertDialog.Builder) that should be shown to the user
      */
-    private AlertDialog.Builder makeAlert(NavController navController, MainActivity mainActivity) {
+    private void makeDeleteRecipeAlert(NavController navController, MainActivity mainActivity) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());
-        alert.setTitle("Delete entry");
-        alert.setMessage("Are you sure you want to delete?");
+        alert.setTitle(getString(R.string.delete_recipe_alert_title));
+        alert.setMessage(getString(R.string.delete_recipe_alert_message));
         alert.setPositiveButton(android.R.string.yes, (dialog, which) -> {
             boolean result = mRecipeService.deleteRecipe(mRecipe.getId());
             if (result){
@@ -94,42 +91,42 @@ public class RecipeFragment extends Fragment {
             }
             else mainActivity.makeToast(R.string.delete_recipe_failed, Toast.LENGTH_LONG);
         });
-        alert.setNegativeButton(android.R.string.no, (dialog, which) -> dialog.cancel());
-        return alert;
+        alert.setNegativeButton(android.R.string.no, (dialog, which) -> {});
+        alert.show();
     }
     /**
      * Puts information from a selected recipe into the user interface
      */
     private void setRecipe(){
-        binding.recipeTitle.setText(mRecipe.getTitle());
+        mBinding.recipeTitle.setText(mRecipe.getTitle());
 
         String tmp = mRecipe.getCreatedBy()==null ? "Unknown" : mRecipe.getCreatedBy().getUsername();
-        binding.recipeCreator.setText(tmp);
+        mBinding.recipeCreator.setText(tmp);
 
         tmp = mRecipe.getInstructions() == null ? "No instructions" : mRecipe.getInstructions();
-        binding.recipeInstructions.setText(tmp);
+        mBinding.recipeInstructions.setText(tmp);
 
         tmp = getString(R.string.recipe_tpc, mRecipe.getTotalPurchaseCost()+"");
-        binding.recipeTpc.setText(tmp);
+        mBinding.recipeTpc.setText(tmp);
 
         tmp=getString(R.string.recipe_tic,mRecipe.getTotalIngredientCost()+"");
-        binding.recipeTic.setText(tmp);
+        mBinding.recipeTic.setText(tmp);
 
         tmp = mRecipe.isPrivate() ? "private" : "public";
-        binding.recipePrivate.setText(tmp);
+        mBinding.recipePrivate.setText(tmp);
 
         MainActivity mainActivity = (MainActivity) getActivity();
         if (mainActivity != null && mainActivity.getUserId() != 0){
             double ppc = mRecipeService.getPersonalizedPurchaseCost(mRecipe.getId());
             tmp = getString(R.string.recipe_ppc, ppc+"");
-            binding.recipePpc.setText(tmp);
+            mBinding.recipePpc.setText(tmp);
         }
         else {
-            binding.recipePpc.setVisibility(GONE);
+            mBinding.recipePpc.setVisibility(GONE);
         }
 
         assert mainActivity != null;
-        ListView ingredientMeasurementListView = binding.recipeIngredients;
+        ListView ingredientMeasurementListView = mBinding.recipeIngredients;
         IngredientMeasurementAdapter adapter = new IngredientMeasurementAdapter(
                 mainActivity.getApplicationContext(),
                 Objects.requireNonNullElseGet(mRecipe.getIngredientMeasurements(), ArrayList::new));
@@ -139,6 +136,6 @@ public class RecipeFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding=null;
+        mBinding =null;
     }
 }

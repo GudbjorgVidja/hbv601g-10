@@ -92,6 +92,13 @@
     <string name="tic_string">tic:</string>
     <string name="tpc_string">tpc:</string>
 
+    <!-- Alert strings -->
+    <string name="delete_recipe_alert_title">Delete recipe</string>
+    <string name="delete_recipe_alert_message">Are you sure you want to delete this recipe?</string>
+    <string name="delete_ingredient_alert_title">Delete ingredient</string>
+    <string name="delete_ingredient_alert_message">Are you sure you want to delete this ingredient?</string>
+
+
     <!-- misc -->
     <string name="currency">kr.</string>
 
