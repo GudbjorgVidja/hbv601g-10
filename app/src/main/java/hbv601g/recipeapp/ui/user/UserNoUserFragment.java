@@ -29,9 +29,9 @@ public class UserNoUserFragment extends Fragment {
         assert mainActivity != null;
         NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
 
-        mBinding.loginButton.setOnClickListener(v -> navController.navigate(R.id.navigation_login));
+        mBinding.loginButton.setOnClickListener(v -> navController.navigate(R.id.nav_login));
 
-        mBinding.signupButton.setOnClickListener(v -> navController.navigate(R.id.navigation_signup));
+        mBinding.signupButton.setOnClickListener(v -> navController.navigate(R.id.nav_signup));
 
         return root;
     }

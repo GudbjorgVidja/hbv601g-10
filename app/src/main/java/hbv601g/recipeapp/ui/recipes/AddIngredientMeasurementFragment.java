@@ -13,8 +13,6 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-import com.google.gson.Gson;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,13 +69,11 @@ public class AddIngredientMeasurementFragment extends Fragment {
 
 
         mBinding.addIngredientToRecipe.setOnClickListener(view -> {
-            IngredientMeasurement ingreMeas = addIngredientMeasurement();
-            if(ingreMeas != null){
-                Gson gson = new Gson();
-                String ingredientMeasurement = gson.toJson(ingreMeas);
-
-                navController.getPreviousBackStackEntry().getSavedStateHandle()
-                        .set("ingredientMeasurement", ingredientMeasurement);
+            IngredientMeasurement ingrMeas = addIngredientMeasurement();
+            if(ingrMeas != null){
+                Bundle res = new Bundle();
+                res.putParcelable(getString(R.string.selected_ingredient_measurement), ingrMeas);
+                getParentFragmentManager().setFragmentResult(getString(R.string.request_msmt), res);
                 navController.popBackStack();
             }
             else {
