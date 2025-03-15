@@ -41,6 +41,11 @@ public class UserFragment extends Fragment{
 
         mBinding.usernameDisplay.setText(mainActivity.getUserName());
 
+        mBinding.createRecipeListButton.setOnClickListener(v -> {
+            navController.navigate(R.id.navigation_new_recipe_list);
+        });
+        mBinding.usernameDisplay.setText(mainActivity.getUserName());
+
         return root;
     }
 

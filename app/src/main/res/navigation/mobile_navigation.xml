@@ -135,4 +135,10 @@
             app:argType="hbv601g.recipeapp.entities.Recipe" />
     </fragment>
 
+    <fragment
+        android:id="@+id/navigation_new_recipe_list"
+        android:name="hbv601g.recipeapp.ui.recipeLists.NewRecipeListFragment"
+        android:label="@string/title_new_recipe_list"
+        tools:layout="@layout/fragment_new_recipe_list"/>
+
 </navigation>
