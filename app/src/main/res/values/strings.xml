@@ -39,7 +39,7 @@
     <string name="ingredient_price_store">%1$dkr at %2$s</string>
     <string name="ingredient_quantity_brand">%1$s%2$s, %3$s brand</string>
     <string name="pantry_ingredient_quantity_brand">%1$s%2$s, %3$s brand</string>
-    <string name="delete_ingredient_button_text">Delete</string>
+    <string name="delete_button_text">Delete</string>
     <string name="new_ingredient_title_hint">Title</string>
     <string name="new_ingredient_quantity_hint">Qty.</string>
     <string name="new_ingredient_price_hint">Price</string>
@@ -69,6 +69,8 @@
     <string name="get_recipes_failed_toast">Failed to get all recipes</string>
     <string name="delete_ingredient_failed">Something went wrong when trying to delete the ingredient.</string>
     <string name="delete_ingredient_success">Ingredient deleted successfully.</string>
+    <string name="delete_recipe_failed">Something went wrong when trying to delete the Recipe.</string>
+    <string name="delete_recipe_success">Recipe deleted successfully.</string>
     <string name="null_pantry_list">Something went wrong displaying the pantry</string>
     <string name="pantry_no_user">You must log in to view your pantry</string>
     <string name="remove_from_pantry_failed">Failed to remove item from pantry.</string>
@@ -89,6 +91,13 @@
     <string name="request_msmt">Ingredient measurement result</string>
     <string name="tic_string">tic:</string>
     <string name="tpc_string">tpc:</string>
+
+    <!-- Alert strings -->
+    <string name="delete_recipe_alert_title">Delete recipe</string>
+    <string name="delete_recipe_alert_message">Are you sure you want to delete this recipe?</string>
+    <string name="delete_ingredient_alert_title">Delete ingredient</string>
+    <string name="delete_ingredient_alert_message">Are you sure you want to delete this ingredient?</string>
+
 
     <!-- misc -->
     <string name="currency">kr.</string>
