@@ -7,14 +7,13 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import hbv601g.recipeapp.R;
 import hbv601g.recipeapp.entities.RecipeList;
 
 /**
- * Adapter sem er settur á ListView hlut til að gera lista af recipe list hlutum.
+ * Adapter to display RecipeList objects in a ListView
  */
 public class RecipeListAdapter extends BaseAdapter {
     private List<RecipeList> mRecipeLists;

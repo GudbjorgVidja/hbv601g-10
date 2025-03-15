@@ -1,4 +1,4 @@
-package hbv601g.recipeapp.ui.recipes;
+package hbv601g.recipeapp.ui.recipeLists;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -52,7 +52,7 @@ public class AddRecipeToListDialogFragment extends DialogFragment {
         // Prófaði að staðfesta að mainActivity sé rétt
         //mainActivity.makeToast(R.string.add_to_list_button, Toast.LENGTH_LONG);
 
-            mRecipeLists = mRecipeListService.getUserRecipeLists();
+        mRecipeLists = mRecipeListService.getUserRecipeLists();
 
 
         // Setja upp adapterinn
@@ -66,7 +66,6 @@ public class AddRecipeToListDialogFragment extends DialogFragment {
         builder.setTitle("Select a list to add the recipe to");
 
         // Set adapter
-        //builder.setAdapter(adapter, null);
         builder.setAdapter(adapter, (dialog, which) -> {
             Log.d("Dialog", "selected " + which);
             try {
@@ -78,31 +77,10 @@ public class AddRecipeToListDialogFragment extends DialogFragment {
         } );
 
 
-        // Velja eitt atriði úr lista
-        /*
-        builder.setSingleChoiceItems(adapter, -1, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // Skila niðurstöðu eða vinna úr henni?
-                Log.d("Dialog", "Selected " + which);
-            }
-        });*/
-
-
-
-
-        builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int id) {
-                Log.d("Dialog", "Cancelled without action");
-
-            }
-        });
+        builder.setNegativeButton("cancel", (dialog, id) ->{
+            Log.d("Dialog", "Cancelled without action");
+        } );
         return builder.create();
-
-
-
-
 
 
     }

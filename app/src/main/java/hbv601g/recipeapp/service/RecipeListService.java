@@ -74,7 +74,7 @@ public class RecipeListService extends Service {
      * @return all of the user's recipe lists
      */
     public List<RecipeList> getUserRecipeLists() {
-        String url = "list/all?uid=" + mUid;
+        String url = "list/user/" + mUid;
 
         mJsonElement = null;
         try {

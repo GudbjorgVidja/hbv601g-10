@@ -5,9 +5,6 @@ import static android.view.View.GONE;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -26,63 +23,42 @@ import hbv601g.recipeapp.databinding.FragmentRecipeBinding;
 import hbv601g.recipeapp.entities.Recipe;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.RecipeService;
+import hbv601g.recipeapp.ui.recipeLists.AddRecipeToListDialogFragment;
 
 /**
  * A fragment for single recipes
  */
 public class RecipeFragment extends Fragment {
-    private FragmentRecipeBinding binding;
+    private FragmentRecipeBinding mBinding;
     private Recipe mRecipe;
     private RecipeService mRecipeService;
 
-    private MainActivity mMainActivity;
-
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.action_bar_menu, menu);
-    }
-
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(item.getItemId() == R.id.action_add_to_list){
-           // try{
-                AddRecipeToListDialogFragment dialog = AddRecipeToListDialogFragment.newInstance(mRecipe.getId());
-                dialog.show(mMainActivity.getSupportFragmentManager(), "AddRecipeToListDialogFragment");
-
-                Log.d("Action bar", "selected the menu item");
-            //} catch (NullPointerException e){
-                Log.d("Catch", "Failed to show available lists");
-            //}
-
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        setHasOptionsMenu(true);
-
-        binding = FragmentRecipeBinding.inflate(inflater,container,false);
-        View root = binding.getRoot();
-         mMainActivity = (MainActivity) getActivity();
-        if (mMainActivity == null) {
+        mBinding = FragmentRecipeBinding.inflate(inflater,container,false);
+        View root = mBinding.getRoot();
+         MainActivity mainActivity = (MainActivity) getActivity();
+        if (mainActivity == null) {
             Log.e("RecipeFragment", "MainActivity is null. Navigation failed.");
             return root;
         }
 
-        mRecipeService = new RecipeService(new NetworkingService(), mMainActivity.getUserId());
+        mRecipeService = new RecipeService(new NetworkingService(), mainActivity.getUserId());
 
         if (getArguments() == null ||
                 getArguments().getParcelable(getString(R.string.selected_recipe)) == null){
             Log.e("RecipeFragment", "No recipe to view");
             return root;
         }
+
+        mBinding.addToListButton.setOnClickListener(v -> {
+            AddRecipeToListDialogFragment dialog = AddRecipeToListDialogFragment.newInstance(mRecipe.getId());
+            dialog.show(mainActivity.getSupportFragmentManager(), "AddRecipeToListDialogFragment");
+        });
 
         mRecipe = getArguments().getParcelable(getString(R.string.selected_recipe));
         setRecipe();
@@ -94,35 +70,35 @@ public class RecipeFragment extends Fragment {
      * Puts information from a selected recipe into the user interface
      */
     private void setRecipe(){
-        binding.recipeTitle.setText(mRecipe.getTitle());
+        mBinding.recipeTitle.setText(mRecipe.getTitle());
 
         String tmp = mRecipe.getCreatedBy()==null ? "Unknown" : mRecipe.getCreatedBy().getUsername();
-        binding.recipeCreator.setText(tmp);
+        mBinding.recipeCreator.setText(tmp);
 
         tmp = mRecipe.getInstructions() == null ? "No instructions" : mRecipe.getInstructions();
-        binding.recipeInstructions.setText(tmp);
+        mBinding.recipeInstructions.setText(tmp);
 
         tmp = getString(R.string.recipe_tpc, mRecipe.getTotalPurchaseCost()+"");
-        binding.recipeTpc.setText(tmp);
+        mBinding.recipeTpc.setText(tmp);
 
         tmp=getString(R.string.recipe_tic,mRecipe.getTotalIngredientCost()+"");
-        binding.recipeTic.setText(tmp);
+        mBinding.recipeTic.setText(tmp);
 
         tmp = mRecipe.isPrivate() ? "private" : "public";
-        binding.recipePrivate.setText(tmp);
+        mBinding.recipePrivate.setText(tmp);
 
         MainActivity mainActivity = (MainActivity) getActivity();
         if (mainActivity != null && mainActivity.getUserId() != 0){
             double ppc = mRecipeService.getPersonalizedPurchaseCost(mRecipe.getId());
             tmp = getString(R.string.recipe_ppc, ppc+"");
-            binding.recipePpc.setText(tmp);
+            mBinding.recipePpc.setText(tmp);
         }
         else {
-            binding.recipePpc.setVisibility(GONE);
+            mBinding.recipePpc.setVisibility(GONE);
         }
 
         assert mainActivity != null;
-        ListView ingredientMeasurementListView = binding.recipeIngredients;
+        ListView ingredientMeasurementListView = mBinding.recipeIngredients;
         IngredientMeasurementAdapter adapter = new IngredientMeasurementAdapter(
                 mainActivity.getApplicationContext(),
                 Objects.requireNonNullElseGet(mRecipe.getIngredientMeasurements(), ArrayList::new));
@@ -132,6 +108,6 @@ public class RecipeFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding=null;
+        mBinding =null;
     }
 }
