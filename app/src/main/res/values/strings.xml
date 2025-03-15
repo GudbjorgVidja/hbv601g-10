@@ -38,6 +38,7 @@
     <string name="ingredient_quantity_brand">%1$s%2$s, %3$s brand</string>
     <string name="pantry_ingredient_quantity_brand">%1$s%2$s, %3$s brand</string>
     <string name="delete_ingredient_button_text">Delete</string>
+    <string name="rename_ingredient_button_text">Rename</string>
     <string name="new_ingredient_title_hint">Title</string>
     <string name="new_ingredient_quantity_hint">Qty.</string>
     <string name="new_ingredient_price_hint">Price</string>
@@ -70,6 +71,7 @@
     <string name="field_required_error">This field is required</string>
     <string name="add_to_pantry_failed">Failed to add ingredient to pantry</string>
     <string name="create_ingredient_failed_toast">Failed to create ingredient.</string>
+    <string name="rename_ingredient_failed_toast">Failed to rename ingredient.</string>
     <string name="user_not_logged_in">User is not logged, recipe can\'t be created</string>
     <string name="recipe_unknown_error">Recipe could not be crated, unknown error</string>
 

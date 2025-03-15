@@ -5,9 +5,11 @@ import static android.view.View.GONE;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -63,14 +65,52 @@ public class IngredientFragment extends Fragment{
                     AlertDialog.Builder alert = makeAlert(navController, mainActivity);
                     alert.show();
             });
+            mBinding.renameIngredientButton.setOnClickListener(v -> {
+                    makeRenameAlert(navController,mainActivity);
+            });
         }
         else {
             mBinding.deleteIngredientButton.setVisibility(GONE);
+            mBinding.renameIngredientButton.setVisibility(GONE);
         }
 
         return root;
     }
 
+    private void makeRenameAlert(NavController navController, MainActivity mainActivity){
+        final EditText editText = new EditText(mainActivity.getApplicationContext());
+        AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());
+
+        alert.setTitle("Rename Ingredient");
+        alert.setMessage("Please enter the new name of the ingredient:");
+
+        alert.setView(editText);
+
+        alert.setPositiveButton(getString(R.string.confirm_button), (dialog, whichButton) -> {
+            String errorMessage = getString(R.string.field_required_error);
+            String newTitle = editText.getText().toString();
+            if (newTitle.isEmpty()) editText.setError(errorMessage);
+            else {
+                Ingredient ingredient = mIngredientService.changeIngredientTitle(mIngredient.getId(), newTitle);
+                if (ingredient == null){
+                    mainActivity.makeToast(R.string.rename_ingredient_failed_toast, Toast.LENGTH_LONG);
+                }
+                else{
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable(getString(R.string.selected_ingredient), ingredient);
+                    navController.popBackStack();
+                    navController.navigate(R.id.navigation_ingredient, bundle);
+                }
+
+            }
+        });
+
+        alert.setNegativeButton(getString(R.string.cancel_button_text), (dialog, whichButton) -> {
+            dialog.cancel();
+        });
+
+        alert.show();
+    }
     /**
      * Makes an alert dialog for deleting ingredients. After the user confirms their action
      * an attempt is made to delete the ingredient. If the user cancels the action, nothing happens
