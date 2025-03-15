@@ -43,17 +43,17 @@ public class IngredientMeasurementAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         if(convertView == null){
             convertView = mInflater.inflate(R.layout.ingredient_measurement_list_item, parent, false);
+        }
 
-            TextView title = convertView.findViewById(R.id.ingredient_measurement_title);
-            TextView quantity = convertView.findViewById(R.id.ingredient_measurement_quantity);
+        TextView title = convertView.findViewById(R.id.ingredient_measurement_title);
+        TextView quantity = convertView.findViewById(R.id.ingredient_measurement_quantity);
 
-            IngredientMeasurement ingreMeas = (IngredientMeasurement) getItem(position);
+        IngredientMeasurement ingreMeas = (IngredientMeasurement) getItem(position);
 
-            if(ingreMeas != null && ingreMeas.getIngredient() != null && ingreMeas.getUnit() != null){
-                title.setText(ingreMeas.getIngredient().getTitle());
-                quantity.setText(String.format("%.2f " + ingreMeas.getUnit().toString(),
+        if(ingreMeas != null && ingreMeas.getIngredient() != null && ingreMeas.getUnit() != null){
+            title.setText(ingreMeas.getIngredient().getTitle());
+            quantity.setText(String.format("%.2f " + ingreMeas.getUnit().toString(),
                         ingreMeas.getQuantity()));
-            }
         }
         return convertView;
     }

@@ -54,21 +54,21 @@ public class RecipeAdapter extends BaseAdapter {
      */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if(convertView == null){
+        if(convertView == null) {
             convertView = mInflater.inflate(R.layout.recipe_list_item, parent, false);
-
-            TextView title = convertView.findViewById(R.id.recipe_overview_name);
-            TextView createdBy = convertView.findViewById(R.id.recipe_overview_created_by);
-            TextView tpc = convertView.findViewById(R.id.recipe_overview_tpc);
-            TextView tic = convertView.findViewById(R.id.recipe_overview_tic);
-
-            Recipe currentRecipe = (Recipe) getItem(position);
-
-            title.setText(currentRecipe.getTitle());
-            createdBy.setText(currentRecipe.getRecipeCreator());
-            tpc.setText(String.format("%s",currentRecipe.getTotalPurchaseCost()));
-            tic.setText(String.format("%s",(int) Math.round(currentRecipe.getTotalIngredientCost())));
         }
+
+        TextView title = convertView.findViewById(R.id.recipe_overview_name);
+        TextView createdBy = convertView.findViewById(R.id.recipe_overview_created_by);
+        TextView tpc = convertView.findViewById(R.id.recipe_overview_tpc);
+        TextView tic = convertView.findViewById(R.id.recipe_overview_tic);
+
+        Recipe currentRecipe = (Recipe) getItem(position);
+
+        title.setText(currentRecipe.getTitle());
+        createdBy.setText(currentRecipe.getRecipeCreator());
+        tpc.setText(String.format("%s",currentRecipe.getTotalPurchaseCost()));
+        tic.setText(String.format("%s",(int) Math.round(currentRecipe.getTotalIngredientCost())));
         return convertView;
     }
 }
