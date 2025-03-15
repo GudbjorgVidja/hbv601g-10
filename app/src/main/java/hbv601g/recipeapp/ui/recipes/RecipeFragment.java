@@ -5,6 +5,9 @@ import static android.view.View.GONE;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -32,20 +35,48 @@ public class RecipeFragment extends Fragment {
     private Recipe mRecipe;
     private RecipeService mRecipeService;
 
+    private MainActivity mMainActivity;
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.action_bar_menu, menu);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(item.getItemId() == R.id.action_add_to_list){
+           // try{
+                AddRecipeToListDialogFragment dialog = AddRecipeToListDialogFragment.newInstance(mRecipe.getId());
+                dialog.show(mMainActivity.getSupportFragmentManager(), "AddRecipeToListDialogFragment");
+
+                Log.d("Action bar", "selected the menu item");
+            //} catch (NullPointerException e){
+                Log.d("Catch", "Failed to show available lists");
+            //}
+
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
+        setHasOptionsMenu(true);
+
         binding = FragmentRecipeBinding.inflate(inflater,container,false);
         View root = binding.getRoot();
-        MainActivity mainActivity = (MainActivity) getActivity();
-        if (mainActivity == null) {
+         mMainActivity = (MainActivity) getActivity();
+        if (mMainActivity == null) {
             Log.e("RecipeFragment", "MainActivity is null. Navigation failed.");
             return root;
         }
 
-        mRecipeService = new RecipeService(new NetworkingService(), mainActivity.getUserId());
+        mRecipeService = new RecipeService(new NetworkingService(), mMainActivity.getUserId());
 
         if (getArguments() == null ||
                 getArguments().getParcelable(getString(R.string.selected_recipe)) == null){

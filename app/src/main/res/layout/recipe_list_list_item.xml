@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp">
+
+
+    <!-- Coverar allt svæðið, það eina sem verður ýtt á-->
+    <!--
+    <CheckedTextView
+        android:id="@+id/recipe_list_checked_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:checkMark="?android:attr/listChoiceIndicatorSingle"
+        android:checked="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    -->
+    <!--
+            android:background="@android:color/transparent"
+
+     android:checkMark="@android:drawable/checkbox_off_background"
+
+-->
+
+    <TextView
+        android:id="@+id/recipe_list_title_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:text="titleee"
+        android:focusable="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <!--
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintStart_toEndOf="@id/recipe_list_checked_text_view" -->
+
+    <TextView
+        android:id="@+id/recipe_list_privacy_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32sp"
+        android:focusable="false"
+        android:text="private"
+        app:layout_constraintBottom_toBottomOf="parent"
+
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <!-- android:layout_marginEnd="?attr/toggleCheckedStateOnClick" -->
+
+</androidx.constraintlayout.widget.ConstraintLayout>

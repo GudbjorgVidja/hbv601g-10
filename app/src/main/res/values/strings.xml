@@ -16,6 +16,8 @@
     <string name="title_new_ingredient">New ingredient</string>
     <string name="title_recipe">Recipe</string>
     <string name="title_new_recipe_list">New recipe list</string>
+    <string name="add_to_list_action_title">Add to list</string>
+
 
     <!-- Buttons/textfields -->
     <string name="ingredients_text">Ingredients</string>
@@ -57,6 +59,7 @@
     <string name="new_recipe_list_title_hint">Title</string>
     <string name="new_recipe_list_description_hint">Description</string>
     <string name="confirm_create_recipe_list_button">Create recipe list</string>
+    <string name="add_to_list_button">Add to list</string>
 
 
     <!-- Messages/toasts -->
@@ -79,6 +82,9 @@
     <string name="recipe_unknown_error">Recipe could not be crated, unknown error</string>
     <string name="create_recipe_list_failed_toast">Failed to create recipe list.</string>
     <string name="create_recipe_list_success_toast">Successfully created recipe list.</string>
+    <string name="add_recipe_to_list_failed_toast">Failed to add recipe to list.</string>
+    <string name="add_recipe_to_list_success_toast">The recipe has been added to the list</string>
+    <!-- <string name="add_recipe_to_list_success_toast">The recipe %1$s has been added to list %2$s</string> -->
 
     <!-- variables -->
     <string name="selected_ingredient">Ingredient</string>

@@ -1,6 +1,8 @@
 package hbv601g.recipeapp.entities;
 
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +23,7 @@ public class RecipeList {
     private String description;
 
     private List<Recipe> recipes = new ArrayList<>();
+    @SerializedName("private")
     private boolean isPrivate;
 
     public RecipeList() {
