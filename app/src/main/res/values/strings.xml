@@ -54,7 +54,6 @@
     <string name="recipe_ppc">Personalized purchase cost: %1$s kr</string>
     <string name="recipe_instructions">Instructions</string>
     <string name="recipe_ingredients">Ingredients</string>
-    <string name="delete_recipe_tooltip">Delete recipe</string>
     <string name="create_new_recipe_list_button">New Recipe List</string>
     <string name="new_recipe_list_title_hint">Title</string>
     <string name="new_recipe_list_description_hint">Description</string>
@@ -95,6 +94,5 @@
 
     <!-- misc -->
     <string name="currency">kr.</string>
-    <string name="delete_icon_description">Trash</string>
 
 </resources>
