@@ -6,6 +6,7 @@
     <string name="title_recipe_create">Create recipe</string>
     <string name="title_add_ingredient_measurement_recipes">Create ingredient measurement</string>
     <string name="title_user">User</string>
+    <string name="title_user_no_user">No user</string>
     <string name="title_ingredients">Ingredients</string>
     <string name="title_signup">Signup</string>
     <string name="title_login">Login</string>
@@ -75,7 +76,6 @@
     <string name="field_required_error">This field is required</string>
     <string name="add_to_pantry_failed">Failed to add ingredient to pantry</string>
     <string name="create_ingredient_failed_toast">Failed to create ingredient.</string>
-    <string name="user_not_logged_in">User is not logged, recipe can\'t be created</string>
     <string name="recipe_unknown_error">Recipe could not be crated, unknown error</string>
     <string name="create_recipe_list_failed_toast">Failed to create recipe list.</string>
     <string name="create_recipe_list_success_toast">Successfully created recipe list.</string>
@@ -85,6 +85,8 @@
     <string name="selected_pantry_item">Pantry Item</string>
     <string name="selected_recipe">Recipe</string>
     <string name="selected_unit">Unit</string>
+    <string name="selected_ingredient_measurement">Ingredient measurement</string>
+    <string name="request_msmt">Ingredient measurement result</string>
     <string name="tic_string">tic:</string>
     <string name="tpc_string">tpc:</string>
 

@@ -68,14 +68,14 @@ public class IngredientsFragment extends Fragment {
             //Log.d("Selected", ingredient.toString());
             Bundle bundle = new Bundle();
             bundle.putParcelable(getString(R.string.selected_ingredient), ingredient);
-            navController.navigate(R.id.navigation_ingredient, bundle);
+            navController.navigate(R.id.nav_ingredient, bundle);
         });
 
         Button newIngredientButton = mBinding.newIngredientButton;
         if(mainActivity.getUserId() == 0) newIngredientButton.setVisibility(GONE);
 
         newIngredientButton.setOnClickListener(v -> {
-            navController.navigate(R.id.navigation_new_ingredient);
+            navController.navigate(R.id.nav_new_ingredient);
         });
 
         return root;
