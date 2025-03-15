@@ -70,10 +70,7 @@ public class NewIngredientFragment extends Fragment{
                 Unit.values()));
 
         confirmButton.setOnClickListener(v -> {
-            if(mainActivity.getUserId() == 0)
-                navController.popBackStack();
-
-            else if(isValid()){
+            if(isValid()){
                 try{
                     mIngredient = mIngredientService.createIngredient(
                             mTitleField.getText().toString(),
@@ -92,7 +89,7 @@ public class NewIngredientFragment extends Fragment{
                  Bundle bundle = new Bundle();
                  bundle.putParcelable(getString(R.string.selected_ingredient), mIngredient);
                  navController.popBackStack();
-                 navController.navigate(R.id.navigation_ingredient, bundle);
+                 navController.navigate(R.id.nav_ingredient, bundle);
 
             }
         });

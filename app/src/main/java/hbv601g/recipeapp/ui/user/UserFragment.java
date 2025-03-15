@@ -30,15 +30,18 @@ public class UserFragment extends Fragment{
         mBinding = FragmentUserBinding.inflate(inflater, container, false);
         View root = mBinding.getRoot();
 
-        mBinding.logoutButton.setOnClickListener(v -> {
-            mainActivity.removeCurrentUser();
-            navController.navigate(R.id.navigation_user);
-        });
+        mBinding.logoutButton.setOnClickListener(v -> mainActivity.removeCurrentUser());
 
         if(mainActivity.getUserName() == null){
-            navController.navigate(R.id.navigation_user_no_user);
+            navController.popBackStack();
+            navController.navigate(R.id.nav_user_no_user);
         }
 
+        mBinding.usernameDisplay.setText(mainActivity.getUserName());
+
+        mBinding.createRecipeListButton.setOnClickListener(v -> {
+            navController.navigate(R.id.navigation_new_recipe_list);
+        });
         mBinding.usernameDisplay.setText(mainActivity.getUserName());
 
         return root;

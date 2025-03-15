@@ -11,17 +11,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.reflect.TypeToken;
-
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,17 +56,12 @@ public class NewRecipeFragment extends Fragment {
         mRecipeService = new RecipeService(new NetworkingService(), uid);
 
         mBinding.addIngredient.setOnClickListener(view -> {
-            navController.navigate(R.id.new_recipe_to_add_ingredient_measurement);
+            navController.navigate(R.id.nav_add_ingredient_measurement_to_recipe);
         });
 
         mBinding.createRecipe.setOnClickListener(view -> {
-            if(((MainActivity) getActivity()).getUserId() != 0) {
                 Recipe recipe = createRecipe();
                 if (recipe != null) {
-                    Gson gson = new Gson();
-                    String newRecipe = gson.toJson(recipe);
-                    navController.getPreviousBackStackEntry().getSavedStateHandle()
-                            .set("newRecipe", newRecipe);
                     navController.popBackStack();
                 }
                 else{
@@ -82,36 +69,18 @@ public class NewRecipeFragment extends Fragment {
                             getActivity(), R.string.recipe_unknown_error, Toast.LENGTH_LONG
                     ).show();
                 }
-            }
-            else {
-                Toast.makeText(
-                        getActivity(), R.string.user_not_logged_in, Toast.LENGTH_LONG
-                ).show();
-            }
         });
 
         mBinding.cancelRecipe.setOnClickListener(view -> {
             navController.popBackStack();
         });
 
-        LifecycleOwner owner = getViewLifecycleOwner();
-        navController.getCurrentBackStackEntry().getSavedStateHandle().getLiveData("ingredientMeasurement")
-                .observe(owner, new Observer<Object>() {
-                    @Override
-                    public void onChanged(Object o) {
-                        String temp = (String) o;
-                        if(!temp.isEmpty()){
-                            Gson gson = new Gson();
-
-                            Type collectionType = new TypeToken<IngredientMeasurement>(){}.getType();
-                            JsonObject jsonObj = JsonParser.parseString(temp).getAsJsonObject();
-
-                            mList.add(gson.fromJson(jsonObj, collectionType));
-                            adapter.notifyDataSetChanged();
-                        }
-                    }
-                });
-
+        getParentFragmentManager().setFragmentResultListener(getString(R.string.request_msmt),
+                this, (requestKey, result) -> {
+            IngredientMeasurement ingredientMeasurement
+                    = result.getParcelable(getString(R.string.selected_ingredient_measurement));
+            mList.add(ingredientMeasurement);
+        });
 
         return root;
     }
