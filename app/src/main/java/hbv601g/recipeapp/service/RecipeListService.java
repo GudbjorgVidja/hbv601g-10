@@ -40,7 +40,6 @@ public class RecipeListService extends Service {
     /**
      *  TODO: Breyta útfærslu í bakenda, líklega ekki gott að nota requestParams fyrir allt. //
      *        nota frekar requestBody?
-     *
      * Creates a recipe list and adds it to the database
      * @param title       - title of the list, max 50 characters
      * @param description - description of the list, max 250 chars, may be null
@@ -84,22 +83,26 @@ public class RecipeListService extends Service {
         }
 
         List<RecipeList> recipeLists = new ArrayList<>();
-        if (mJsonElement != null) {
+        if (mJsonElement != null && mJsonElement.isJsonArray() ) {
             Gson gson = new GsonBuilder().create();
-            if (!mJsonElement.isJsonArray()) return null;
 
             JsonArray array = mJsonElement.getAsJsonArray();
 
-            Type collectionType = new TypeToken<Collection<RecipeList>>() {
-            }.getType();
+            Type collectionType = new TypeToken<Collection<RecipeList>>() {}.getType();
             recipeLists = gson.fromJson(array, collectionType);
         }
-        else throw new NullPointerException("Recipe list is null");
+        else throw new NullPointerException("User recipe lists are null");
 
         return recipeLists;
     }
 
 
+    /**
+     * Adds the given recipe to the given recipe list.
+     * @param recipeId - id of the recipe to add
+     * @param listId - id of the list to be added to
+     * @return the updated recipe list
+     */
     public RecipeList addRecipeToList(long recipeId, long listId) {
         String url = String.format("list/addRecipe?recipeID=%s&listID=%s&uid=%s", recipeId, listId, mUid);
         mJsonElement = null;

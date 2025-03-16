@@ -1,9 +1,7 @@
 package hbv601g.recipeapp.ui.recipeLists;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -19,17 +17,21 @@ import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.RecipeListService;
 
 /**
- * https://developer.android.com/develop/ui/views/components/dialogs
- * https://stackoverflow.com/questions/10932832/multiple-choice-alertdialog-with-custom-adapter
+ * Dialog fragment to show a dialog of possible lists to add a recipe to. When a list is selected
+ * the given recipe is added to that list and the dialog closed.
  */
 public class AddRecipeToListDialogFragment extends DialogFragment {
 
     private RecipeListService mRecipeListService;
-
     private List<RecipeList> mRecipeLists;
-
     private long mRid;
 
+
+    /**
+     * Method to create an instance of the fragment with arguments
+     * @param rid - id of recipe to add to list
+     * @return an instance of the fragment
+     */
     public static AddRecipeToListDialogFragment newInstance(long rid) {
         AddRecipeToListDialogFragment f = new AddRecipeToListDialogFragment();
         Bundle args = new Bundle();
@@ -49,40 +51,29 @@ public class AddRecipeToListDialogFragment extends DialogFragment {
 
         mRecipeListService = new RecipeListService(new NetworkingService(), mainActivity.getUserId());
 
-        // Prófaði að staðfesta að mainActivity sé rétt
-        //mainActivity.makeToast(R.string.add_to_list_button, Toast.LENGTH_LONG);
-
-        mRecipeLists = mRecipeListService.getUserRecipeLists();
-
-
-        // Setja upp adapterinn
-        // Ath contextið
-        //RecipeListAdapter adapter = new RecipeListAdapter(mainActivity.getApplicationContext(), mRecipeLists);
-        //RecipeListAdapter adapter = new RecipeListAdapter(getContext(), mRecipeLists);
-        RecipeListAdapter adapter = new RecipeListAdapter(getActivity(), mRecipeLists);
-
-
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Select a list to add the recipe to");
+        builder.setTitle(getString(R.string.add_recipe_to_list_dialog_title));
 
-        // Set adapter
-        builder.setAdapter(adapter, (dialog, which) -> {
-            Log.d("Dialog", "selected " + which);
-            try {
-                RecipeList recipeList = mRecipeListService.addRecipeToList(mRid,((RecipeList) adapter.getItem(which)).getId());
-                mainActivity.makeToast(R.string.add_recipe_to_list_success_toast, Toast.LENGTH_LONG);
-            } catch (NullPointerException e){
-                mainActivity.makeToast(R.string.add_recipe_to_list_failed_toast, Toast.LENGTH_LONG);
-            }
-        } );
+        try {
+            mRecipeLists = mRecipeListService.getUserRecipeLists();
+        } catch (NullPointerException e){
+            mainActivity.makeToast(R.string.get_recipe_lists_failed_toast, Toast.LENGTH_LONG);
+        }
 
+        if(mRecipeLists != null) {
+            RecipeListAdapter adapter = new RecipeListAdapter(getActivity(), mRecipeLists);
+            builder.setAdapter(adapter, (dialog, which) -> {
+                try {
+                    mRecipeListService.addRecipeToList(mRid, ((RecipeList) adapter.getItem(which)).getId());
+                    mainActivity.makeToast(R.string.add_recipe_to_list_success_toast, Toast.LENGTH_LONG);
+                } catch (NullPointerException e) {
+                    mainActivity.makeToast(R.string.add_recipe_to_list_failed_toast, Toast.LENGTH_LONG);
+                }
+            });
+        }
 
-        builder.setNegativeButton("cancel", (dialog, id) ->{
-            Log.d("Dialog", "Cancelled without action");
-        } );
+        builder.setNegativeButton("cancel", null);
         return builder.create();
-
-
     }
 
 
