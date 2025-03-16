@@ -44,7 +44,7 @@ public class RecipeListAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.recipe_list_list_item, parent, false);
-
+        }
             TextView title = convertView.findViewById(R.id.recipe_list_title_textview);
             TextView privacy = convertView.findViewById(R.id.recipe_list_privacy_textview);
 
@@ -54,7 +54,7 @@ public class RecipeListAdapter extends BaseAdapter {
             String tmp = currentRecipeList.isPrivate() ? "private" : "public";
             privacy.setText(tmp);
 
-        }
+
         return convertView;
     }
 

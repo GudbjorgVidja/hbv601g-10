@@ -129,6 +129,7 @@ public class RecipeFragment extends Fragment {
         }
         else {
             mBinding.recipePpc.setVisibility(GONE);
+            mBinding.addToListButton.setVisibility(GONE);
         }
 
         assert mainActivity != null;
