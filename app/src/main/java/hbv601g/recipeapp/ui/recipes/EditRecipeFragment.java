@@ -141,6 +141,6 @@ public class EditRecipeFragment extends Fragment {
         upRes.setInstructions(mBinding.instructions.toString());
         upRes.setPrivate(mBinding.isPrivate.isActivated());
 
-        return mRecipeService.updateRecipe(upRes, upList);
+        return mRecipeService.updateRecipe(upRes, mRecipe.getId(), upList);
     }
 }

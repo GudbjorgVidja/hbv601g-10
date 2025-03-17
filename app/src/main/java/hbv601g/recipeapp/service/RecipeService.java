@@ -139,17 +139,65 @@ public class RecipeService extends Service {
             mJsonElement = mNetworkingService.postRequest(url, data);
         } catch (IOException e) {
             Log.d("Networking exception", "Failed to create recipe");
-            //throw new RuntimeException(e);
         }
 
         if(mJsonElement != null){
             rep = gson.fromJson(mJsonElement, Recipe.class);
             Log.d("API", "recipe object, title:" + rep.getTitle());
         }
+        else{
+            return null;
+        }
+
+        return addIngredientMeasurement(rep.getId(), ingredList);
+    }
+
+    /**
+     * This function takes in 3 parameters, Recipe, long and arrayList.
+     * @param rep         : Recipe value, is a recipe that has all of the updates for the recipe.
+     * @param id          : long value, is the id of recipe that is being updated
+     * @param upIngredList: arrayList value, is a list that contains all of the now ingredients in
+     *                      the recipe.
+     *
+     * @return The updated recipe if all thing ar in order.
+     */
+    public Recipe updateRecipe(Recipe rep, long id, List<IngredientMeasurement> upIngredList){
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+
+        String url = "/recipe/" + id + "/update?uid=" + mUid;
+        String data = gson.toJson(rep);
+
+        try {
+            mJsonElement = mNetworkingService.putRequest(url, data);
+        } catch (IOException e) {
+            Log.d("Networking exception", "Failed to create recipe");
+        }
+
+        if(mJsonElement != null){
+            rep = gson.fromJson(mJsonElement, Recipe.class);
+            Log.d("API", "recipe object updated, title:" + rep.getTitle());
+        }
+        else{
+            return null;
+        }
+
+        return addIngredientMeasurement(id, upIngredList);
+    }
+
+    /**
+     * This fuction takis one parameter, arrayList
+     * @param id         : long value, ist the id of the recipe.
+     * @param ingredList: arrayList value, is a list of IngredientMeasurement that will be added
+     *                     to a recipe
+     *
+     * @return the recipe with a coriposte id now the list add to it ingredients list
+     */
+    private Recipe addIngredientMeasurement(long id, List<IngredientMeasurement> ingredList){
+        Gson gson = new Gson();
 
         StringBuilder units = new StringBuilder();
-        StringBuilder ingredientIDs = new StringBuilder();;
-        StringBuilder qty = new StringBuilder();;
+        StringBuilder ingredientIDs = new StringBuilder();
+        StringBuilder qty = new StringBuilder();
 
         for(int i = 0; i < ingredList.size(); i++){
             units.append(ingredList.get(i).getUnit().name() + ",");
@@ -163,7 +211,7 @@ public class RecipeService extends Service {
             qty = qty.deleteCharAt(qty.length() - 1);
         }
 
-        url = "recipe/addIngredients?recipeID=" + rep.getId()
+        String url = "recipe/addIngredients?recipeID=" + id
                 + "&uid=" + mUid
                 + "&units=" + units
                 + "&ingredientIDs="+ingredientIDs
@@ -177,19 +225,13 @@ public class RecipeService extends Service {
         }
 
         if(mJsonElement != null){
-            rep = gson.fromJson(mJsonElement, Recipe.class);
+            Recipe rep = gson.fromJson(mJsonElement, Recipe.class);
             Log.d("API", "recipe object, title:" + rep.getTitle());
+            return rep;
         }
         else {
-            rep = null;
+            return null;
         }
-
-        return rep;
-    }
-
-    //todo make fuction that updates resipes.
-    public Recipe updateRecipe(Recipe res, List<IngredientMeasurement> list){
-        return null;
     }
 
     @Nullable
