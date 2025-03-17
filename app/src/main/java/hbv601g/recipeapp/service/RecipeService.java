@@ -187,6 +187,11 @@ public class RecipeService extends Service {
         return rep;
     }
 
+    //todo make fuction that updates resipes.
+    public Recipe updateRecipe(Recipe res, List<IngredientMeasurement> list){
+        return null;
+    }
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {

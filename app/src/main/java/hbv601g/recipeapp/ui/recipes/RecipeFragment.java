@@ -68,7 +68,7 @@ public class RecipeFragment extends Fragment {
         }
         else mBinding.deleteRecipeButton.setVisibility(GONE);
 
-
+        //todo add edit bottom.
 
         return root;
     }

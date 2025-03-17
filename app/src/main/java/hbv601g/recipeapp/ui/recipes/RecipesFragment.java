@@ -82,6 +82,12 @@ public class RecipesFragment extends Fragment {
                     mRecipeList.add(recipe);
                 });
 
+        getParentFragmentManager().setFragmentResultListener(getString(R.string.request_edit_recipe),
+                this, ((requestKey, result) -> {
+                    Recipe recipe = result.getParcelable(getString(R.string.selected_recipe));
+                    mRecipeList.add(recipe);
+                }));
+
         return  root;
     }
 

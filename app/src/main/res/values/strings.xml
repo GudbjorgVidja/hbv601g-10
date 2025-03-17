@@ -17,6 +17,7 @@
     <string name="title_new_ingredient">New ingredient</string>
     <string name="title_recipe">Recipe</string>
     <string name="title_new_recipe_list">New recipe list</string>
+    <string name="title_edit_recipe">Edit recipe</string>
 
     <!-- Buttons/textfields -->
     <string name="ingredients_text">Ingredients</string>
