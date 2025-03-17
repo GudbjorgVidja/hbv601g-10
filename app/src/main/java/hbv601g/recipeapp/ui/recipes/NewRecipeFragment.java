@@ -52,8 +52,7 @@ public class NewRecipeFragment extends Fragment {
                 mainActivity, R.id.nav_host_fragment_activity_main
         );
 
-        long uid = mainActivity.getUserId();
-        mRecipeService = new RecipeService(new NetworkingService(), uid);
+        mRecipeService = new RecipeService(new NetworkingService(), mainActivity.getUserId());
 
         mBinding.addIngredient.setOnClickListener(view -> {
             navController.navigate(R.id.nav_add_ingredient_measurement_to_recipe);
@@ -62,6 +61,14 @@ public class NewRecipeFragment extends Fragment {
         mBinding.createRecipe.setOnClickListener(view -> {
                 Recipe recipe = createRecipe();
                 if (recipe != null) {
+                    Bundle res = new Bundle();
+                    res.putParcelable(getString(R.string.selected_recipe), recipe);
+
+                    getParentFragmentManager().setFragmentResult
+                            (
+                                    getString(R.string.request_new_recipe), res
+                            );
+
                     navController.popBackStack();
                 }
                 else{
@@ -75,7 +82,7 @@ public class NewRecipeFragment extends Fragment {
             navController.popBackStack();
         });
 
-        getParentFragmentManager().setFragmentResultListener(getString(R.string.request_msmt),
+        getParentFragmentManager().setFragmentResultListener(getString(R.string.request_ingredient_measurement),
                 this, (requestKey, result) -> {
             IngredientMeasurement ingredientMeasurement
                     = result.getParcelable(getString(R.string.selected_ingredient_measurement));

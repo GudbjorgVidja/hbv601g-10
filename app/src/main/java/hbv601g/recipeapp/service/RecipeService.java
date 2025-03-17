@@ -111,12 +111,12 @@ public class RecipeService extends Service {
      * This function takes in 5 parameters, 2 String, int, arrayList and
      * Boolean.
      *
-     * @param title         - String value, is the name of the recipe.
-     * @param instructions  - String value, is the step by step progress to make the recipe
-     * @param ingredList    - IngredientMeasurement list array, content all in ingredients, unit and
+     * @param title       : String value, is the name of the recipe.
+     * @param instructions: String value, is the step by step progress to make the recipe
+     * @param ingredList  : IngredientMeasurement list array, content all in ingredients, unit and
      *                        there quantity in the recipe.
-     * @param isPrivate     - Boolean, ture if the author want it to be private and false for the
-     *                        recipe to be public.
+     * @param isPrivate   : Boolean, ture if the author want it to be private and false for the
+     *                      recipe to be public.
      * @return Return the newly created recipe
      */
     public Recipe createRecipe(
