@@ -30,6 +30,7 @@ public class RecipesFragment extends Fragment {
     private RecipeService mRecipeService;
     private List<Recipe> mRecipeList;
     private ListView mRecipeListView;
+    private Recipe viewRep;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -60,6 +61,7 @@ public class RecipesFragment extends Fragment {
 
         mRecipeListView.setOnItemClickListener((parent, view, position, id) -> {
             Recipe recipe = (Recipe) parent.getItemAtPosition(position);
+            viewRep = recipe;
             Log.d("Selected", recipe.toString());
 
             Bundle bundle = new Bundle();
@@ -85,7 +87,10 @@ public class RecipesFragment extends Fragment {
         getParentFragmentManager().setFragmentResultListener(getString(R.string.request_edit_recipe),
                 this, ((requestKey, result) -> {
                     Recipe recipe = result.getParcelable(getString(R.string.selected_recipe));
+                    mRecipeList.remove(viewRep);
                     mRecipeList.add(recipe);
+
+                    recipeAdapter.notifyDataSetChanged();
                 }));
 
         return  root;

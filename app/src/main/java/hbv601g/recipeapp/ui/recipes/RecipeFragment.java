@@ -34,6 +34,7 @@ import hbv601g.recipeapp.service.RecipeService;
 public class RecipeFragment extends Fragment {
     private FragmentRecipeBinding mBinding;
     private Recipe mRecipe;
+    private Recipe oldMRcripe;
     private RecipeService mRecipeService;
 
     @Nullable
@@ -60,15 +61,29 @@ public class RecipeFragment extends Fragment {
         }
 
         mRecipe = getArguments().getParcelable(getString(R.string.selected_recipe));
+        oldMRcripe = mRecipe;
         setRecipe();
 
         if (mRecipe != null && mRecipe.getCreatedBy() != null && mainActivity.getUserId() != 0 && mRecipe.getCreatedBy().getId() == mainActivity.getUserId()){
             mBinding.deleteRecipeButton.setOnClickListener(
                     v -> makeDeleteRecipeAlert(navController, mainActivity));
+
+            mBinding.editRecipeButton.setOnClickListener(view ->{
+                navController.navigate(R.id.nav_edit_recipe);
+            });
         }
         else mBinding.deleteRecipeButton.setVisibility(GONE);
 
-        //todo add edit bottom.
+        getParentFragmentManager().setFragmentResultListener(getString(R.string.request_edit_recipe),
+                this, (requestKey, result) -> {
+                    Recipe temp
+                            = result.getParcelable(getString(R.string.selected_recipe));
+                    if (temp != null){
+                        mRecipe = temp;
+                        setRecipe();
+                        setResult();
+                    }
+                });
 
         return root;
     }
@@ -86,6 +101,9 @@ public class RecipeFragment extends Fragment {
         alert.setPositiveButton(android.R.string.yes, (dialog, which) -> {
             boolean result = mRecipeService.deleteRecipe(mRecipe.getId());
             if (result){
+                mRecipe = null;
+                setResult();
+
                 navController.popBackStack();
                 mainActivity.makeToast(R.string.delete_recipe_success, Toast.LENGTH_LONG);
             }
@@ -133,9 +151,23 @@ public class RecipeFragment extends Fragment {
 
         ingredientMeasurementListView.setAdapter(adapter);
     }
+
+    /**
+     * Set the result that the parent fragment gets.
+     */
+    public void setResult(){
+            Bundle res = new Bundle();
+            res.putParcelable(getString(R.string.selected_recipe), mRecipe);
+
+            getParentFragmentManager().setFragmentResult
+                    (
+                            getString(R.string.request_new_recipe), res
+                    );
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mBinding =null;
+        mBinding = null;
     }
 }
