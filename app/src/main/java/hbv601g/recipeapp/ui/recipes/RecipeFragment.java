@@ -69,7 +69,9 @@ public class RecipeFragment extends Fragment {
                     v -> makeDeleteRecipeAlert(navController, mainActivity));
 
             mBinding.editRecipeButton.setOnClickListener(view ->{
-                navController.navigate(R.id.nav_edit_recipe);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(getString(R.string.selected_recipe), mRecipe);
+                navController.navigate(R.id.nav_edit_recipe, bundle);
             });
         }
         else mBinding.deleteRecipeButton.setVisibility(GONE);
@@ -81,7 +83,6 @@ public class RecipeFragment extends Fragment {
                     if (temp != null){
                         mRecipe = temp;
                         setRecipe();
-                        setResult();
                     }
                 });
 
@@ -102,7 +103,6 @@ public class RecipeFragment extends Fragment {
             boolean result = mRecipeService.deleteRecipe(mRecipe.getId());
             if (result){
                 mRecipe = null;
-                setResult();
 
                 navController.popBackStack();
                 mainActivity.makeToast(R.string.delete_recipe_success, Toast.LENGTH_LONG);
@@ -150,19 +150,6 @@ public class RecipeFragment extends Fragment {
                 Objects.requireNonNullElseGet(mRecipe.getIngredientMeasurements(), ArrayList::new));
 
         ingredientMeasurementListView.setAdapter(adapter);
-    }
-
-    /**
-     * Set the result that the parent fragment gets.
-     */
-    public void setResult(){
-            Bundle res = new Bundle();
-            res.putParcelable(getString(R.string.selected_recipe), mRecipe);
-
-            getParentFragmentManager().setFragmentResult
-                    (
-                            getString(R.string.request_new_recipe), res
-                    );
     }
 
     @Override

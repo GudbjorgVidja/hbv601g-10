@@ -5,7 +5,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListAdapter;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -30,7 +29,6 @@ public class EditRecipeFragment extends Fragment {
     private RecipeService mRecipeService;
     private FragmentEditRecipeBinding mBinding;
     private List<IngredientMeasurement> mList;
-    private List<IngredientMeasurement> upList;
     private Recipe mRecipe;
 
     @Nullable
@@ -80,7 +78,7 @@ public class EditRecipeFragment extends Fragment {
 
                 getParentFragmentManager().setFragmentResult
                         (
-                                getString(R.string.request_new_recipe), res
+                                getString(R.string.request_edit_recipe), res
                         );
 
                 navController.popBackStack();
@@ -97,7 +95,6 @@ public class EditRecipeFragment extends Fragment {
                     IngredientMeasurement ingredientMeasurement
                             = result.getParcelable(getString(R.string.selected_ingredient_measurement));
                     mList.add(ingredientMeasurement);
-                    upList.add(ingredientMeasurement);
                 });
 
         return root;
@@ -137,10 +134,10 @@ public class EditRecipeFragment extends Fragment {
         }
 
         Recipe upRes = new Recipe();
-        upRes.setTitle(mBinding.recipeName.toString());
-        upRes.setInstructions(mBinding.instructions.toString());
-        upRes.setPrivate(mBinding.isPrivate.isActivated());
+        upRes.setTitle(mBinding.recipeName.getText().toString());
+        upRes.setInstructions(mBinding.instructions.getText().toString());
+        upRes.setPrivate(mBinding.isPrivate.isChecked());
 
-        return mRecipeService.updateRecipe(upRes, mRecipe.getId(), upList);
+        return mRecipeService.updateRecipe(upRes, mRecipe.getId(), mList);
     }
 }

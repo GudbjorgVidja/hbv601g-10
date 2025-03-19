@@ -164,7 +164,7 @@ public class RecipeService extends Service {
     public Recipe updateRecipe(Recipe rep, long id, List<IngredientMeasurement> upIngredList){
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 
-        String url = "/recipe/" + id + "/update?uid=" + mUid;
+        String url = "recipe/" + id + "/update?uid=" + mUid;
         String data = gson.toJson(rep);
 
         try {

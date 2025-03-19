@@ -61,14 +61,6 @@ public class NewRecipeFragment extends Fragment {
         mBinding.createRecipe.setOnClickListener(view -> {
                 Recipe recipe = createRecipe();
                 if (recipe != null) {
-                    Bundle res = new Bundle();
-                    res.putParcelable(getString(R.string.selected_recipe), recipe);
-
-                    getParentFragmentManager().setFragmentResult
-                            (
-                                    getString(R.string.request_new_recipe), res
-                            );
-
                     navController.popBackStack();
                 }
                 else{
@@ -95,7 +87,7 @@ public class NewRecipeFragment extends Fragment {
     private Recipe createRecipe(){
         String title =  mBinding.recipeName.getText().toString();
         String instructions = mBinding.instructions.getText().toString();
-        Boolean isPrivate = mBinding.isPrivate.isActivated();
+        Boolean isPrivate = mBinding.isPrivate.isChecked();
         List<IngredientMeasurement> ingredientMeasurementList = new ArrayList<>();
 
         ListAdapter ingredients= mBinding.ingredients.getAdapter();

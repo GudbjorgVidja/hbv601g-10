@@ -78,21 +78,6 @@ public class RecipesFragment extends Fragment {
             mBinding.addRecipe.hide();
         }
 
-        getParentFragmentManager().setFragmentResultListener(getString(R.string.request_new_recipe),
-                this, (requestKey, result) -> {
-                    Recipe recipe = result.getParcelable(getString(R.string.selected_recipe));
-                    mRecipeList.add(recipe);
-                });
-
-        getParentFragmentManager().setFragmentResultListener(getString(R.string.request_edit_recipe),
-                this, ((requestKey, result) -> {
-                    Recipe recipe = result.getParcelable(getString(R.string.selected_recipe));
-                    mRecipeList.remove(viewRep);
-                    mRecipeList.add(recipe);
-
-                    recipeAdapter.notifyDataSetChanged();
-                }));
-
         return  root;
     }
 

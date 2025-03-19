@@ -24,10 +24,6 @@
         android:name="hbv601g.recipeapp.ui.recipes.RecipesFragment"
         android:label="@string/title_recipes"
         tools:layout="@layout/fragment_recipes">
-        <argument
-            android:name="@string/selected_recipe"
-            app:argType="hbv601g.recipeapp.entities.Recipe"
-            />
     </fragment>
 
     <fragment
