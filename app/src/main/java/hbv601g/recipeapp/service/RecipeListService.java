@@ -72,8 +72,8 @@ public class RecipeListService extends Service {
      *
      * @return all of the user's recipe lists
      */
-    public List<RecipeList> getUserRecipeLists() {
-        String url = "list/user/" + mUid;
+    public List<RecipeList> getUserRecipeLists(long uid) {
+        String url = "list/user/" + uid + "?uid=" + mUid;
 
         mJsonElement = null;
         try {
@@ -83,13 +83,11 @@ public class RecipeListService extends Service {
         }
 
         List<RecipeList> recipeLists = new ArrayList<>();
-        if (mJsonElement != null && mJsonElement.isJsonArray() ) {
+        if (mJsonElement != null ) {
             Gson gson = new GsonBuilder().create();
 
-            JsonArray array = mJsonElement.getAsJsonArray();
-
             Type collectionType = new TypeToken<Collection<RecipeList>>() {}.getType();
-            recipeLists = gson.fromJson(array, collectionType);
+            recipeLists = gson.fromJson(mJsonElement, collectionType);
         }
         else throw new NullPointerException("User recipe lists are null");
 
@@ -101,9 +99,8 @@ public class RecipeListService extends Service {
      * Adds the given recipe to the given recipe list.
      * @param recipeId - id of the recipe to add
      * @param listId - id of the list to be added to
-     * @return the updated recipe list
      */
-    public RecipeList addRecipeToList(long recipeId, long listId) {
+    public void addRecipeToList(long recipeId, long listId) {
         String url = String.format("list/addRecipe?recipeID=%s&listID=%s&uid=%s", recipeId, listId, mUid);
         mJsonElement = null;
         try {
@@ -113,15 +110,13 @@ public class RecipeListService extends Service {
         }
 
         RecipeList recipeList;
-        if (mJsonElement != null && mJsonElement.isJsonObject()) {
+        if (mJsonElement != null ) {
             Gson gson = new GsonBuilder().create();
 
-            JsonObject object = mJsonElement.getAsJsonObject();
-            recipeList = gson.fromJson(object, RecipeList.class);
+            recipeList = gson.fromJson(mJsonElement, RecipeList.class);
         }
         else throw new NullPointerException("Recipe list is null");
 
-        return recipeList;
     }
 
 

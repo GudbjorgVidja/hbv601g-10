@@ -49,13 +49,14 @@ public class AddRecipeToListDialogFragment extends DialogFragment {
         MainActivity mainActivity = (MainActivity) getActivity();
         assert mainActivity != null;
 
-        mRecipeListService = new RecipeListService(new NetworkingService(), mainActivity.getUserId());
+        long uid = mainActivity.getUserId();
+        mRecipeListService = new RecipeListService(new NetworkingService(), uid);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(getString(R.string.add_recipe_to_list_dialog_title));
 
         try {
-            mRecipeLists = mRecipeListService.getUserRecipeLists();
+            mRecipeLists = mRecipeListService.getUserRecipeLists(uid);
         } catch (NullPointerException e){
             mainActivity.makeToast(R.string.get_recipe_lists_failed_toast, Toast.LENGTH_LONG);
         }
@@ -72,7 +73,7 @@ public class AddRecipeToListDialogFragment extends DialogFragment {
             });
         }
 
-        builder.setNegativeButton("cancel", null);
+        builder.setNegativeButton(getString(R.string.cancel_button_text), null);
         return builder.create();
     }
 
