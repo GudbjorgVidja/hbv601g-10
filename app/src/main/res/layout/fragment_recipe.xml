@@ -38,10 +38,19 @@
         android:layout_height="wrap_content"
         android:text="@string/delete_button_text"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/add_to_list_button"
         app:layout_constraintTop_toBottomOf="@id/recipe_creator"
         app:layout_constraintBottom_toTopOf="@id/recipe_info_layout"
         />
+
+    <Button
+        android:id="@+id/add_to_list_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/add_to_list_button"
+        app:layout_constraintStart_toEndOf="@id/delete_recipe_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBaseline_toBaselineOf="@id/delete_recipe_button" />
 
 
     <LinearLayout
@@ -129,6 +138,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
 />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

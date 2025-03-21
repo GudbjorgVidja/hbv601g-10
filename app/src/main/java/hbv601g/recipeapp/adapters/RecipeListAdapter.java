@@ -14,12 +14,15 @@ import hbv601g.recipeapp.R;
 import hbv601g.recipeapp.entities.Recipe;
 import hbv601g.recipeapp.entities.RecipeList;
 
+/**
+ * Adapter to display RecipeList objects in a ListView
+ */
 public class RecipeListAdapter extends BaseAdapter {
 
     private List<RecipeList> mRecipeLists;
     private LayoutInflater mInflater;
 
-    public RecipeListAdapter(Context context, List<RecipeList> recipeLists){
+    public RecipeListAdapter(Context context, List<RecipeList> recipeLists) {
         this.mRecipeLists = recipeLists;
         mInflater = LayoutInflater.from(context);
     }
@@ -39,17 +42,21 @@ public class RecipeListAdapter extends BaseAdapter {
         return position;
     }
 
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if(convertView == null){
+        if (convertView == null) {
             convertView = mInflater.inflate(R.layout.recipe_list_list_item, parent, false);
         }
+            TextView title = convertView.findViewById(R.id.recipe_list_title_textview);
+            TextView privacy = convertView.findViewById(R.id.recipe_list_privacy_textview);
 
-        TextView title = convertView.findViewById(R.id.list_title);
+            RecipeList currentRecipeList = (RecipeList) getItem(position);
 
-        RecipeList list = (RecipeList) getItem(position);
+            title.setText(currentRecipeList.getTitle());
+            String tmp = currentRecipeList.isPrivate() ? "private" : "public";
+            privacy.setText(tmp);
 
-        title.setText((list.getTitle()));
         return convertView;
     }
 

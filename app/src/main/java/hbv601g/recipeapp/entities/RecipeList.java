@@ -6,6 +6,8 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +28,7 @@ public class RecipeList implements Parcelable {
     private String description;
 
     private List<Recipe> recipes = new ArrayList<>();
+    @SerializedName("private")
     private boolean isPrivate;
 
     public RecipeList() {
