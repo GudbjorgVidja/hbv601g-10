@@ -1,6 +1,11 @@
 package hbv601g.recipeapp.entities;
 
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
@@ -12,7 +17,7 @@ import java.util.List;
  * Tengitafla er gerð með id fyrir recipe og lista
  */
 
-public class RecipeList {
+public class RecipeList implements Parcelable {
 
     private long id;
 
@@ -91,4 +96,16 @@ public class RecipeList {
         this.isPrivate = isPrivate;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeList(recipes);
+        dest.writeString(title);
+        dest.writeString(description);
+        dest.writeString(createdBy.getUsername());
+    }
 }

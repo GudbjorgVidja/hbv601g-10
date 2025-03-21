@@ -1,6 +1,7 @@
 package hbv601g.recipeapp.adapters;
 
 import android.content.Context;
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,12 +11,14 @@ import android.widget.TextView;
 import java.util.List;
 
 import hbv601g.recipeapp.R;
+import hbv601g.recipeapp.entities.Recipe;
 import hbv601g.recipeapp.entities.RecipeList;
 
 /**
  * Adapter to display RecipeList objects in a ListView
  */
 public class RecipeListAdapter extends BaseAdapter {
+
     private List<RecipeList> mRecipeLists;
     private LayoutInflater mInflater;
 
@@ -53,7 +56,6 @@ public class RecipeListAdapter extends BaseAdapter {
             title.setText(currentRecipeList.getTitle());
             String tmp = currentRecipeList.isPrivate() ? "private" : "public";
             privacy.setText(tmp);
-
 
         return convertView;
     }

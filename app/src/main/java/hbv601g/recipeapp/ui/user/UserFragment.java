@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -11,13 +13,24 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import hbv601g.recipeapp.MainActivity;
 import hbv601g.recipeapp.R;
+import hbv601g.recipeapp.adapters.RecipeAdapter;
+import hbv601g.recipeapp.adapters.RecipeListAdapter;
 import hbv601g.recipeapp.databinding.FragmentUserBinding;
+import hbv601g.recipeapp.entities.RecipeList;
+import hbv601g.recipeapp.networking.NetworkingService;
+import hbv601g.recipeapp.service.RecipeListService;
 
 public class UserFragment extends Fragment{
 
     private FragmentUserBinding mBinding;
+    private List<RecipeList> mRecipeLists;
+    private RecipeListService mRecipeListService;
+    private ListView mRecipeListListView;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -29,6 +42,32 @@ public class UserFragment extends Fragment{
 
         mBinding = FragmentUserBinding.inflate(inflater, container, false);
         View root = mBinding.getRoot();
+
+        mRecipeListService = new RecipeListService(new NetworkingService(), mainActivity.getUserId());
+
+        if(mainActivity.getUserId() != 0){
+            try {
+                mRecipeLists = mRecipeListService.getUserRecipeLists(mainActivity.getUserId());
+            } catch(NullPointerException e) {
+                mRecipeLists = new ArrayList<>();
+                mainActivity.makeToast(R.string.null_recipe_lists, Toast.LENGTH_LONG);
+            }
+            mRecipeListListView = mBinding.userRecipeLists;
+
+            RecipeListAdapter recipeListAdapter = new RecipeListAdapter(mainActivity.getApplicationContext(), mRecipeLists);
+            mRecipeListListView.setAdapter(recipeListAdapter);
+
+            mRecipeListListView.setOnItemClickListener((parent, view, position, id) -> {
+                RecipeList recipeList = (RecipeList) parent.getItemAtPosition(position);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(getString(R.string.selected_recipe_list), recipeList);
+                navController.navigate(R.id.nav_recipe_list, bundle);
+            });
+        }
+
+
+
+
 
         mBinding.logoutButton.setOnClickListener(v -> mainActivity.removeCurrentUser());
 
