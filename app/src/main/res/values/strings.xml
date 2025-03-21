@@ -17,6 +17,7 @@
     <string name="title_new_ingredient">New ingredient</string>
     <string name="title_recipe">Recipe</string>
     <string name="title_new_recipe_list">New recipe list</string>
+    <string name="title_recipe_list">Recipe list</string>
 
     <!-- Buttons/textfields -->
     <string name="ingredients_text">Ingredients</string>
@@ -59,6 +60,9 @@
     <string name="new_recipe_list_title_hint">Title</string>
     <string name="new_recipe_list_description_hint">Description</string>
     <string name="confirm_create_recipe_list_button">Create recipe list</string>
+    <string name="recipe_list_description">Description</string>
+    <string name="recipe_list_recipes">Recipes</string>
+    <string name="recipe_list_text">Recipe Lists</string>
 
 
     <!-- Messages/toasts -->
@@ -83,10 +87,12 @@
     <string name="recipe_unknown_error">Recipe could not be crated, unknown error</string>
     <string name="create_recipe_list_failed_toast">Failed to create recipe list.</string>
     <string name="create_recipe_list_success_toast">Successfully created recipe list.</string>
+    <string name="null_recipe_lists">Something went wrong displaying the recipe lists</string>
 
     <!-- variables -->
     <string name="selected_ingredient">Ingredient</string>
     <string name="selected_pantry_item">Pantry Item</string>
+    <string name="selected_recipe_list">Recipe List</string>
     <string name="selected_recipe">Recipe</string>
     <string name="selected_unit">Unit</string>
     <string name="selected_ingredient_measurement">Ingredient measurement</string>
@@ -104,5 +110,7 @@
 
     <!-- misc -->
     <string name="currency">kr.</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

@@ -9,10 +9,17 @@ import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
+import hbv601g.recipeapp.entities.Recipe;
 import hbv601g.recipeapp.entities.RecipeList;
 import hbv601g.recipeapp.networking.NetworkingService;
 
@@ -57,6 +64,35 @@ public class RecipeListService extends Service {
 
         return recipeList;
     }
+
+    public List<RecipeList> getUserRecipeLists(long uid){
+        String url = String.format("list/user/%s?uid=%s", uid, mUid);
+        List<RecipeList> recipeLists = new ArrayList<>();
+        mJsonElement = null;
+        try{
+            mJsonElement = mNetworkingService.getRequest(url);
+            Log.d("API", "Recipe lists: " + mJsonElement);
+            Log.d("API", "Request url: " + url);
+        } catch (IOException e){
+            Log.d("Networking exception", "Failed to fetch recipe lists");
+        }
+        if(mJsonElement != null && !mJsonElement.isJsonNull()){
+            Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+            if(!mJsonElement.isJsonArray()){
+                return null;
+            }
+
+            JsonArray arr = mJsonElement.getAsJsonArray();
+
+            Type collectionType = new TypeToken<Collection<RecipeList>>(){}.getType();
+            recipeLists = gson.fromJson(arr, collectionType);
+        } else {
+            throw new NullPointerException(("Recipe lists are null"));
+        }
+
+        return recipeLists;
+    }
+
 
 
     @Nullable
