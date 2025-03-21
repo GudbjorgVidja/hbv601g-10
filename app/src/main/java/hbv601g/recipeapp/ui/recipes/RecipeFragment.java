@@ -27,6 +27,7 @@ import hbv601g.recipeapp.databinding.FragmentRecipeBinding;
 import hbv601g.recipeapp.entities.Recipe;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.RecipeService;
+import hbv601g.recipeapp.ui.recipeLists.AddRecipeToListDialogFragment;
 
 /**
  * A fragment for single recipes
@@ -58,6 +59,11 @@ public class RecipeFragment extends Fragment {
             Log.e("RecipeFragment", "No recipe to view");
             return root;
         }
+
+        mBinding.addToListButton.setOnClickListener(v -> {
+            AddRecipeToListDialogFragment dialog = AddRecipeToListDialogFragment.newInstance(mRecipe.getId());
+            dialog.show(mainActivity.getSupportFragmentManager(), "AddRecipeToListDialogFragment");
+        });
 
         mRecipe = getArguments().getParcelable(getString(R.string.selected_recipe));
         setRecipe();
@@ -123,6 +129,7 @@ public class RecipeFragment extends Fragment {
         }
         else {
             mBinding.recipePpc.setVisibility(GONE);
+            mBinding.addToListButton.setVisibility(GONE);
         }
 
         assert mainActivity != null;
