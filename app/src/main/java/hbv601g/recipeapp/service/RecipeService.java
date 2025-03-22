@@ -153,7 +153,8 @@ public class RecipeService extends Service {
     }
 
     /**
-     * This function takes in 3 parameters, Recipe, long and arrayList.
+     * This function update the recipe that has the ID value of id.
+     *
      * @param rep         : Recipe value, is a recipe that has all of the updates for the recipe.
      * @param id          : long value, is the id of recipe that is being updated
      * @param upIngredList: arrayList value, is a list that contains all of the now ingredients in
@@ -185,12 +186,12 @@ public class RecipeService extends Service {
     }
 
     /**
-     * This fuction takis one parameter, arrayList
+     * This function add new ingredient measurement to a recipe with the same ID value of id
      * @param id         : long value, ist the id of the recipe.
      * @param ingredList: arrayList value, is a list of IngredientMeasurement that will be added
      *                     to a recipe
      *
-     * @return the recipe with a coriposte id now the list add to it ingredients list
+     * @return the recipe with ID value id and contains the added ingredient measurement list
      */
     private Recipe addIngredientMeasurement(long id, List<IngredientMeasurement> ingredList){
         Gson gson = new Gson();

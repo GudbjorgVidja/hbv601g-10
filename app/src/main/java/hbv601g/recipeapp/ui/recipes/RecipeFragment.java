@@ -35,7 +35,6 @@ import hbv601g.recipeapp.ui.recipeLists.AddRecipeToListDialogFragment;
 public class RecipeFragment extends Fragment {
     private FragmentRecipeBinding mBinding;
     private Recipe mRecipe;
-    private Recipe oldMRcripe;
     private RecipeService mRecipeService;
 
     @Nullable
@@ -67,7 +66,6 @@ public class RecipeFragment extends Fragment {
         });
 
         mRecipe = getArguments().getParcelable(getString(R.string.selected_recipe));
-        oldMRcripe = mRecipe;
         setRecipe();
 
         if (mRecipe != null && mRecipe.getCreatedBy() != null && mainActivity.getUserId() != 0 && mRecipe.getCreatedBy().getId() == mainActivity.getUserId()){
