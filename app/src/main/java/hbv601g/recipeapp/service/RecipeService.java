@@ -201,9 +201,12 @@ public class RecipeService extends Service {
         StringBuilder qty = new StringBuilder();
 
         for(int i = 0; i < ingredList.size(); i++){
-            units.append(ingredList.get(i).getUnit().name() + ",");
-            ingredientIDs.append(ingredList.get(i).getIngredient().getId() + ",");
-            qty.append(ingredList.get(i).getQuantity() + ",");
+            units.append(ingredList.get(i).getUnit().name());
+            units.append(",");
+            ingredientIDs.append(ingredList.get(i).getIngredient().getId());
+            ingredientIDs.append(",");
+            qty.append(ingredList.get(i).getQuantity());
+            qty.append(",");
         }
 
         if(!units.toString().isEmpty()){
