@@ -38,15 +38,15 @@ public class UserService extends Service {
 
     /**
      * makes a delete request to send to the external API, to try to delete a user
-     * @param uid - the id of the user to delete
-     * @param pw - the password to use for confirmation
+     * @param uid the id of the user to delete
+     * @param password the password to use for confirmation
      */
-    public void deleteAccount(long uid, String pw){
+    public void deleteAccount(long uid, String password){
         User user = getUser(uid, uid);
-        if (user == null || !user.getPassword().equals(pw)){
+        if (user == null || !user.getPassword().equals(password)){
             throw new DeleteFailedException();
         }
-        String url = String.format("user/delete?uid=%s&password=%s",uid, pw);
+        String url = String.format("user/delete?uid=%s&password=%s",uid, password);
         try {
             mNetworkingService.deleteRequest(url);
         } catch (IOException e) {
@@ -54,13 +54,21 @@ public class UserService extends Service {
         }
     }
 
+    /**
+     * Makes a request to the external API to get a user with the userId uid. The request is made
+     * for a user with the usedId reqUid. If uid an reqUid are the same, a user is requesting
+     * information about themselves
+     *
+     * @param uid the usedId of the user to get
+     * @param reqUid the userId of the user making the request
+     * @return the user with the userId uid
+     */
     public User getUser(long uid, long reqUid){
         String url = String.format("user/id/%s?uid=%s",uid, reqUid);
         try {
             mElement = mNetworkingService.getRequest(url);
         } catch (IOException e) {
             Log.d("Networking exception", "get user failed");
-            //throw new RuntimeException(e);
         }
 
         User user = null;
