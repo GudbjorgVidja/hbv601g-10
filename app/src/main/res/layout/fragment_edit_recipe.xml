@@ -33,8 +33,7 @@
             android:layout_marginStart="38dp"
             android:layout_marginBottom="18dp"
             android:scaleX="1.5"
-            android:scaleY="1.5
-"
+            android:scaleY="1.5"
             android:text="@string/ingredients_text"
             app:layout_constraintBottom_toTopOf="@+id/ingredients"
             app:layout_constraintStart_toStartOf="parent" />
@@ -93,7 +92,7 @@
             android:layout_height="49dp"
             android:layout_marginStart="20dp"
             android:layout_marginBottom="8dp"
-            android:text="Private?"
+            android:text="@string/privacy_selection_label"
             app:layout_constraintBottom_toTopOf="@+id/edit_recipe"
             app:layout_constraintStart_toStartOf="parent" />
 

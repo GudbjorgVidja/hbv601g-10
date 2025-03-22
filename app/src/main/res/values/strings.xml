@@ -83,7 +83,7 @@
     <string name="create_ingredient_failed_toast">Failed to create ingredient.</string>
     <string name="rename_ingredient_failed_toast">Failed to rename ingredient.</string>
     <string name="recipe_unknown_error">Recipe could not be crated, unknown error</string>
-    <string name="recipe_edit_unknown_error">Recipe could not be edit, unknown error</string>
+    <string name="recipe_edit_unknown_error">Recipe could not be edited, unknown error</string>
     <string name="create_recipe_list_failed_toast">Failed to create recipe list.</string>
     <string name="create_recipe_list_success_toast">Successfully created recipe list.</string>
 
