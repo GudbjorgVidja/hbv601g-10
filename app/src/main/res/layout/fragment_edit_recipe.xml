@@ -52,7 +52,7 @@
 
         <EditText
             android:id="@+id/recipe_name"
-            android:layout_width="278dp"
+            android:layout_width="wrap_content"
             android:layout_height="49dp"
             android:layout_marginStart="20dp"
             android:layout_marginTop="11dp"
@@ -64,7 +64,7 @@
 
         <EditText
             android:id="@+id/instructions"
-            android:layout_width="280dp"
+            android:layout_width="wrap_content"
             android:layout_height="81dp"
             android:layout_marginStart="20dp"
             android:layout_marginBottom="11dp"
@@ -88,7 +88,7 @@
 
         <Switch
             android:id="@+id/is_private"
-            android:layout_width="128dp"
+            android:layout_width="wrap_content"
             android:layout_height="49dp"
             android:layout_marginStart="20dp"
             android:layout_marginBottom="8dp"
