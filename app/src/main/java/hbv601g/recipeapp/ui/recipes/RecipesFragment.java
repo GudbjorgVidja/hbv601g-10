@@ -30,7 +30,6 @@ public class RecipesFragment extends Fragment {
     private RecipeService mRecipeService;
     private List<Recipe> mRecipeList;
     private ListView mRecipeListView;
-    private Recipe viewRep;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -61,7 +60,6 @@ public class RecipesFragment extends Fragment {
 
         mRecipeListView.setOnItemClickListener((parent, view, position, id) -> {
             Recipe recipe = (Recipe) parent.getItemAtPosition(position);
-            viewRep = recipe;
             Log.d("Selected", recipe.toString());
 
             Bundle bundle = new Bundle();
