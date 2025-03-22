@@ -1,3 +1,8 @@
+/**
+ * Precondition: when navigating to this class it must have a bundle that must contain a not null
+ *               recipe that has the bundle key "Recipe"
+ */
+
 package hbv601g.recipeapp.ui.recipes;
 
 import android.os.Bundle;
