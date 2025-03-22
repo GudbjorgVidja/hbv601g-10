@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 
+import hbv601g.recipeapp.exceptions.DeleteFailedException;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -86,19 +87,15 @@ public class NetworkingService extends Service {
     }
 
     /**
-     * Makes a delete request using the given url, calls the API and interprets the result into
-     * a json element
+     * Makes a delete request using the given url and calls the API
+     * Throws a DeleteFailedException if the responseCode is not 200
      * @param reqURL - the url to the endpoint that is being called
-     * @return - a json element with the result of the call
      * @throws IOException if the call fails for some reason
      */
-    public JsonElement deleteRequest(String reqURL)throws IOException{
+    public void deleteRequest(String reqURL)throws IOException{
         Request request = new Request.Builder().url(mBaseURL +reqURL).delete().build();
-        mJsonElement = callAPI(request);
-
-        if(mResponseCode != 200) return null;
-
-        return JsonParser.parseString("true");
+        callAPI(request);
+        if(mResponseCode != 200) throw new DeleteFailedException();
     }
 
     /**

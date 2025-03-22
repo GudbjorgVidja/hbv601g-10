@@ -23,14 +23,62 @@ import java.util.List;
 import hbv601g.recipeapp.entities.IngredientMeasurement;
 import hbv601g.recipeapp.entities.Unit;
 import hbv601g.recipeapp.entities.User;
+import hbv601g.recipeapp.exceptions.DeleteFailedException;
 import hbv601g.recipeapp.networking.NetworkingService;
 
 public class UserService extends Service {
-    private NetworkingService networkingService;
+    private NetworkingService mNetworkingService;
     private JsonElement mElement;
 
     public UserService(NetworkingService networkingService){
-        this.networkingService=networkingService;
+        this.mNetworkingService =networkingService;
+    }
+
+
+
+    /**
+     * makes a delete request to send to the external API, to try to delete a user
+     * @param uid the id of the user to delete
+     * @param password the password to use for confirmation
+     */
+    public void deleteAccount(long uid, String password){
+        User user = getUser(uid, uid);
+        if (user == null || !user.getPassword().equals(password)){
+            throw new DeleteFailedException();
+        }
+        String url = String.format("user/delete?uid=%s&password=%s",uid, password);
+        try {
+            mNetworkingService.deleteRequest(url);
+        } catch (IOException e) {
+            Log.d("Networking exception", "Delete user failed");
+        }
+    }
+
+    /**
+     * Makes a request to the external API to get a user with the userId uid. The request is made
+     * for a user with the usedId reqUid. If uid an reqUid are the same, a user is requesting
+     * information about themselves
+     *
+     * @param uid the usedId of the user to get
+     * @param reqUid the userId of the user making the request
+     * @return the user with the userId uid
+     */
+    public User getUser(long uid, long reqUid){
+        String url = String.format("user/id/%s?uid=%s",uid, reqUid);
+        try {
+            mElement = mNetworkingService.getRequest(url);
+        } catch (IOException e) {
+            Log.d("Networking exception", "get user failed");
+        }
+
+        User user = null;
+        if(mElement != null){
+            Gson gson = new Gson();
+            user = gson.fromJson(mElement, User.class);
+            Log.d("API", "user object, name:" + user.getUsername());
+        }
+
+        return user;
     }
 
     /**
@@ -45,7 +93,7 @@ public class UserService extends Service {
         url += String.format("?username=%s&password=%s",username, password);
 
         try {
-            mElement = networkingService.getRequest(url);
+            mElement = mNetworkingService.getRequest(url);
         } catch (IOException e) {
             Log.d("Networking exception", "Login failed");
             //throw new RuntimeException(e);
@@ -67,7 +115,7 @@ public class UserService extends Service {
 
         User user = null;
         try {
-            mElement = networkingService.postRequest(url + params, null);
+            mElement = mNetworkingService.postRequest(url + params, null);
         } catch (IOException e) {
             Log.d("Networking exception", "Signup failed");
         }
@@ -97,7 +145,7 @@ public class UserService extends Service {
         }*/
 
         try {
-            mElement = networkingService.getRequest(url + params);
+            mElement = mNetworkingService.getRequest(url + params);
             Log.d("UserService", "fetched element is: " + mElement);
         } catch (IOException e) {
             Log.d("Networking exception", "Failed to get user pantry");
@@ -130,7 +178,7 @@ public class UserService extends Service {
 
 
         try {
-            mElement = networkingService.putRequest(url + params, null);
+            mElement = mNetworkingService.putRequest(url + params, null);
             Log.d("API", "remove pantry response: " + mElement);
         } catch (IOException e) {
             Log.d("Networking exception", "Failed to delete item from pantry");
@@ -160,7 +208,7 @@ public class UserService extends Service {
         IngredientMeasurement ingredient = null;
 
         try{
-            mElement = networkingService.putRequest(url + params, null);
+            mElement = mNetworkingService.putRequest(url + params, null);
             Log.d("API", "Ingredient added: " + mElement);
         } catch (IOException e) {
             Log.d("Networking exception", "Failed to add ingredient to pantry");

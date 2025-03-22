@@ -19,6 +19,7 @@ import hbv601g.recipeapp.MainActivity;
 import hbv601g.recipeapp.R;
 import hbv601g.recipeapp.databinding.FragmentIngredientBinding;
 import hbv601g.recipeapp.entities.Ingredient;
+import hbv601g.recipeapp.exceptions.DeleteFailedException;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.IngredientService;
 
@@ -118,12 +119,13 @@ public class IngredientFragment extends Fragment{
         alert.setTitle(getString(R.string.delete_ingredient_alert_title));
         alert.setMessage(getString(R.string.delete_ingredient_alert_message));
         alert.setPositiveButton(android.R.string.yes, (dialog, which) -> {
-            boolean result = mIngredientService.deleteIngredient(mIngredient.getId());
-            if (result){
+            try {
+                mIngredientService.deleteIngredient(mIngredient.getId());
                 navController.popBackStack();
                 mainActivity.makeToast(R.string.delete_ingredient_success, Toast.LENGTH_LONG);
+            } catch (DeleteFailedException e) {
+                mainActivity.makeToast(R.string.delete_ingredient_failed, Toast.LENGTH_LONG);
             }
-            else mainActivity.makeToast(R.string.delete_ingredient_failed, Toast.LENGTH_LONG);
         });
         alert.setNegativeButton(android.R.string.no, (dialog, which) -> {});
         alert.show();
