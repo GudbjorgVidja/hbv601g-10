@@ -71,10 +71,24 @@ public class RecipeFragment extends Fragment {
         if (mRecipe != null && mRecipe.getCreatedBy() != null && mainActivity.getUserId() != 0 && mRecipe.getCreatedBy().getId() == mainActivity.getUserId()){
             mBinding.deleteRecipeButton.setOnClickListener(
                     v -> makeDeleteRecipeAlert(navController, mainActivity));
+
+            mBinding.editRecipeButton.setOnClickListener(view ->{
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(getString(R.string.selected_recipe), mRecipe);
+                navController.navigate(R.id.nav_edit_recipe, bundle);
+            });
         }
         else mBinding.deleteRecipeButton.setVisibility(GONE);
 
-
+        getParentFragmentManager().setFragmentResultListener(getString(R.string.request_edit_recipe),
+                this, (requestKey, result) -> {
+                    Recipe temp
+                            = result.getParcelable(getString(R.string.selected_recipe));
+                    if (temp != null){
+                        mRecipe = temp;
+                        setRecipe();
+                    }
+                });
 
         return root;
     }
@@ -92,6 +106,8 @@ public class RecipeFragment extends Fragment {
         alert.setPositiveButton(android.R.string.yes, (dialog, which) -> {
             boolean result = mRecipeService.deleteRecipe(mRecipe.getId());
             if (result){
+                mRecipe = null;
+
                 navController.popBackStack();
                 mainActivity.makeToast(R.string.delete_recipe_success, Toast.LENGTH_LONG);
             }
@@ -140,9 +156,10 @@ public class RecipeFragment extends Fragment {
 
         ingredientMeasurementListView.setAdapter(adapter);
     }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mBinding =null;
+        mBinding = null;
     }
 }
