@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import java.util.List;
+
 import hbv601g.recipeapp.MainActivity;
 import hbv601g.recipeapp.R;
 import hbv601g.recipeapp.adapters.RecipeAdapter;
@@ -25,6 +27,8 @@ import hbv601g.recipeapp.service.RecipeListService;
 public class RecipeListFragment extends Fragment {
     private FragmentRecipeListBinding mBinding;
     private RecipeList mRecipeList;
+    private RecipeList mTempList;
+    private List<Recipe> mListRecipes;
     private RecipeListService mRecipeListService;
     private ListView mRecipeListListView;
 
@@ -35,14 +39,16 @@ public class RecipeListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         if(getArguments() != null){
-            mRecipeList = getArguments().getParcelable(getString(R.string.selected_recipe_list));
+            mTempList = getArguments().getParcelable(getString(R.string.selected_recipe_list));
         }
+
         mBinding = FragmentRecipeListBinding.inflate(inflater, container, false);
         View root = mBinding.getRoot();
         MainActivity mainActivity = (MainActivity) getActivity();
         assert mainActivity != null;
         NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
         mRecipeListService = new RecipeListService(new NetworkingService(), mainActivity.getUserId());
+        mRecipeList = mRecipeListService.getListById(mTempList.getId());
 
         if(mRecipeList != null) {
             setRecipeList();
@@ -79,7 +85,9 @@ public class RecipeListFragment extends Fragment {
         assert mainActivity != null;
 
         ListView recipeListView = mBinding.recipeListRecipes;
-        RecipeAdapter adapter = new RecipeAdapter(mainActivity.getApplicationContext(), mRecipeList.getRecipes());
+        mListRecipes = mRecipeListService.getRecipesFromList(mRecipeList.getId());
+        RecipeAdapter adapter = new RecipeAdapter(mainActivity.getApplicationContext(), mListRecipes);
+        Log.d("RecipeListFragment", "List recipes are: " + mRecipeList.getRecipes());
         recipeListView.setAdapter(adapter);
     }
 }

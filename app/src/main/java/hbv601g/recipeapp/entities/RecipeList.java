@@ -42,6 +42,26 @@ public class RecipeList implements Parcelable {
         this.isPrivate = isPrivate;
     }
 
+    protected RecipeList(Parcel in) {
+        id = in.readLong();
+        title = in.readString();
+        description = in.readString();
+        recipes = in.createTypedArrayList(Recipe.CREATOR);
+        isPrivate = in.readByte() != 0;
+    }
+
+    public static final Creator<RecipeList> CREATOR = new Creator<RecipeList>() {
+        @Override
+        public RecipeList createFromParcel(Parcel in) {
+            return new RecipeList(in);
+        }
+
+        @Override
+        public RecipeList[] newArray(int size) {
+            return new RecipeList[size];
+        }
+    };
+
     public long getId() {
         return id;
     }
