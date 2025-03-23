@@ -9,18 +9,17 @@ import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import hbv601g.recipeapp.entities.Recipe;
 import hbv601g.recipeapp.entities.RecipeList;
 import hbv601g.recipeapp.networking.NetworkingService;
 
@@ -117,6 +116,29 @@ public class RecipeListService extends Service {
         }
         else throw new NullPointerException("Recipe list is null");
 
+    }
+
+    public RecipeList updateRecipeListTitle(long id, String newTitle){
+        String url = String.format("list/updateTitle/%s?uid=%s", id, mUid);
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+        Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("title",newTitle);
+        String data = gson.toJson(requestBody);
+
+        try {
+            mJsonElement = mNetworkingService.patchRequest(url, data);
+            Log.d("API", "Updated recipe list title: " + mJsonElement);
+        } catch(IOException e) {
+            Log.d("Networking exception", "Failed to update list title");
+        }
+
+        RecipeList recipeList = null;
+        if(mJsonElement != null){
+            recipeList = gson.fromJson(mJsonElement, RecipeList.class);
+        } else {
+            throw new NullPointerException("Recipe list is null");
+        }
+        return recipeList;
     }
 
 
