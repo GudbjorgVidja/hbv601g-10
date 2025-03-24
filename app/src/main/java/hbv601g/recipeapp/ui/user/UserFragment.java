@@ -37,6 +37,10 @@ public class UserFragment extends Fragment{
             navController.navigate(R.id.nav_user_no_user);
         }
 
+        mBinding.changePasswordButton.setOnClickListener(v -> {
+            //todo fara í sloða hvot that er rétt pass word.
+        });
+
         mBinding.usernameDisplay.setText(mainActivity.getUserName());
 
         mBinding.createRecipeListButton.setOnClickListener(v -> {
