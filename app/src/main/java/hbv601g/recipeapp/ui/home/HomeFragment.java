@@ -8,7 +8,11 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
+import hbv601g.recipeapp.MainActivity;
+import hbv601g.recipeapp.R;
 import hbv601g.recipeapp.databinding.FragmentHomeBinding;
 
 public class HomeFragment extends Fragment {
@@ -20,6 +24,14 @@ public class HomeFragment extends Fragment {
 
         mBinding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = mBinding.getRoot();
+
+        MainActivity mainActivity = ((MainActivity) getActivity());
+        assert mainActivity != null;
+
+        mBinding.homeCameraButton.setOnClickListener(v -> {
+            NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
+            navController.navigate(R.id.nav_camera);
+        });
 
         return root;
     }

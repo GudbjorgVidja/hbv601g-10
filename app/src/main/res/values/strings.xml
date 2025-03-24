@@ -18,7 +18,7 @@
     <string name="title_recipe">Recipe</string>
     <string name="title_new_recipe_list">New recipe list</string>
     <string name="title_recipe_list">Recipe list</string>
-
+    <string name="title_camera">Camera</string>
 
     <!-- Buttons/textfields -->
     <string name="ingredients_text">Ingredients</string>
@@ -65,6 +65,8 @@
     <string name="recipe_list_recipes">Recipes</string>
     <string name="recipe_list_text">Recipe Lists</string>
     <string name="add_to_list_button">Add to list</string>
+    <string name="camera_shutter_button">Take Photo</string>
+    <string name="home_camera_button_text">Camera</string>
 
 
     <!-- Messages/toasts -->
