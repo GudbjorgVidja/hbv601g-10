@@ -160,6 +160,22 @@ public class RecipeListService extends Service {
         return listRecipes;
     }
 
+    public boolean deleteRecipeList(long lid){
+        String url = String.format("list/id/%s/delete?uid=%s", lid, mUid);
+        try {
+            mJsonElement = mNetworkingService.deleteRequest(url);
+        } catch (IOException e) {
+            Log.d("Networking exception", "Delete recipe list failed");
+        }
+
+        boolean listDeleted = false;
+        if(mJsonElement != null){
+            listDeleted = mJsonElement.getAsBoolean();
+            Log.d("API", "Recipe list deleted: " + listDeleted);
+        }
+        return listDeleted;
+    }
+
 
     @Nullable
     @Override

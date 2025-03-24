@@ -1,5 +1,8 @@
 package hbv601g.recipeapp.ui.recipeLists;
 
+import static android.view.View.GONE;
+
+import android.app.AlertDialog;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -11,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -67,7 +71,34 @@ public class RecipeListFragment extends Fragment {
         });
 
 
+        if(mRecipeList != null && mRecipeList.getCreatedBy() != null && mainActivity.getUserId() != 0 &&
+                mRecipeList.getCreatedBy().getId() == mainActivity.getUserId() ){
+            mBinding.deleteListButton.setOnClickListener(
+                    v -> makeDeleteListAlert(navController, mainActivity));
+        }
+        else {
+            mBinding.deleteListButton.setVisibility(GONE);
+        }
+
+
         return root;
+    }
+
+
+    private void makeDeleteListAlert(NavController navController, MainActivity mainActivity) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());
+        alert.setTitle(getString(R.string.delete_list_alert_title));
+        alert.setMessage(getString(R.string.delete_list_alert_message));
+        alert.setPositiveButton(android.R.string.yes, (dialog, which) -> {
+            boolean result = mRecipeListService.deleteRecipeList(mRecipeList.getId());
+            if (result){
+                navController.popBackStack();
+                mainActivity.makeToast(R.string.delete_list_success, Toast.LENGTH_LONG);
+            }
+            else mainActivity.makeToast(R.string.delete_list_failed, Toast.LENGTH_LONG);
+        });
+        alert.setNegativeButton(android.R.string.no, (dialog, which) -> {});
+        alert.show();
     }
 
     private void setRecipeList(){
