@@ -170,6 +170,12 @@ public class RecipeListService extends Service {
         return listRecipes;
     }
 
+
+    /**
+     * Deletes the given recipe list from database
+     * @param lid - id of the recipe list
+     * @return true if the list was deleted successfully, else false
+     */
     public boolean deleteRecipeList(long lid){
         String url = String.format("list/id/%s/delete?uid=%s", lid, mUid);
         try {

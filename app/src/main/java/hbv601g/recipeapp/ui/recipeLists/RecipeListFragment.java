@@ -53,7 +53,7 @@ public class RecipeListFragment extends Fragment {
         NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
         mRecipeListService = new RecipeListService(new NetworkingService(), mainActivity.getUserId());
 
-        /**
+        /*
          * We use the ID of mClickedList to fetch the list from the API
          * so that it will update when a recipe is added to the list while
          * the list is still open.
@@ -95,9 +95,6 @@ public class RecipeListFragment extends Fragment {
     /**
      * Function to set recipe list information in the UI.
      */
-
-
-
     private void setRecipeList(){
         mBinding.recipeListTitle.setText(mRecipeList.getTitle());
 
@@ -120,6 +117,11 @@ public class RecipeListFragment extends Fragment {
         recipeListView.setAdapter(adapter);
     }
 
+    /**
+     * Makes an alert to delete this recipe list. If confirmed, the list gets deleted.
+     * @param navController - the navController instance
+     * @param mainActivity - the current mainActivity
+     */
     private void makeDeleteListAlert(NavController navController, MainActivity mainActivity) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());
         alert.setTitle(getString(R.string.delete_list_alert_title));
