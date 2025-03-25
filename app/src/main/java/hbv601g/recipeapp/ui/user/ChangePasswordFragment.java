@@ -1,8 +1,5 @@
 package hbv601g.recipeapp.ui.user;
 
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
-
 import android.app.AlertDialog;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -25,7 +22,6 @@ import hbv601g.recipeapp.service.UserService;
 public class ChangePasswordFragment extends Fragment {
     private FragmentChangePasswordBinding mBinding;
     private UserService mUserService;
-    private boolean mPasswordValid;
     private NavController mNavController;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -38,8 +34,6 @@ public class ChangePasswordFragment extends Fragment {
         mBinding = FragmentChangePasswordBinding.inflate(inflater, container, false);
         View root = mBinding.getRoot();
 
-        mPasswordValid = false;
-        setView();
 
         mUserService = new UserService(new NetworkingService());
 
@@ -47,24 +41,8 @@ public class ChangePasswordFragment extends Fragment {
                 mainActivity, R.id.nav_host_fragment_activity_main
         );
 
-        mBinding.checkIfPasswordIsValid.setOnClickListener(v -> {
-            validateOldPass();
-            setView();
-
-            if(mPasswordValid){
-                mBinding.currentPasswordInput.setTextColor(Color.GREEN);
-            }
-            else {
-                mBinding.currentPasswordInput.setTextColor(Color.RED);
-                Toast.makeText(
-                        getActivity(), R.string.password_invalid_toast, Toast.LENGTH_SHORT
-                ).show();
-            }
-        });
-
-
         mBinding.confirmNewPassword.setOnClickListener(v ->{
-                if(mPasswordValid) {confirmPass();}
+            confirmPass();
         });
 
         mBinding.cancelNewPassword.setOnClickListener(v -> {
@@ -72,42 +50,6 @@ public class ChangePasswordFragment extends Fragment {
         });
 
         return root;
-    }
-
-    /**
-     * This function set the Visibility of confirm button, newPasswordInput and
-     * validatePasswordInput field.
-     */
-    private void setView(){
-        if(mPasswordValid) {
-            mBinding.confirmNewPassword.setVisibility(VISIBLE);
-            mBinding.newPasswordInputLayout.setVisibility(VISIBLE);
-            mBinding.validateNewPasswordInput.setVisibility(VISIBLE);
-
-            mBinding.currentPasswordInput.setEnabled(false);
-            mBinding.checkIfPasswordIsValid.setVisibility(GONE);
-        }
-        else {
-            mBinding.confirmNewPassword.setVisibility(GONE);
-            mBinding.newPasswordInputLayout.setVisibility(GONE);
-            mBinding.validateNewPasswordInput.setVisibility(GONE);
-        }
-    }
-
-    /**
-     * The function of the see if the pass word is the same as the password that the user has.
-     */
-    private void validateOldPass(){
-        try{
-            mPasswordValid = mUserService.validatePassword
-                    (
-                            ((MainActivity) getActivity()).getUserId(),
-                            mBinding.currentPasswordInput.getText().toString()
-                    );
-        }
-        catch (NullPointerException e){
-            mPasswordValid = false;
-        }
     }
 
     /**
@@ -135,8 +77,7 @@ public class ChangePasswordFragment extends Fragment {
                     mUserService.changePassword
                             (
                                     ((MainActivity) getActivity()).getUserId(),
-                                    mBinding.newPasswordInput.getText().toString(),
-                                    mBinding.currentPasswordInput.getText().toString()
+                                    mBinding.newPasswordInput.getText().toString()
                             );
 
                     mNavController.popBackStack();
@@ -146,6 +87,8 @@ public class ChangePasswordFragment extends Fragment {
                    newPassInvalid();
                    mBinding.validateNewPasswordInput.setText("");
                 });
+
+                alert.show();
             }
             else {
                 newPassInvalid();

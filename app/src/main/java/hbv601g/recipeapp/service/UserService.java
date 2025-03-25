@@ -215,18 +215,36 @@ public class UserService extends Service {
     }
 
     /**
-     * This function changes the Password for user with ID value uid to newPass if old pass is the
-     * same as the password that the user has.
+     * This function changes the Password for user with ID value uid to newPass.
      *
      * @param uId     : long value, is the id number of the user.
      * @param newPass : String value, is the new password for the user.
-     * @param oldPass : String value, is the old password of the user.
      */
-    public void changePassword(long uId, String newPass, String oldPass){
+    public void changePassword(long uId, String newPass){
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 
-        String url = "user/changePassword?uid=" + uId;
-        String date = gson.toJson(newPass) + gson.toJson(oldPass);
+        String url = "user/id/" + uId + "uid?=" + uId;
+
+        try{
+            mElement = mNetworkingService.getRequest(url);
+        }
+        catch (IOException e) {
+            Log.d("Networking exception", "Failed to get User");
+        }
+
+        User user = new User();
+        if(mElement != null){
+            if(!mElement.isJsonObject()){
+                user = gson.fromJson(mElement, User.class);
+            }
+            else {
+                Log.d("Networking exception (User)", "Send wrong type of json");
+                return;
+            }
+        }
+
+        url = "user/changePassword?uid=" + uId;
+        String date = gson.toJson(newPass) + gson.toJson(user.getPassword());
 
         try {
             mNetworkingService.patchRequest(url, date);
