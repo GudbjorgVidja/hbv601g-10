@@ -7,23 +7,28 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.camera.core.CameraSelector;
 import androidx.camera.core.ImageCapture;
+import androidx.camera.core.ImageCaptureException;
+import androidx.camera.core.ImageProxy;
+import androidx.camera.view.CameraController;
+import androidx.camera.view.LifecycleCameraController;
+import androidx.camera.view.PreviewView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
+
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import hbv601g.recipeapp.MainActivity;
-import hbv601g.recipeapp.R;
 import hbv601g.recipeapp.databinding.FragmentCameraBinding;
 
 /**
@@ -43,7 +48,6 @@ public class CameraFragment extends Fragment implements ActivityCompat.OnRequest
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //For multiple permissions use RequestMultiplePermissions instead of RequestPermission
         requestPermissionLauncher = registerForActivityResult(
                 new ActivityResultContracts.RequestPermission(), isGranted -> {
                     if (isGranted) {
@@ -66,20 +70,19 @@ public class CameraFragment extends Fragment implements ActivityCompat.OnRequest
         MainActivity mainActivity = (MainActivity) getActivity();
         assert mainActivity != null;
 
-        NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
-
         if (checkCameraPermission()) startCamera();
         else requestPermissionLauncher.launch(CAMERA_PERMISSION_STRING);
 
+        mBinding.imageCaptureButton.setOnClickListener(v -> takePhoto());
         return root;
     }
 
 
-
-
+    /**
+     * Checks whether the app has permission to use the camera
+     * @return true if the app has permission, otherwise false
+     */
     private boolean checkCameraPermission() {
-        Log.d(TAG, "Checking camera permission" );
-
         MainActivity mainActivity = (MainActivity) getActivity();
         assert mainActivity != null;
 
@@ -90,9 +93,46 @@ public class CameraFragment extends Fragment implements ActivityCompat.OnRequest
     }
 
 
-
+    /**
+     * Starts the camera to display the preview
+     */
     private void startCamera() {
         Log.d(TAG, "starting camera");
+        PreviewView previewView = mBinding.viewFinder;
+        LifecycleCameraController cameraController = new LifecycleCameraController(getContext());
+        cameraController.bindToLifecycle(this);
+        cameraController.setCameraSelector(CameraSelector.DEFAULT_BACK_CAMERA);
+        previewView.setController(cameraController);
+    }
+
+    /**
+     * Captures a snapshot of the preview
+     */
+    private void takePhoto() {
+        CameraController cameraController = mBinding.viewFinder.getController();
+        if (cameraController == null) {
+            Toast.makeText(getContext(), "Unable to take photo", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        MainActivity mainActivity = (MainActivity) getActivity();
+        assert mainActivity != null;
+
+        cameraController.takePicture(ContextCompat.getMainExecutor(mainActivity), new ImageCapture.OnImageCapturedCallback() {
+            @Override
+            public void onCaptureSuccess(@NonNull ImageProxy image) {
+                //super.onCaptureSuccess(image);
+                Toast.makeText(getContext(), "Photo captured successfully!", Toast.LENGTH_SHORT).show();
+                image.close();
+            }
+
+            @Override
+            public void onError(@NonNull ImageCaptureException exception) {
+                //super.onError(exception);
+                Log.e("CameraX", "Photo capture failed: " + exception.getMessage(), exception);
+
+            }
+        });
     }
 
 
@@ -101,14 +141,4 @@ public class CameraFragment extends Fragment implements ActivityCompat.OnRequest
         super.onDestroy();
         mExecutorService.shutdown();
     }
-
-
 }
-
-
-
-
-
-
-
-
