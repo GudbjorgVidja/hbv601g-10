@@ -117,6 +117,11 @@ public class RecipeListService extends Service {
 
     }
 
+    /**
+     * Fetches a recipe list by it's Id.
+     * @param lid - id of the recipe list.
+     * @return Recipe list with the Id 'lid'.
+     */
     public RecipeList getListById(long lid){
         String url = String.format("list/id/%s?uid=%s", lid, mUid);
 
@@ -138,6 +143,11 @@ public class RecipeListService extends Service {
         return recipeList;
     }
 
+    /**
+     * Fetches all recipes from the recipe list with the Id 'lid'.
+     * @param lid - id of the recipe list.
+     * @return All recipes from the corresponding recipe list.
+     */
     public List<Recipe> getRecipesFromList(long lid){
         String url = String.format("list/id/%s/recipe?uid=%s", lid, mUid);
 
