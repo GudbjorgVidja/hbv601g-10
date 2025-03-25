@@ -70,7 +70,8 @@ public class RecipeListFragment extends Fragment {
 
             Bundle bundle = new Bundle();
             bundle.putParcelable(getString(R.string.selected_recipe), recipe);
-            navController.navigate(R.id.nav_recipe, bundle);
+            bundle.putParcelable(getString(R.string.selected_recipe_list), mRecipeList);
+            navController.navigate(R.id.nav_recipe_in_recipe_list, bundle);
 
         });
 

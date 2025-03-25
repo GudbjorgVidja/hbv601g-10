@@ -100,6 +100,7 @@ public class RecipeFragment extends Fragment {
         alert.setNegativeButton(android.R.string.no, (dialog, which) -> {});
         alert.show();
     }
+
     /**
      * Puts information from a selected recipe into the user interface
      */
@@ -140,6 +141,7 @@ public class RecipeFragment extends Fragment {
 
         ingredientMeasurementListView.setAdapter(adapter);
     }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
