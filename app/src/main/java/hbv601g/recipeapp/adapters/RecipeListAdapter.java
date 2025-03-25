@@ -16,6 +16,7 @@ import hbv601g.recipeapp.entities.RecipeList;
  * Adapter to display RecipeList objects in a ListView
  */
 public class RecipeListAdapter extends BaseAdapter {
+
     private List<RecipeList> mRecipeLists;
     private LayoutInflater mInflater;
 
@@ -53,7 +54,6 @@ public class RecipeListAdapter extends BaseAdapter {
             title.setText(currentRecipeList.getTitle());
             String tmp = currentRecipeList.isPrivate() ? "private" : "public";
             privacy.setText(tmp);
-
 
         return convertView;
     }

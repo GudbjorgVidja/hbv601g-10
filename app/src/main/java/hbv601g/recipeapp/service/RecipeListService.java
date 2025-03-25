@@ -9,9 +9,7 @@ import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
@@ -20,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-
+import hbv601g.recipeapp.entities.Recipe;
 import hbv601g.recipeapp.entities.RecipeList;
 import hbv601g.recipeapp.networking.NetworkingService;
 
@@ -117,6 +115,59 @@ public class RecipeListService extends Service {
         }
         else throw new NullPointerException("Recipe list is null");
 
+    }
+
+    /**
+     * Fetches a recipe list by it's Id.
+     * @param lid - id of the recipe list.
+     * @return Recipe list with the Id 'lid'.
+     */
+    public RecipeList getListById(long lid){
+        String url = String.format("list/id/%s?uid=%s", lid, mUid);
+
+        try {
+            mJsonElement = mNetworkingService.getRequest(url);
+        } catch(IOException e) {
+            Log.d("Networking exception", "Failed to fetch recipe list");
+        }
+
+        RecipeList recipeList = null;
+        if(mJsonElement != null) {
+            Gson gson = new GsonBuilder().create();
+
+            recipeList = gson.fromJson(mJsonElement, RecipeList.class);
+        } else {
+            throw new NullPointerException("Recipe list is null");
+        }
+
+        return recipeList;
+    }
+
+    /**
+     * Fetches all recipes from the recipe list with the Id 'lid'.
+     * @param lid - id of the recipe list.
+     * @return All recipes from the corresponding recipe list.
+     */
+    public List<Recipe> getRecipesFromList(long lid){
+        String url = String.format("list/id/%s/recipe?uid=%s", lid, mUid);
+
+        try {
+            mJsonElement = mNetworkingService.getRequest(url);
+        } catch(IOException e) {
+            Log.d("Networking exception", "Failed to fetch list recipes");
+        }
+
+        List<Recipe> listRecipes = new ArrayList<>();
+
+        if(mJsonElement != null) {
+            Gson gson = new GsonBuilder().create();
+
+            Type collectionType = new TypeToken<Collection<Recipe>>() {}.getType();
+            listRecipes = gson.fromJson(mJsonElement, collectionType);
+        } else {
+            throw new NullPointerException("List recipes are null");
+        }
+        return listRecipes;
     }
 
 
