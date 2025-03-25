@@ -38,7 +38,7 @@ public class UserFragment extends Fragment{
         }
 
         mBinding.changePasswordButton.setOnClickListener(v -> {
-            //todo fara í sloða hvot that er rétt pass word.
+            navController.navigate(R.id.nav_change_password);
         });
 
         mBinding.usernameDisplay.setText(mainActivity.getUserName());

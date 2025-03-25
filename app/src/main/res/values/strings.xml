@@ -17,6 +17,7 @@
     <string name="title_new_ingredient">New ingredient</string>
     <string name="title_recipe">Recipe</string>
     <string name="title_new_recipe_list">New recipe list</string>
+    <string name="change_password_title">Change password</string>
 
 
     <!-- Buttons/textfields -->
@@ -109,12 +110,14 @@
 
     <!-- Alert strings -->
     <string name="delete_recipe_alert_title">Delete recipe</string>
-    <string name="delete_recipe_alert_message">Are you sure you want to delete this recipe?</string>
     <string name="delete_ingredient_alert_title">Delete ingredient</string>
-    <string name="delete_ingredient_alert_message">Are you sure you want to delete this ingredient?</string>
     <string name="rename_ingredient_alert_title">Rename Ingredient</string>
-    <string name="rename_ingredient_alert_message">Please enter the new name of the ingredient:</string>
     <string name="add_recipe_to_list_dialog_title">Select a list to add the recipe to</string>
+    <string name="change_password_dialog_title">Change password</string>
+    <string name="delete_recipe_alert_message">Are you sure you want to delete this recipe?</string>
+    <string name="delete_ingredient_alert_message">Are you sure you want to delete this ingredient?</string>
+    <string name="rename_ingredient_alert_message">Please enter the new name of the ingredient:</string>
+    <string name="change_password_alert_message">Are you sure you want to change your password</string>
 
     <!-- misc -->
     <string name="currency">kr.</string>
