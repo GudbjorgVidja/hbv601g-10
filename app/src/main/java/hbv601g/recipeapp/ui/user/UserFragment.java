@@ -2,6 +2,7 @@ package hbv601g.recipeapp.ui.user;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.text.method.PasswordTransformationMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +21,6 @@ import java.util.List;
 
 import hbv601g.recipeapp.MainActivity;
 import hbv601g.recipeapp.R;
-import hbv601g.recipeapp.adapters.RecipeAdapter;
 import hbv601g.recipeapp.adapters.RecipeListAdapter;
 import hbv601g.recipeapp.databinding.FragmentUserBinding;
 import hbv601g.recipeapp.entities.RecipeList;
@@ -100,10 +100,12 @@ public class UserFragment extends Fragment{
      */
     public void changePasswordAlert(MainActivity activity){
         EditText oldPass = new EditText(activity.getApplicationContext());
+        oldPass.setTransformationMethod(PasswordTransformationMethod.getInstance());
 
         AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());
         alert.setTitle(R.string.validate_current_password_title);
         alert.setMessage(R.string.validate_current_password_alert_message);
+        alert.setView(oldPass);
 
         alert.setNegativeButton(R.string.cancel_button_text, null);
         alert.setPositiveButton(R.string.confirm_button, (dialog, which) -> {

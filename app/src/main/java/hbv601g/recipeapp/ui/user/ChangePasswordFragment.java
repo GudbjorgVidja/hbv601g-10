@@ -56,8 +56,8 @@ public class ChangePasswordFragment extends Fragment {
      * This function set the color for the new Password and validate New Password fields as red
      */
     private void newPassInvalid(){
-        mBinding.newPasswordInput.setTextColor(Color.RED);
-        mBinding.validateNewPasswordInput.setTextColor(Color.RED);
+        mBinding.newPasswordInputLayout.setBoxBackgroundColor(Color.RED);
+        mBinding.validatePasswordInputLayout.setBoxBackgroundColor(Color.RED);
     }
 
     /**
@@ -67,6 +67,13 @@ public class ChangePasswordFragment extends Fragment {
     private void confirmPass(){
         try {
             String nPass = mBinding.newPasswordInput.getText().toString();
+            if(nPass.isEmpty()){
+                newPassInvalid();
+                Toast.makeText(
+                        getActivity(), R.string.password_has_no_input_toast, Toast.LENGTH_SHORT
+                ).show();
+                return;
+            }
 
             if(nPass.equals(mBinding.validateNewPasswordInput.getText().toString())){
                 AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());

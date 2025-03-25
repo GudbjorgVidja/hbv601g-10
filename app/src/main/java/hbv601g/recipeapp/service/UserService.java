@@ -81,6 +81,8 @@ public class UserService extends Service {
         return user;
     }
 
+    //THIS CLASS USES getUser FORM BRACH featur/delete_user, waiting for PR for that to be done
+
     /**
      * Skilar pantry hjá notanda með gefið user id
      *
@@ -185,33 +187,7 @@ public class UserService extends Service {
      * @return     : if the password are the same then true else false.
      */
     public boolean validatePassword(long uId, String pass){
-        String url = "user/id/" + uId + "uid?=" + uId;
-
-        try{
-            mElement = mNetworkingService.getRequest(url);
-        }
-        catch (IOException e) {
-            Log.d("Networking exception", "Failed to get User");
-        }
-
-        User user = new User();
-        if(mElement != null){
-            Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-
-            if(!mElement.isJsonObject()){
-                user = gson.fromJson(mElement, User.class);
-            }
-            else {
-                Log.d("Networking exception (User)", "Send wrong type of json");
-                return false;
-            }
-        }
-        else {
-            Log.d("Networking exception (User)", "Now element was received");
-            return false;
-        }
-
-        return pass.equals(user.getPassword());
+        return pass.equals(getUser(uId, uId).getPassword());
     }
 
     /**
@@ -223,31 +199,11 @@ public class UserService extends Service {
     public void changePassword(long uId, String newPass){
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 
-        String url = "user/id/" + uId + "uid?=" + uId;
-
-        try{
-            mElement = mNetworkingService.getRequest(url);
-        }
-        catch (IOException e) {
-            Log.d("Networking exception", "Failed to get User");
-        }
-
-        User user = new User();
-        if(mElement != null){
-            if(!mElement.isJsonObject()){
-                user = gson.fromJson(mElement, User.class);
-            }
-            else {
-                Log.d("Networking exception (User)", "Send wrong type of json");
-                return;
-            }
-        }
-
-        url = "user/changePassword?uid=" + uId;
-        String date = gson.toJson(newPass) + gson.toJson(user.getPassword());
+        String url = "user/changePassword?uid=" + uId +
+                String.format("&newPassword=%s&oldPassword=%s", newPass, getUser(uId, uId).getPassword());
 
         try {
-            mNetworkingService.patchRequest(url, date);
+            mNetworkingService.patchRequest(url, null);
         }
         catch (IOException e){
             Log.d("Networking exception", "Failed to change password");
