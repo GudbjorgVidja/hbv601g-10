@@ -141,21 +141,22 @@ public class RecipeInRecipeListFragment extends Fragment {
 
         alert.setNegativeButton(android.R.string.no, null);
         alert.setPositiveButton(android.R.string.yes, (dialog, which) -> {
-            //todo call serves
-            //todo to a check if it is success or not.
-            mainActivity.makeToast
-                    (
-                            R.string.recipe_removed_form_list_success_toast,
-                            Toast.LENGTH_LONG
-                    );
+            if(mRecipeListService.removeRecipeFormList(mList, mRecipe)){
+                mainActivity.makeToast
+                        (
+                                R.string.recipe_removed_form_list_success_toast,
+                                Toast.LENGTH_LONG
+                        );
 
-            mainActivity.makeToast
-                    (
-                            R.string.recipe_removed_form_list_failed_toast,
-                            Toast.LENGTH_LONG
-                    );
-
-            navController.popBackStack();
+                navController.popBackStack();
+            }
+            else {
+                mainActivity.makeToast
+                        (
+                                R.string.recipe_removed_form_list_failed_toast,
+                                Toast.LENGTH_LONG
+                        );
+            }
         });
 
     }
