@@ -13,7 +13,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.viewmodel.CreationExtras;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
@@ -27,6 +26,7 @@ public class ChangePasswordFragment extends Fragment {
     private FragmentChangePasswordBinding mBinding;
     private UserService mUserService;
     private boolean mPasswordValid;
+    private NavController mNavController;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState
@@ -43,12 +43,12 @@ public class ChangePasswordFragment extends Fragment {
 
         mUserService = new UserService(new NetworkingService());
 
-        NavController navController = Navigation.findNavController(
+        mNavController = Navigation.findNavController(
                 mainActivity, R.id.nav_host_fragment_activity_main
         );
 
         mBinding.checkIfPasswordIsValid.setOnClickListener(v -> {
-            validatePass();
+            validateOldPass();
             setView();
 
             if(mPasswordValid){
@@ -65,6 +65,10 @@ public class ChangePasswordFragment extends Fragment {
 
         mBinding.confirmNewPassword.setOnClickListener(v ->{
                 if(mPasswordValid) {confirmPass();}
+        });
+
+        mBinding.cancelNewPassword.setOnClickListener(v -> {
+            mNavController.popBackStack();
         });
 
         return root;
@@ -93,10 +97,13 @@ public class ChangePasswordFragment extends Fragment {
     /**
      * The function of the see if the pass word is the same as the password that the user has.
      */
-    private void validatePass(){
+    private void validateOldPass(){
         try{
-            String input = mBinding.currentPasswordInput.getText().toString();
-            mPasswordValid = true; // todo call servis
+            mPasswordValid = mUserService.validatePassword
+                    (
+                            ((MainActivity) getActivity()).getUserId(),
+                            mBinding.currentPasswordInput.getText().toString()
+                    );
         }
         catch (NullPointerException e){
             mPasswordValid = false;
@@ -125,8 +132,14 @@ public class ChangePasswordFragment extends Fragment {
                 alert.setMessage(R.string.change_password_alert_message);
 
                 alert.setPositiveButton(android.R.string.yes, (dialog, which) -> {
-                    // todo call saves for password;
-                    // todo if stamet if it was sucksefull or not
+                    mUserService.changePassword
+                            (
+                                    ((MainActivity) getActivity()).getUserId(),
+                                    mBinding.newPasswordInput.getText().toString(),
+                                    mBinding.currentPasswordInput.getText().toString()
+                            );
+
+                    mNavController.popBackStack();
                 });
 
                 alert.setNegativeButton(android.R.string.no, (dialog, which) -> {

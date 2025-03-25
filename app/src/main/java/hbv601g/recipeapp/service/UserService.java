@@ -26,11 +26,11 @@ import hbv601g.recipeapp.entities.User;
 import hbv601g.recipeapp.networking.NetworkingService;
 
 public class UserService extends Service {
-    private NetworkingService networkingService;
+    private NetworkingService mNetworkingService;
     private JsonElement mElement;
 
     public UserService(NetworkingService networkingService){
-        this.networkingService=networkingService;
+        this.mNetworkingService =networkingService;
     }
 
     /**
@@ -45,7 +45,7 @@ public class UserService extends Service {
         url += String.format("?username=%s&password=%s",username, password);
 
         try {
-            mElement = networkingService.getRequest(url);
+            mElement = mNetworkingService.getRequest(url);
         } catch (IOException e) {
             Log.d("Networking exception", "Login failed");
             //throw new RuntimeException(e);
@@ -67,7 +67,7 @@ public class UserService extends Service {
 
         User user = null;
         try {
-            mElement = networkingService.postRequest(url + params, null);
+            mElement = mNetworkingService.postRequest(url + params, null);
         } catch (IOException e) {
             Log.d("Networking exception", "Signup failed");
         }
@@ -97,7 +97,7 @@ public class UserService extends Service {
         }*/
 
         try {
-            mElement = networkingService.getRequest(url + params);
+            mElement = mNetworkingService.getRequest(url + params);
             Log.d("UserService", "fetched element is: " + mElement);
         } catch (IOException e) {
             Log.d("Networking exception", "Failed to get user pantry");
@@ -130,7 +130,7 @@ public class UserService extends Service {
 
 
         try {
-            mElement = networkingService.putRequest(url + params, null);
+            mElement = mNetworkingService.putRequest(url + params, null);
             Log.d("API", "remove pantry response: " + mElement);
         } catch (IOException e) {
             Log.d("Networking exception", "Failed to delete item from pantry");
@@ -160,7 +160,7 @@ public class UserService extends Service {
         IngredientMeasurement ingredient = null;
 
         try{
-            mElement = networkingService.putRequest(url + params, null);
+            mElement = mNetworkingService.putRequest(url + params, null);
             Log.d("API", "Ingredient added: " + mElement);
         } catch (IOException e) {
             Log.d("Networking exception", "Failed to add ingredient to pantry");
@@ -174,6 +174,67 @@ public class UserService extends Service {
         return ingredient;
     }
 
+    /**
+     * This function check the password of a user with id value uid, is the same as the pass word
+     * string pass.
+     *
+     * @param uId  : long value, is the ID of the user.
+     * @param pass : String value, is the password that is being checked if it is the same as the
+     *               password that the user has.
+     *
+     * @return     : if the password are the same then true else false.
+     */
+    public boolean validatePassword(long uId, String pass){
+        String url = "user/id/" + uId + "uid?=" + uId;
+
+        try{
+            mElement = mNetworkingService.getRequest(url);
+        }
+        catch (IOException e) {
+            Log.d("Networking exception", "Failed to get User");
+        }
+
+        User user = new User();
+        if(mElement != null){
+            Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+
+            if(!mElement.isJsonObject()){
+                user = gson.fromJson(mElement, User.class);
+            }
+            else {
+                Log.d("Networking exception (User)", "Send wrong type of json");
+                return false;
+            }
+        }
+        else {
+            Log.d("Networking exception (User)", "Now element was received");
+            return false;
+        }
+
+        return pass.equals(user.getPassword());
+    }
+
+    /**
+     * This function changes the Password for user with ID value uid to newPass if old pass is the
+     * same as the password that the user has.
+     *
+     * @param uId     : long value, is the id number of the user.
+     * @param newPass : String value, is the new password for the user.
+     * @param oldPass : String value, is the old password of the user.
+     */
+    public void changePassword(long uId, String newPass, String oldPass){
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+
+        String url = "user/changePassword?uid=" + uId;
+        String date = gson.toJson(newPass) + gson.toJson(oldPass);
+
+        try {
+            mNetworkingService.patchRequest(url, date);
+        }
+        catch (IOException e){
+            Log.d("Networking exception", "Failed to change password");
+        }
+    }
 
     @Nullable
     @Override
