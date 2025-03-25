@@ -23,8 +23,12 @@ import java.util.Map;
 
 import hbv601g.recipeapp.entities.Ingredient;
 import hbv601g.recipeapp.entities.Unit;
+import hbv601g.recipeapp.networking.CustomCallback;
 import hbv601g.recipeapp.networking.NetworkingService;
 
+/**
+ * Service class for ingredients
+ */
 public class IngredientService extends Service {
 
     private NetworkingService mNetworkingService;
@@ -108,6 +112,37 @@ public class IngredientService extends Service {
 
         return ingredients;
     }
+
+    /**
+     * Makes a get request to get all ingredients visible to the user.
+     * @param callback - a callback to return the result
+     */
+    public void getAllIngredients(CustomCallback<List<Ingredient>> callback){
+        String url = "ingredient/all";
+        url += "?uid="+ mUid;
+        mElement = null;
+
+        CustomCallback<JsonElement> customCallback = new CustomCallback<>() {
+            @Override
+            public void onSuccess(JsonElement jsonElement) {
+                Log.d("Callback", "onSuccess í service");
+                Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+                JsonArray array = jsonElement.getAsJsonArray();
+
+                Type collectionType = new TypeToken<Collection<Ingredient>>(){}.getType();
+                callback.onSuccess(gson.fromJson(array, collectionType));
+            }
+
+            @Override
+            public void onFailure(JsonElement jsonElement) {
+                Log.d("Callback", "onFailure í service");
+                callback.onFailure(new ArrayList<>());
+            }
+        };
+
+        mNetworkingService.getRequest(url, customCallback);
+    }
+
 
     /**
      * makes a post request which is sent to the API, to create an

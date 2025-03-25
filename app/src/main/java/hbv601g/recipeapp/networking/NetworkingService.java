@@ -31,7 +31,8 @@ public class NetworkingService extends Service {
     private int mResponseCode;
 
     public NetworkingService() {
-        mBaseURL = "https://hbv501g-26.onrender.com/";
+        mBaseURL = "http://10.0.2.2:8080/";
+        //mBaseURL = "https://hbv501g-26.onrender.com/";
     }
 
     @Nullable
@@ -53,6 +54,21 @@ public class NetworkingService extends Service {
 
         return callAPI(request);
     }
+
+
+    public void getRequest(String reqURL, CustomCallback<JsonElement> customCallback) {
+        Log.d("Callback", "getRequest í networking");
+
+        Request request = new Request.Builder()
+                .url(mBaseURL +reqURL)
+                .build();
+
+
+        callAPI(request, customCallback);
+
+    }
+
+
 
 
     /**
@@ -162,4 +178,45 @@ public class NetworkingService extends Service {
 
         return mJsonElement;
     }
+
+
+
+    private void callAPI(Request request, CustomCallback<JsonElement> customCallback){
+        OkHttpClient client = new OkHttpClient();
+
+        Call call = client.newCall(request);
+
+
+        call.enqueue(new Callback() {
+            public void onResponse(@NonNull Call call, @NonNull Response response)
+                    throws IOException {
+
+                Log.d("Callback", "onResponse í networking");
+
+
+
+                assert response.body() != null;
+                String ret = response.body().string();
+                mResponseCode = response.code();
+
+                mJsonElement = JsonParser.parseString(ret);
+
+                Log.d("Callback", "mResponseCode: " + mResponseCode);
+                Log.d("Callback", "mJsonElement: " + mJsonElement);
+
+                if(mResponseCode != 200 || mJsonElement == null || mJsonElement.isJsonNull()) customCallback.onFailure(null);
+                else customCallback.onSuccess(mJsonElement);
+            }
+
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.d("API", "onFailure");
+                Log.d("Callback", "onFailure í networking");
+
+                call.cancel();
+                customCallback.onFailure(null);
+            }
+        });
+
+    }
+
 }
