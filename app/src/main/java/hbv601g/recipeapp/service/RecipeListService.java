@@ -20,6 +20,7 @@ import java.util.List;
 
 import hbv601g.recipeapp.entities.Recipe;
 import hbv601g.recipeapp.entities.RecipeList;
+import hbv601g.recipeapp.networking.CustomCallback;
 import hbv601g.recipeapp.networking.NetworkingService;
 
 /**
@@ -90,6 +91,29 @@ public class RecipeListService extends Service {
         else throw new NullPointerException("User recipe lists are null");
 
         return recipeLists;
+    }
+
+    public void getUserRecipeLists(long uid, CustomCallback<List<RecipeList>> callback) {
+        String url = "list/user/" + uid + "?uid=" + mUid;
+
+        CustomCallback<JsonElement> customCallback = new CustomCallback<>() {
+            @Override
+            public void onSuccess(JsonElement jsonElement) {
+                Log.d("Callback", "onSuccess í service");
+                Gson gson = new GsonBuilder().create();
+
+                Type collectionType = new TypeToken<Collection<RecipeList>>() {}.getType();
+                callback.onSuccess(gson.fromJson(jsonElement, collectionType));
+            }
+
+            @Override
+            public void onFailure(JsonElement jsonElement) {
+                Log.d("Callback", "onFailure í service");
+                callback.onFailure(new ArrayList<>());
+            }
+        };
+
+        mNetworkingService.getRequest(url, customCallback);
     }
 
 

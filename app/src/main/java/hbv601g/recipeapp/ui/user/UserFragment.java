@@ -13,15 +13,14 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import hbv601g.recipeapp.MainActivity;
 import hbv601g.recipeapp.R;
-import hbv601g.recipeapp.adapters.RecipeAdapter;
 import hbv601g.recipeapp.adapters.RecipeListAdapter;
 import hbv601g.recipeapp.databinding.FragmentUserBinding;
 import hbv601g.recipeapp.entities.RecipeList;
+import hbv601g.recipeapp.networking.CustomCallback;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.RecipeListService;
 
@@ -46,26 +45,25 @@ public class UserFragment extends Fragment{
         mRecipeListService = new RecipeListService(new NetworkingService(), mainActivity.getUserId());
 
         if(mainActivity.getUserId() != 0){
-            try {
-                mRecipeLists = mRecipeListService.getUserRecipeLists(mainActivity.getUserId());
-            } catch(NullPointerException e) {
-                mRecipeLists = new ArrayList<>();
-                mainActivity.makeToast(R.string.null_recipe_lists, Toast.LENGTH_LONG);
-            }
-            mRecipeListListView = mBinding.userRecipeLists;
 
-            RecipeListAdapter recipeListAdapter = new RecipeListAdapter(mainActivity.getApplicationContext(), mRecipeLists);
-            mRecipeListListView.setAdapter(recipeListAdapter);
+            mRecipeListService.getUserRecipeLists(mainActivity.getUserId(), new CustomCallback<>() {
+                @Override
+                public void onSuccess(List<RecipeList> recipeLists) {
+                    mRecipeLists = recipeLists;
+                    mainActivity.runOnUiThread(() -> makeView(mainActivity, navController));
+                }
 
-            mRecipeListListView.setOnItemClickListener((parent, view, position, id) -> {
-                RecipeList recipeList = (RecipeList) parent.getItemAtPosition(position);
-                Bundle bundle = new Bundle();
-                bundle.putParcelable(getString(R.string.selected_recipe_list), recipeList);
-                navController.navigate(R.id.nav_recipe_list, bundle);
+                @Override
+                public void onFailure(List<RecipeList> recipeLists) {
+                    mRecipeLists = recipeLists;
+                    mainActivity.runOnUiThread(() -> {
+                        makeView(mainActivity, navController);
+                        mainActivity.makeToast(R.string.null_recipe_lists, Toast.LENGTH_LONG);
+                    });
+                }
             });
+
         }
-
-
 
 
 
@@ -84,6 +82,26 @@ public class UserFragment extends Fragment{
         mBinding.usernameDisplay.setText(mainActivity.getUserName());
 
         return root;
+    }
+
+
+    /**
+     * Updates the recipe lists in the ui
+     * @param mainActivity - the MainActivity instance
+     * @param navController - the navController instance
+     */
+    private void makeView(MainActivity mainActivity, NavController navController){
+        mRecipeListListView = mBinding.userRecipeLists;
+
+        RecipeListAdapter recipeListAdapter = new RecipeListAdapter(mainActivity.getApplicationContext(), mRecipeLists);
+        mRecipeListListView.setAdapter(recipeListAdapter);
+
+        mRecipeListListView.setOnItemClickListener((parent, view, position, id) -> {
+            RecipeList recipeList = (RecipeList) parent.getItemAtPosition(position);
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(getString(R.string.selected_recipe_list), recipeList);
+            navController.navigate(R.id.nav_recipe_list, bundle);
+        });
     }
 
     @Override

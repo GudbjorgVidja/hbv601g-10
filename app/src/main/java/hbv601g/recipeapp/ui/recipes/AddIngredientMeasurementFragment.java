@@ -23,6 +23,7 @@ import hbv601g.recipeapp.databinding.FragmentAddIngredientMeasurementBinding;
 import hbv601g.recipeapp.entities.Ingredient;
 import hbv601g.recipeapp.entities.IngredientMeasurement;
 import hbv601g.recipeapp.entities.Unit;
+import hbv601g.recipeapp.networking.CustomCallback;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.IngredientService;
 
@@ -45,22 +46,26 @@ public class AddIngredientMeasurementFragment extends Fragment {
                 mainActivity, R.id.nav_host_fragment_activity_main
         );
 
-        IngredientService tempServ = new IngredientService
-                                            (
-                                                new NetworkingService(),
-                                                mainActivity.getUserId()
-                                            );
-        List<Ingredient> ingredientList= tempServ.getAllIngredients();
-        if(ingredientList == null){
-            ingredientList = new ArrayList<>();
-        }
+        IngredientService ingredientService = new IngredientService(
+            new NetworkingService(),
+            mainActivity.getUserId()
+        );
 
-        IngredientAdapter inadApter = new IngredientAdapter
-                                                (
-                                                    mainActivity.getApplicationContext(),
-                                                    ingredientList
-                                                );
-        mBinding.spinnerIngredient.setAdapter(inadApter);
+        ingredientService.getAllIngredients(new CustomCallback<>() {
+            @Override
+            public void onSuccess(List<Ingredient> ingredients) {
+                mainActivity.runOnUiThread(() -> {
+                    makeIngredientView(mainActivity, ingredients);
+                });
+            }
+
+            @Override
+            public void onFailure(List<Ingredient> ingredients) {
+                mainActivity.runOnUiThread(() -> {
+                    makeIngredientView(mainActivity, ingredients);
+                });
+            }
+        });
 
         mBinding.spinnerUnit.setAdapter(new ArrayAdapter<Unit>(
                 mainActivity.getApplicationContext(),
@@ -87,6 +92,16 @@ public class AddIngredientMeasurementFragment extends Fragment {
         });
 
         return root;
+    }
+
+    /**
+     * makes the ui components which use a list of ingredients
+     * @param mainActivity - the mainActivity
+     * @param ingredients - the list of ingredients to use
+     */
+    private void makeIngredientView(MainActivity mainActivity, List<Ingredient> ingredients){
+        mBinding.spinnerIngredient.setAdapter(
+                new IngredientAdapter(mainActivity.getApplicationContext(), ingredients));
     }
 
     private IngredientMeasurement addIngredientMeasurement(){

@@ -88,39 +88,15 @@ public class IngredientService extends Service {
         return ingredient;
     }
 
-    public List<Ingredient> getAllIngredients(){
-        String url = "ingredient/all";
-        url += "?uid="+ mUid;
-
-        try {
-            mElement = mNetworkingService.getRequest(url);
-        } catch (IOException e) {
-            Log.d("Networking exception", "get ingredients failed");
-        }
-
-        ArrayList<Ingredient> ingredients = new ArrayList<>();
-        if(mElement != null){
-            Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-            if(!mElement.isJsonArray()) return null;
-
-            JsonArray array = mElement.getAsJsonArray();
-
-            Type collectionType = new TypeToken<Collection<Ingredient>>(){}.getType();
-            ingredients = gson.fromJson(array, collectionType);
-        }
-        else throw new NullPointerException("Ingredient list is null");
-
-        return ingredients;
-    }
 
     /**
      * Makes a get request to get all ingredients visible to the user.
+     * On failure, an empty list is returned
      * @param callback - a callback to return the result
      */
     public void getAllIngredients(CustomCallback<List<Ingredient>> callback){
         String url = "ingredient/all";
         url += "?uid="+ mUid;
-        mElement = null;
 
         CustomCallback<JsonElement> customCallback = new CustomCallback<>() {
             @Override

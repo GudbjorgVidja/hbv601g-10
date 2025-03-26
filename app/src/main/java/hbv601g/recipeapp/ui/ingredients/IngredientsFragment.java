@@ -52,12 +52,15 @@ public class IngredientsFragment extends Fragment {
 
 
         Log.d("Callback", "Fyrir service kall");
+        // TODO: ath hvort við viljum nýjan þráð
         new Thread(() -> mIngredientService.getAllIngredients(new CustomCallback<>() {
             @Override
             public void onSuccess(List<Ingredient> ingredients) {
                 Log.d("Callback", "onSuccess in fragment");
                 mAllIngredients = ingredients;
-                makeView(mainActivity);
+                mainActivity.runOnUiThread(() -> {
+                    makeView(mainActivity);
+                });
             }
 
             @Override
@@ -73,8 +76,6 @@ public class IngredientsFragment extends Fragment {
         })).start();
 
 
-        Log.d("Callback", "Eftir service kall");
-
 
         return root;
     }
@@ -84,7 +85,7 @@ public class IngredientsFragment extends Fragment {
      * @param mainActivity - the MainActivity
      */
     private void makeView(MainActivity mainActivity){
-        mainActivity.runOnUiThread(() -> {
+
             NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
 
             mIngredientsListView = mBinding.ingredientsListView;
@@ -104,7 +105,6 @@ public class IngredientsFragment extends Fragment {
             if(mainActivity.getUserId() == 0) newIngredientButton.setVisibility(GONE);
 
             newIngredientButton.setOnClickListener(v -> navController.navigate(R.id.nav_new_ingredient));
-        });
 
     }
 
