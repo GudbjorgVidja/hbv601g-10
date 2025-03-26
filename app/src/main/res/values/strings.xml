@@ -93,6 +93,8 @@
     <string name="add_recipe_to_list_failed_toast">Failed to add recipe to list.</string>
     <string name="add_recipe_to_list_success_toast">The recipe has been added to the list</string>
     <string name="get_recipe_lists_failed_toast">Something went wrong fetching the lists.</string>
+    <string name="delete_user_failed_toast">Failed to delete the user account.</string>
+    <string name="delete_user_success_toast">User account deleted successfully.</string>
     <string name="delete_list_failed">Something went wrong when trying to delete the recipe list.</string>
     <string name="delete_list_success">Recipe list deleted successfully.</string>
 
@@ -115,6 +117,8 @@
     <string name="rename_ingredient_alert_title">Rename Ingredient</string>
     <string name="rename_ingredient_alert_message">Please enter the new name of the ingredient:</string>
     <string name="add_recipe_to_list_dialog_title">Select a list to add the recipe to</string>
+    <string name="delete_user_title">Delete account</string>
+    <string name="delete_user_message">Please enter your password</string>
     <string name="delete_list_alert_title">Delete List</string>
     <string name="delete_list_alert_message">Are you sure you want to delete this Recipe list?</string>
 

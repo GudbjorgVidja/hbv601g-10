@@ -43,22 +43,14 @@ public class IngredientService extends Service {
     /**
      * makes a delete request to send to the external API, to try to delete an ingredient
      * @param iid - the id of the ingredient to delete
-     * @return boolean value indicating success
      */
-    public boolean deleteIngredient(long iid){
+    public void deleteIngredient(long iid){
         String url = String.format("ingredient/delete/%s?uid=%s",iid, mUid);
         try {
-            mElement = mNetworkingService.deleteRequest(url);
+            mNetworkingService.deleteRequest(url);
         } catch (IOException e) {
             Log.d("Networking exception", "Delete ingredient failed");
         }
-
-        boolean ingredientDeleted = false;
-        if(mElement != null){
-            ingredientDeleted = mElement.getAsBoolean();
-            Log.d("API", "ingredient deleted: " + ingredientDeleted);
-        }
-        return ingredientDeleted;
     }
 
     /**
