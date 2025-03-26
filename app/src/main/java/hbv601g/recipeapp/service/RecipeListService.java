@@ -9,9 +9,7 @@ import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
@@ -174,7 +172,12 @@ public class RecipeListService extends Service {
         return listRecipes;
     }
 
-    public RecipeList updateRecipeListTitle(long id, String newTitle){
+    /**
+     * Sends a patch request to the API with a new title for the recipe list.
+     * @param id - Id of the recipe list being renamed
+     * @param newTitle - New title of the recipe list
+     */
+    public void updateRecipeListTitle(long id, String newTitle){
         String url = String.format("list/updateTitle/%s?uid=%s", id, mUid);
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
         Map<String, String> requestBody = new HashMap<>();
@@ -188,13 +191,9 @@ public class RecipeListService extends Service {
             Log.d("Networking exception", "Failed to update list title");
         }
 
-        RecipeList recipeList = null;
-        if(mJsonElement != null){
-            recipeList = gson.fromJson(mJsonElement, RecipeList.class);
-        } else {
-            throw new NullPointerException("Recipe list is null");
+        if(mJsonElement == null){
+            throw new NullPointerException("Renamed recipe list is null");
         }
-        return recipeList;
     }
 
 
