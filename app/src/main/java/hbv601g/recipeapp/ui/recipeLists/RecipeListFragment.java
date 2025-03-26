@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -36,8 +37,8 @@ public class RecipeListFragment extends Fragment {
     private RecipeList mRecipeList;
     private RecipeList mClickedList;
     private RecipeListService mRecipeListService;
-    private ListView mRecipeListListView;
     private TextView mRecipeListTitle;
+    private Button mRenameListButton;
 
 
 
@@ -82,29 +83,14 @@ public class RecipeListFragment extends Fragment {
         });
 
         mRecipeListTitle = mBinding.recipeListTitle;
+        mRenameListButton = mBinding.recipeListRenameButton;
 
         if(mainActivity.getUserId() == mRecipeList.getCreatedBy().getId()){
-            mRecipeListTitle.setOnClickListener(v -> {
-                AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
-                builder.setTitle(getString(R.string.title_rename_recipe_list));
+            // On click listener for renaming the recipe list
+            mRenameListButton.setOnClickListener(
+                    v -> makeRenameAlert(mainActivity)
+            );
 
-                final EditText input = new EditText(mainActivity.getApplicationContext());
-                input.setText(mRecipeListTitle.getText().toString());
-                builder.setView(input);
-
-                builder.setPositiveButton(getString(R.string.save), (dialog, which) -> {
-                    if(!input.getText().toString().isEmpty()){
-                        String newTitle = input.getText().toString().trim();
-                        mRecipeListTitle.setText(newTitle);
-
-                        mRecipeListService.updateRecipeListTitle(mRecipeList.getId(), newTitle);
-                    } else {
-                        mainActivity.makeToast(R.string.recipe_list_rename_blank, Toast.LENGTH_LONG);
-                    }
-                });
-                builder.setNegativeButton(getString(R.string.cancel_button_text), (dialog, which) -> dialog.cancel());
-                builder.show();
-            });
         } else {
             mainActivity.makeToast(R.string.recipe_list_rename_not_authorized, Toast.LENGTH_LONG);
         }
@@ -112,11 +98,44 @@ public class RecipeListFragment extends Fragment {
         return root;
     }
 
+
+    /**
+     * Makes an alert dialog where the user can rename the recipe list. The dialog does not accept
+     * an empty input when the user clicks save, if the user saves with a valid input the API is
+     * called to rename the recipe list. If cancel is clicked, the dialog closes and nothing happens.
+     * @param mainActivity - The MainActivity of the app
+     */
+    private void makeRenameAlert(MainActivity mainActivity){
+        AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
+        builder.setTitle(getString(R.string.title_rename_recipe_list));
+
+        final EditText input = new EditText(mainActivity);
+        input.setText(mRecipeListTitle.getText().toString());
+        builder.setView(input);
+
+        builder.setPositiveButton(getString(R.string.save), null);
+        builder.setNegativeButton(getString(R.string.cancel_button_text), (dialog, which) -> dialog.cancel());
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        // Listens for empty input when clicking save, makes a toast if input is empty.
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(view -> {
+            String newTitle = input.getText().toString().trim();
+
+            if (!newTitle.isEmpty()) {
+                mRecipeListTitle.setText(newTitle);
+                mRecipeListService.updateRecipeListTitle(mRecipeList.getId(), newTitle);
+                dialog.dismiss();
+            } else {
+                mainActivity.makeToast(R.string.recipe_list_rename_blank, Toast.LENGTH_LONG);
+            }
+        });
+    }
+
     /**
      * Function to set recipe list information in the UI.
      */
-
-
     private void setRecipeList(){
         mBinding.recipeListTitle.setText(mRecipeList.getTitle());
 
