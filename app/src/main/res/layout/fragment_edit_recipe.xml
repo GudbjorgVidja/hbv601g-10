@@ -58,6 +58,7 @@
             android:layout_marginTop="11dp"
             android:ems="10"
             android:hint="@string/recipe_hint"
+            android:importantForAutofill="no"
             android:inputType="text"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textview_title_name" />
@@ -69,6 +70,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginBottom="11dp"
             android:hint="@string/instructions_hint"
+            android:importantForAutofill="no"
             android:inputType="textMultiLine"
             app:layout_constraintBottom_toTopOf="@id/add_ingredient"
             app:layout_constraintStart_toStartOf="parent" />
@@ -84,7 +86,8 @@
             android:scaleY="1"
             app:layout_constraintBottom_toTopOf="@id/ingredients"
             app:layout_constraintStart_toEndOf="@id/textview_title_ingredients"
-            app:srcCompat="@android:drawable/ic_input_add" />
+            app:srcCompat="@android:drawable/ic_input_add"
+            tools:ignore="ImageContrastCheck" />
 
         <Switch
             android:id="@+id/is_private"
@@ -94,7 +97,8 @@
             android:layout_marginBottom="8dp"
             android:text="@string/privacy_selection_label"
             app:layout_constraintBottom_toTopOf="@id/edit_recipe"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            tools:ignore="UseSwitchCompatOrMaterialXml" />
 
         <Button
             android:id="@+id/edit_recipe"
@@ -123,7 +127,8 @@
             android:layout_marginStart="20dp"
             android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toTopOf="@id/is_private"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            tools:ignore="NestedScrolling" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
