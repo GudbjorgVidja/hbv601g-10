@@ -38,7 +38,6 @@ public class UserFragment extends Fragment{
     private List<RecipeList> mRecipeLists;
     private RecipeListService mRecipeListService;
     private ListView mRecipeListListView;
-    private UserService mUserService;
     private NavController mNavController;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -137,9 +136,10 @@ public class UserFragment extends Fragment{
             });
         });
 	
-     alert.show();
+        dialog.show();
     }
-			     
+
+    /**
      * Creates and shows an alert dialog to confirm the deletion of a user account.
      * The user is asked for their password, and an attempt is made to delete the account,
      * unless they cancel the action
@@ -149,8 +149,8 @@ public class UserFragment extends Fragment{
         EditText editText = new EditText(mainActivity.getApplicationContext());
         editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());
-        alert.setTitle(getString(R.string.delete_user_title));
-        alert.setMessage(getString(R.string.delete_user_message));
+        alert.setTitle(getString(R.string.delete_user_alert_message));
+        alert.setMessage(getString(R.string.delete_user_alert_message));
         alert.setView(editText);
         alert.setPositiveButton(getString(R.string.confirm_button), null);
         alert.setNegativeButton(getString(R.string.cancel_button_text), null);
