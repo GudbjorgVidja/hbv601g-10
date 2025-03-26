@@ -13,7 +13,7 @@
         android:layout_marginVertical="10dp"
         android:clickable="true"
         android:focusable="true"
-        android:textSize="18ewsp"
+        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

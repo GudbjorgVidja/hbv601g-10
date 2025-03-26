@@ -3,6 +3,7 @@ package hbv601g.recipeapp.ui.recipeLists;
 import android.app.AlertDialog;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -16,6 +17,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.List;
+
 import hbv601g.recipeapp.MainActivity;
 import hbv601g.recipeapp.R;
 import hbv601g.recipeapp.adapters.RecipeAdapter;
@@ -25,10 +28,13 @@ import hbv601g.recipeapp.entities.RecipeList;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.RecipeListService;
 
-
+/**
+ * Fragment for a single recipe list. Contains a title, the list creator, a description and a list of Recipes
+ */
 public class RecipeListFragment extends Fragment {
     private FragmentRecipeListBinding mBinding;
     private RecipeList mRecipeList;
+    private RecipeList mClickedList;
     private RecipeListService mRecipeListService;
     private ListView mRecipeListListView;
     private TextView mRecipeListTitle;
@@ -37,11 +43,13 @@ public class RecipeListFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        // Clicked list is sent in a bundle to the fragment
         if(getArguments() != null){
-            mRecipeList = getArguments().getParcelable(getString(R.string.selected_recipe_list));
+            mClickedList = getArguments().getParcelable(getString(R.string.selected_recipe_list));
         }
+
         mBinding = FragmentRecipeListBinding.inflate(inflater, container, false);
         View root = mBinding.getRoot();
         MainActivity mainActivity = (MainActivity) getActivity();
@@ -49,12 +57,21 @@ public class RecipeListFragment extends Fragment {
         NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
         mRecipeListService = new RecipeListService(new NetworkingService(), mainActivity.getUserId());
 
+        /**
+         * We use the ID of mClickedList to fetch the list from the API
+         * so that it will update when a recipe is added to the list while
+         * the list is still open.
+         */
+        mRecipeList = mRecipeListService.getListById(mClickedList.getId());
+
+        // UI set with list information
         if(mRecipeList != null) {
             setRecipeList();
         }
 
-        mRecipeListListView = mBinding.recipeListRecipes;
+        ListView mRecipeListListView = mBinding.recipeListRecipes;
 
+        // On click listener so the user can click and view recipes from the list
         mRecipeListListView.setOnItemClickListener((parent, view, position, id) -> {
             Recipe recipe = (Recipe) parent.getItemAtPosition(position);
             Log.d("Selected", recipe.toString());
@@ -95,6 +112,9 @@ public class RecipeListFragment extends Fragment {
         return root;
     }
 
+    /**
+     * Function to set recipe list information in the UI.
+     */
 
 
     private void setRecipeList(){
@@ -112,7 +132,10 @@ public class RecipeListFragment extends Fragment {
         assert mainActivity != null;
 
         ListView recipeListView = mBinding.recipeListRecipes;
-        RecipeAdapter adapter = new RecipeAdapter(mainActivity.getApplicationContext(), mRecipeList.getRecipes());
+        List<Recipe> mListRecipes = mRecipeListService.getRecipesFromList(mRecipeList.getId());
+
+        RecipeAdapter adapter = new RecipeAdapter(mainActivity.getApplicationContext(), mListRecipes);
+        Log.d("RecipeListFragment", "List recipes are: " + mRecipeList.getRecipes());
         recipeListView.setAdapter(adapter);
     }
 }
