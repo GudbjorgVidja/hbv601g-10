@@ -2,6 +2,7 @@ package hbv601g.recipeapp.ui.user;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -98,6 +99,7 @@ public class UserFragment extends Fragment{
      */
     private void deleteUserAlert(MainActivity mainActivity) {
         EditText editText = new EditText(mainActivity.getApplicationContext());
+        editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());
         alert.setTitle(getString(R.string.delete_user_title));
         alert.setMessage(getString(R.string.delete_user_message));
