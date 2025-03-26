@@ -106,22 +106,27 @@ public class UserFragment extends Fragment{
         alert.setTitle(R.string.validate_current_password_title);
         alert.setMessage(R.string.validate_current_password_alert_message);
         alert.setView(oldPass);
-
+        alert.setPositiveButton(R.string.confirm_button, null);
         alert.setNegativeButton(R.string.cancel_button_text, null);
-        alert.setPositiveButton(R.string.confirm_button, (dialog, which) -> {
-           String password = oldPass.getText().toString();
-           if(password.isEmpty()) {
-               oldPass.setError(getString(R.string.validate_current_password_alert_error));
-           }
-           else {
-               if(mUserService.validatePassword(activity.getUserId(), password)){
-                   mNavController.navigate(R.id.nav_change_password);
-               }
-               else {
-                   oldPass.setText("");
-                   activity.makeToast(R.string.password_invalid_toast,Toast.LENGTH_LONG);
-               }
-           }
+
+        AlertDialog dialog = alert.create();
+        dialog.setOnShowListener(d -> {
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+                String password = oldPass.getText().toString();
+                if(password.isEmpty()) {
+                    oldPass.setError(getString(R.string.validate_current_password_alert_error));
+                }
+                else {
+                    if(mUserService.validatePassword(activity.getUserId(), password)){
+                        dialog.dismiss();
+                        mNavController.navigate(R.id.nav_change_password);
+                    }
+                    else {
+                        oldPass.setText("");
+                        activity.makeToast(R.string.password_invalid_toast,Toast.LENGTH_LONG);
+                    }
+                }
+            });
         });
 
         alert.show();
