@@ -191,7 +191,7 @@ public class RecipeListService extends Service {
 
         boolean res = false;
         if(mJsonElement != null){
-            res = mJsonElement.getAsBoolean();
+            res = mJsonElement.isJsonArray();
             Log.d("API", "recipe removed: " + res);
         }
 

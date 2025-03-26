@@ -71,8 +71,9 @@ public class RecipeInRecipeListFragment extends Fragment {
         mRecipe = getArguments().getParcelable(getString(R.string.selected_recipe));
         setRecipe();
 
-        if (mRecipe != null && mRecipe.getCreatedBy() != null && mainActivity.getUserId() != 0
-                && mRecipe.getCreatedBy().getId() == mainActivity.getUserId()){
+        if (mRecipe != null && mList != null && mList.getCreatedBy() != null
+                && mainActivity.getUserId() != 0
+                && mList.getCreatedBy().getId() == mainActivity.getUserId()){
             mBinding.removeRecipeFormListButton.setOnClickListener(v -> {
                 removeRecipeAlert(navController, mainActivity);
             });
@@ -159,6 +160,7 @@ public class RecipeInRecipeListFragment extends Fragment {
             }
         });
 
+        alert.show();
     }
 
     @Override
