@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.camera.core.CameraSelector;
 import androidx.camera.core.ImageCapture;
 import androidx.camera.core.ImageCaptureException;
+import androidx.camera.core.ImageProxy;
 import androidx.camera.view.CameraController;
 import androidx.camera.view.LifecycleCameraController;
 import androidx.camera.view.PreviewView;
@@ -23,11 +24,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import java.io.File;
-
 import hbv601g.recipeapp.MainActivity;
-import hbv601g.recipeapp.R;
 import hbv601g.recipeapp.databinding.FragmentCameraBinding;
+import hbv601g.recipeapp.localstorage.ImageLab;
 
 /**
  * <a href="https://www.geeksforgeeks.org/android-how-to-request-permissions-in-android-application/">Request permissions - Geeks for Geeks</a>
@@ -110,16 +109,14 @@ public class CameraFragment extends Fragment implements ActivityCompat.OnRequest
         MainActivity mainActivity = (MainActivity) getActivity();
         assert mainActivity != null;
 
-        File tempFile = new File(mainActivity.getFilesDir(), getString(R.string.home_photo_name));
-        ImageCapture.OutputFileOptions outputOptions =
-                new ImageCapture.OutputFileOptions.Builder(tempFile).build();
 
-        cameraController.takePicture(outputOptions, ContextCompat.getMainExecutor(mainActivity), new ImageCapture.OnImageSavedCallback() {
+        cameraController.takePicture(ContextCompat.getMainExecutor(mainActivity), new ImageCapture.OnImageCapturedCallback() {
             @Override
-            public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
+            public void onCaptureSuccess(@NonNull ImageProxy image) {
+                super.onCaptureSuccess(image);
                 Log.d(TAG,"Photo captured successfully!");
                 Toast.makeText(getContext(), "Photo captured successfully!", Toast.LENGTH_SHORT).show();
-
+                ImageLab.get(getActivity()).addPhoto(image.toBitmap());
             }
 
             @Override
@@ -129,7 +126,6 @@ public class CameraFragment extends Fragment implements ActivityCompat.OnRequest
 
             }
         });
-
     }
 
 

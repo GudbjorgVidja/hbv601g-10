@@ -2,7 +2,6 @@ package hbv601g.recipeapp.ui.home;
 
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,10 +12,10 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-import java.io.File;
 import hbv601g.recipeapp.MainActivity;
 import hbv601g.recipeapp.R;
 import hbv601g.recipeapp.databinding.FragmentHomeBinding;
+import hbv601g.recipeapp.localstorage.ImageLab;
 
 public class HomeFragment extends Fragment {
 
@@ -46,16 +45,13 @@ public class HomeFragment extends Fragment {
      * there, a predetermined photo is shown
      */
     private void showPhoto(){
-        File savedFile = new File(requireContext().getFilesDir(), getString(R.string.home_photo_name));
-
-        if (savedFile.exists()) {
-            Bitmap imgBitmap = BitmapFactory.decodeFile(savedFile.getAbsolutePath());
-            mBinding.homeImage.setImageBitmap(imgBitmap);
-            //Glide.with(this).load(savedFile).into(mBinding.homeImage);
-        } else {
-            mBinding.homeImage.setImageResource(R.drawable.ic_home_black_24dp);
+        Bitmap bitmap = ImageLab.get(getActivity()).getPhoto();
+        if (bitmap!=null){
+            mBinding.homeImage.setImageBitmap(bitmap);
         }
+        else mBinding.homeImage.setImageResource(R.drawable.ic_home_black_24dp);
     }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
