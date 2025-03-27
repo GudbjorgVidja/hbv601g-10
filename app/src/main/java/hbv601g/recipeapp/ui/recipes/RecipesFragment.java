@@ -81,7 +81,7 @@ public class RecipesFragment extends Fragment {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                    List<Recipe> temp = SearchForRec(mainActivity);
+                    List<Recipe> temp = SearchForRec();
 
                     if(temp != null){
                         mRecipeList = temp;
@@ -100,14 +100,10 @@ public class RecipesFragment extends Fragment {
     /**
      * This function Search for the recipe with the title that the user input in the Search bar.
      *
-     * @param activity : MainActivity value, is the activity of the fragment.
-     *
      * @return a list of recipe that have the title of the recipe in the Search bar
      */
-    public List<Recipe> SearchForRec(MainActivity activity){
-        String recipe = mBinding.recipeSearchBar.getText().toString();
-        //todo call servis
-        return null;
+    private List<Recipe> SearchForRec(){
+        return mRecipeService.SearchRecipe(mBinding.recipeSearchBar.getText().toString());
     }
 
     @Override
