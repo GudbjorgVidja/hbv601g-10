@@ -18,6 +18,7 @@
     <string name="title_recipe">Recipe</string>
     <string name="title_new_recipe_list">New recipe list</string>
     <string name="title_recipe_list">Recipe list</string>
+    <string name="title_rename_recipe_list">Change recipe list name</string>
 
 
     <!-- Buttons/textfields -->
@@ -42,7 +43,7 @@
     <string name="ingredient_quantity_brand">%1$s%2$s, %3$s brand</string>
     <string name="pantry_ingredient_quantity_brand">%1$s%2$s, %3$s brand</string>
     <string name="delete_button_text">Delete</string>
-    <string name="rename_ingredient_button_text">Rename</string>
+    <string name="rename_button_text">Rename</string>
     <string name="new_ingredient_title_hint">Title</string>
     <string name="new_ingredient_quantity_hint">Qty.</string>
     <string name="new_ingredient_price_hint">Price</string>
@@ -65,6 +66,8 @@
     <string name="recipe_list_recipes">Recipes</string>
     <string name="recipe_list_text">Recipe Lists</string>
     <string name="add_to_list_button">Add to list</string>
+    <string name="save_button">Save</string>
+
 
 
     <!-- Messages/toasts -->
@@ -93,6 +96,8 @@
     <string name="add_recipe_to_list_failed_toast">Failed to add recipe to list.</string>
     <string name="add_recipe_to_list_success_toast">The recipe has been added to the list</string>
     <string name="get_recipe_lists_failed_toast">Something went wrong fetching the lists.</string>
+    <string name="recipe_list_rename_blank">Input cannot be blank</string>
+    <string name="recipe_list_rename_not_authorized">You must be the creator of this list to change the title</string>
     <string name="delete_user_failed_toast">Failed to delete the user account.</string>
     <string name="delete_user_success_toast">User account deleted successfully.</string>
 
