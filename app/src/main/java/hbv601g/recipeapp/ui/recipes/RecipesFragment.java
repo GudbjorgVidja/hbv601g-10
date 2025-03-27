@@ -85,6 +85,8 @@ public class RecipesFragment extends Fragment {
 
                     if(temp != null){
                         mRecipeList = temp;
+
+                        recipeAdapter.setList(mRecipeList);
                         recipeAdapter.notifyDataSetChanged();
                         return true;
                     }
