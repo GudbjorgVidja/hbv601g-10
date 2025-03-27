@@ -180,7 +180,8 @@ public class RecipeListService extends Service {
      * @return if recipe was removed form the list then true else false
      */
     public boolean removeRecipeFormList(RecipeList list, Recipe recipe){
-        String url = "list/id/" + list.getId() + "/recipe/" + recipe.getId() + "/remove";
+        String url = "list/id/" + list.getId() + "/recipe/" + recipe.getId() +
+                "/remove?uid=" + mUid;
 
         try {
             mJsonElement = mNetworkingService.patchRequest(url, null);
