@@ -81,7 +81,7 @@ public class RecipesFragment extends Fragment {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                    List<Recipe> temp = SearchForRec();
+                    List<Recipe> temp = searchForRec();
 
                     if(temp != null){
                         mRecipeList = temp;
@@ -100,10 +100,17 @@ public class RecipesFragment extends Fragment {
     /**
      * This function Search for the recipe with the title that the user input in the Search bar.
      *
-     * @return a list of recipe that have the title of the recipe in the Search bar
+     * @return a list of recipe that have the title of the recipe in the Search bar or if the
+     *         Search bar is empty then it returns all of the recipes that the user can see.
      */
-    private List<Recipe> SearchForRec(){
-        return mRecipeService.SearchRecipe(mBinding.recipeSearchBar.getText().toString());
+    private List<Recipe> searchForRec(){
+        String inPut = mBinding.recipeSearchBar.getText().toString();
+
+        if (!inPut.isEmpty()){
+            return mRecipeService.SearchRecipe(inPut);
+        }
+
+        return mRecipeService.getAllRecipes();
     }
 
     @Override
