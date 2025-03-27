@@ -38,9 +38,6 @@ public class RecipeListFragment extends Fragment {
     private RecipeList mClickedList;
     private RecipeListService mRecipeListService;
     private TextView mRecipeListTitle;
-    private Button mRenameListButton;
-
-
 
 
     @Override
@@ -58,10 +55,10 @@ public class RecipeListFragment extends Fragment {
         NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
         mRecipeListService = new RecipeListService(new NetworkingService(), mainActivity.getUserId());
 
-        /**
-         * We use the ID of mClickedList to fetch the list from the API
-         * so that it will update when a recipe is added to the list while
-         * the list is still open.
+        /*
+          We use the ID of mClickedList to fetch the list from the API
+          so that it will update when a recipe is added to the list while
+          the list is still open.
          */
         mRecipeList = mRecipeListService.getListById(mClickedList.getId());
 
@@ -83,7 +80,7 @@ public class RecipeListFragment extends Fragment {
         });
 
         mRecipeListTitle = mBinding.recipeListTitle;
-        mRenameListButton = mBinding.recipeListRenameButton;
+        Button mRenameListButton = mBinding.recipeListRenameButton;
 
         if(mainActivity.getUserId() == mRecipeList.getCreatedBy().getId()){
             // On click listener for renaming the recipe list
@@ -93,6 +90,7 @@ public class RecipeListFragment extends Fragment {
 
         } else {
             mainActivity.makeToast(R.string.recipe_list_rename_not_authorized, Toast.LENGTH_LONG);
+            mRenameListButton.setVisibility(View.GONE);
         }
 
         return root;
@@ -113,7 +111,7 @@ public class RecipeListFragment extends Fragment {
         input.setText(mRecipeListTitle.getText().toString());
         builder.setView(input);
 
-        builder.setPositiveButton(getString(R.string.save), null);
+        builder.setPositiveButton(getString(R.string.save_button), null);
         builder.setNegativeButton(getString(R.string.cancel_button_text), (dialog, which) -> dialog.cancel());
 
         AlertDialog dialog = builder.create();
