@@ -2,6 +2,7 @@ package hbv601g.recipeapp.ui.recipes;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,7 +77,37 @@ public class RecipesFragment extends Fragment {
             mBinding.addRecipe.hide();
         }
 
+        mBinding.recipeSearchBar.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                    List<Recipe> temp = SearchForRec(mainActivity);
+
+                    if(temp != null){
+                        mRecipeList = temp;
+                        recipeAdapter.notifyDataSetChanged();
+                        return true;
+                    }
+                    return false;
+                }
+                return false;
+            }
+        });
+
         return  root;
+    }
+
+    /**
+     * This function Search for the recipe with the title that the user input in the Search bar.
+     *
+     * @param activity : MainActivity value, is the activity of the fragment.
+     *
+     * @return a list of recipe that have the title of the recipe in the Search bar
+     */
+    public List<Recipe> SearchForRec(MainActivity activity){
+        String recipe = mBinding.recipeSearchBar.getText().toString();
+        //todo call servis
+        return null;
     }
 
     @Override

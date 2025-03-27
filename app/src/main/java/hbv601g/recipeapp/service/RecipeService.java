@@ -179,6 +179,35 @@ public class RecipeService extends Service {
         return rep;
     }
 
+    /**
+     * This function look for all recipe with the tile that is similar to the in put string.
+     *
+     * @param inPut : String value, is the sting that is use in the search.
+     *
+     * @return a list of recipes that have similar titles as the input string.
+     */
+    public List<Recipe> SearchRecipe (String inPut){
+        String url = "recipe/search/" + inPut + "?uid=" + mUid;
+
+        try {
+            mJsonElement = mNetworkingService.getRequest(url);
+        } catch (IOException e) {
+            Log.d("Networking exception", "Failed to get search results for recipe");
+        }
+
+        List<Recipe> repList = null;
+        if(mJsonElement != null){
+            Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+            if(!mJsonElement.isJsonArray()) return null;
+
+            JsonArray array = mJsonElement.getAsJsonArray();
+
+            Type collectionType = new TypeToken<Collection<Recipe>>(){}.getType();
+            repList = gson.fromJson(array, collectionType);
+        }
+        return repList;
+    }
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
