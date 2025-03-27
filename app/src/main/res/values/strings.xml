@@ -45,16 +45,11 @@
     <string name="ingredient_price_store">%1$dkr at %2$s</string>
     <string name="ingredient_quantity_brand">%1$s%2$s, %3$s brand</string>
     <string name="pantry_ingredient_quantity_brand">%1$s%2$s, %3$s brand</string>
-    <string name="delete_button_text">Delete</string>
     <string name="rename_button_text">Rename</string>
-    <string name="new_ingredient_title_hint">Title</string>
-    <string name="new_ingredient_quantity_hint">Qty.</string>
-    <string name="new_ingredient_price_hint">Price</string>
-    <string name="new_ingredient_store_hint">Store</string>
-    <string name="confirm_new_ingredient_button">Create ingredient</string>
-    <string name="create_new_ingredient_button">New ingredient</string>
     <string name="privacy_selection_label">Make private</string>
     <string name="confirm_button">Confirm</string>
+    <string name="confirm_new_ingredient_button">Create ingredient</string>
+    <string name="create_new_ingredient_button">New ingredient</string>
     <string name="login_button_text">Login</string>
     <string name="signup_button_text">Signup</string>
     <string name="logout_button_text">Log out</string>
@@ -69,6 +64,7 @@
     <string name="change_password_button">Change password</string>
     <string name="add_button_text">Add</string>
     <string name="check_password_bottom">Check if password is valid</string>
+    <string name="save_button">Save</string>
     <string name="recipe_tpc">Total purchase cost: %1$s kr</string>
     <string name="recipe_tic">Total ingredient cost: %1$s kr</string>
     <string name="recipe_ppc">Personalized purchase cost: %1$s kr</string>
@@ -77,8 +73,6 @@
     <string name="recipe_list_description">Description</string>
     <string name="recipe_list_recipes">Recipes</string>
     <string name="recipe_list_text">Recipe Lists</string>
-    <string name="add_to_list_button">Add to list</string>
-    <string name="save_button">Save</string>
 
     <!-- Messages/toasts -->
     <string name="login_failed_toast">Login failed. Please ensure username and password are correct.</string>
