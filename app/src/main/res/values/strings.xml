@@ -84,6 +84,8 @@
     <string name="remove_from_pantry_successful">Successfully removed item from pantry.</string>
     <string name="field_required_error">This field is required</string>
     <string name="add_to_pantry_failed">Failed to add ingredient to pantry</string>
+    <string name="add_to_pantry_success">Ingredient successfully added to pantry</string>
+    <string name="add_to_pantry_already_existing">The ingredient has not been added since it\'s already in the pantry.</string>
     <string name="create_ingredient_failed_toast">Failed to create ingredient.</string>
     <string name="rename_ingredient_failed_toast">Failed to rename ingredient.</string>
     <string name="recipe_unknown_error">Recipe could not be crated, unknown error</string>

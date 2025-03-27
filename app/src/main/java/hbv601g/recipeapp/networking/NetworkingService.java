@@ -86,6 +86,14 @@ public class NetworkingService extends Service {
         return callAPI(request);
     }
 
+    public void postRequest(String reqURL, String data, CustomCallback<JsonElement> apiCallback) {
+        RequestBody requestBody = RequestBody.create(data == null ? "" : data,
+                MediaType.parse("application/json"));
+        Request request = new Request.Builder().url(mBaseURL +reqURL).post(requestBody).build();
+
+        callAPI(request, apiCallback);
+    }
+
 
     /**
      * Makes a patch request using the given url and data, calls the API and interprets the result
@@ -102,6 +110,13 @@ public class NetworkingService extends Service {
         return callAPI(request);
     }
 
+    public void patchRequest(String reqURL, String data, CustomCallback<JsonElement> apiCallback) {
+        RequestBody requestBody = RequestBody.create(data == null ? "" : data,
+                MediaType.parse("application/json"));
+        Request request = new Request.Builder().url(mBaseURL +reqURL).patch(requestBody).build();
+        callAPI(request, apiCallback);
+    }
+
     /**
      * Makes a delete request using the given url and calls the API
      * Throws a DeleteFailedException if the responseCode is not 200
@@ -112,6 +127,11 @@ public class NetworkingService extends Service {
         Request request = new Request.Builder().url(mBaseURL +reqURL).delete().build();
         callAPI(request);
         if(mResponseCode != 200) throw new DeleteFailedException();
+    }
+
+    public void deleteRequest(String reqURL, CustomCallback<JsonElement> callback){
+        Request request = new Request.Builder().url(mBaseURL +reqURL).delete().build();
+        callAPI(request,callback);
     }
 
     /**
@@ -128,6 +148,13 @@ public class NetworkingService extends Service {
         mJsonElement = callAPI(request);
         Log.d("API", "Response code from put request: " + mResponseCode);
         return mJsonElement;
+    }
+
+    public void putRequest(String reqURL, String data, CustomCallback<JsonElement> apiCallback)  {
+        RequestBody requestBody = RequestBody.create(data == null ? "" : data,
+                MediaType.parse("application/json"));
+        Request request = new Request.Builder().url(mBaseURL + reqURL).put(requestBody).build();
+        callAPI(request, apiCallback);
     }
 
 
@@ -190,8 +217,6 @@ public class NetworkingService extends Service {
 
                 Log.d("Callback", "onResponse í networking");
 
-
-
                 assert response.body() != null;
                 String ret = response.body().string();
                 mResponseCode = response.code();
@@ -201,8 +226,13 @@ public class NetworkingService extends Service {
                 Log.d("Callback", "mResponseCode: " + mResponseCode);
                 Log.d("Callback", "mJsonElement: " + mJsonElement);
 
-                if(mResponseCode != 200 || mJsonElement == null || mJsonElement.isJsonNull()) customCallback.onFailure(null);
-                else customCallback.onSuccess(mJsonElement);
+                // Bara onFailure hér ef response code er ekki 200, annars er success með null json
+                if(mResponseCode != 200)
+                    customCallback.onFailure(null);
+                else if ( mJsonElement == null || mJsonElement.isJsonNull())
+                    customCallback.onSuccess(null);
+                else
+                    customCallback.onSuccess(mJsonElement);
             }
 
             public void onFailure(@NonNull Call call, @NonNull IOException e) {

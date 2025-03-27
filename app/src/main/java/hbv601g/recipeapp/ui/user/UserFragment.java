@@ -23,10 +23,10 @@ import hbv601g.recipeapp.R;
 import hbv601g.recipeapp.adapters.RecipeListAdapter;
 import hbv601g.recipeapp.databinding.FragmentUserBinding;
 import hbv601g.recipeapp.entities.RecipeList;
+import hbv601g.recipeapp.entities.User;
 import hbv601g.recipeapp.networking.CustomCallback;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.RecipeListService;
-import hbv601g.recipeapp.exceptions.DeleteFailedException;
 import hbv601g.recipeapp.service.UserService;
 
 public class UserFragment extends Fragment{
@@ -56,13 +56,13 @@ public class UserFragment extends Fragment{
                 @Override
                 public void onSuccess(List<RecipeList> recipeLists) {
                     mRecipeLists = recipeLists;
-                    mainActivity.runOnUiThread(() -> makeView(mainActivity, navController));
+                    requireActivity().runOnUiThread(() -> makeView(mainActivity, navController));
                 }
 
                 @Override
                 public void onFailure(List<RecipeList> recipeLists) {
                     mRecipeLists = recipeLists;
-                    mainActivity.runOnUiThread(() -> {
+                    requireActivity().runOnUiThread(() -> {
                         makeView(mainActivity, navController);
                         mainActivity.makeToast(R.string.null_recipe_lists, Toast.LENGTH_LONG);
                     });
@@ -83,14 +83,13 @@ public class UserFragment extends Fragment{
 
         mBinding.usernameDisplay.setText(mainActivity.getUserName());
 
-        mBinding.createRecipeListButton.setOnClickListener(v -> {
-            navController.navigate(R.id.navigation_new_recipe_list);
-        });
+        mBinding.createRecipeListButton.setOnClickListener(v ->
+                navController.navigate(R.id.navigation_new_recipe_list));
+
         mBinding.usernameDisplay.setText(mainActivity.getUserName());
 
-        mBinding.deleteUserButton.setOnClickListener(v -> {
-            deleteUserAlert(mainActivity);
-        });
+        mBinding.deleteUserButton.setOnClickListener(v -> deleteUserAlert(mainActivity));
+
         return root;
     }
 
@@ -116,13 +115,24 @@ public class UserFragment extends Fragment{
                 String password = editText.getText().toString().trim();
                 if (password.isEmpty()) editText.setError(getString(R.string.field_required_error));
                 else{
-                    try {
-                        mUserService.deleteAccount(mainActivity.getUserId(), password);
-                        mainActivity.removeCurrentUser();
-                        mainActivity.makeToast(R.string.delete_user_success_toast,Toast.LENGTH_LONG);
-                    } catch (DeleteFailedException e) {
-                        mainActivity.makeToast(R.string.delete_user_failed_toast, Toast.LENGTH_LONG);
-                    }
+
+                    mUserService.deleteAccount(mainActivity.getUserId(), password, new CustomCallback<>() {
+                        @Override
+                        public void onSuccess(User user) {
+                            requireActivity().runOnUiThread(() -> {
+                                mainActivity.removeCurrentUser();
+                                mainActivity.makeToast(R.string.delete_user_success_toast,Toast.LENGTH_LONG);
+                            });
+                        }
+
+                        @Override
+                        public void onFailure(User user) {
+                            requireActivity().runOnUiThread(() ->
+                                    mainActivity.makeToast(R.string.delete_user_failed_toast, Toast.LENGTH_LONG));
+
+                        }
+                    });
+
                     alertDialog.dismiss();
                 }
             });

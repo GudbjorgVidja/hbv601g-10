@@ -17,6 +17,7 @@ import java.util.Objects;
 import hbv601g.recipeapp.MainActivity;
 import hbv601g.recipeapp.R;
 import hbv601g.recipeapp.databinding.FragmentSignupBinding;
+import hbv601g.recipeapp.networking.CustomCallback;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.UserService;
 
@@ -44,16 +45,24 @@ public class SignupFragment extends Fragment {
                 mainActivity.makeToast(R.string.login_not_empty_toast, Toast.LENGTH_LONG);
             }
             else{
-                User user = mUserService.signup(username,password);
-                if(user == null){
-                    mainActivity.makeToast(R.string.signup_failed_toast, Toast.LENGTH_LONG);
-                }
-                else{
-                    mainActivity.updateCurrentUser(user);
-                    navController.popBackStack();
-                    navController.popBackStack();
-                    navController.navigate(R.id.nav_user);
-                }
+                mUserService.signup(username, password, new CustomCallback<>() {
+                    @Override
+                    public void onSuccess(User user) {
+                        requireActivity().runOnUiThread(() -> {
+                            mainActivity.updateCurrentUser(user);
+                            navController.popBackStack();
+                            navController.popBackStack();
+                            navController.navigate(R.id.nav_user);
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(User user) {
+                        requireActivity().runOnUiThread(() ->
+                                mainActivity.makeToast(R.string.signup_failed_toast, Toast.LENGTH_LONG));
+                    }
+                });
+
             }
         });
         return root;

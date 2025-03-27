@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -17,6 +18,7 @@ import hbv601g.recipeapp.MainActivity;
 import hbv601g.recipeapp.R;
 import hbv601g.recipeapp.databinding.FragmentPantryIngredientBinding;
 import hbv601g.recipeapp.entities.IngredientMeasurement;
+import hbv601g.recipeapp.networking.CustomCallback;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.UserService;
 
@@ -31,7 +33,7 @@ public class PantryIngredientFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         if(getArguments() != null){
             mPantryIngredient = getArguments().getParcelable(getString(R.string.selected_pantry_item));
@@ -77,13 +79,24 @@ public class PantryIngredientFragment extends Fragment {
         alert.setMessage("Are you sure you want to remove this item from the pantry?");
         alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                boolean res = mUserService.removeIngredientFromPantry(mainActivity.getUserId(), mPantryIngredient.getIngredient().getId());
-                if(res){
-                    navController.popBackStack();
-                    mainActivity.makeToast(R.string.remove_from_pantry_successful, Toast.LENGTH_LONG);
-                } else {
-                    mainActivity.makeToast(R.string.remove_from_pantry_failed, Toast.LENGTH_LONG);
-                }
+
+                // TODO: ath hvernig við viljum gera með Boolean gildin í callback (ekkert notað)
+                mUserService.removeIngredientFromPantry(mainActivity.getUserId(), mPantryIngredient.getIngredient().getId(), new CustomCallback<>() {
+                    @Override
+                    public void onSuccess(Boolean aBoolean) {
+                        requireActivity().runOnUiThread(() -> {
+                            navController.popBackStack();
+                            mainActivity.makeToast(R.string.remove_from_pantry_successful, Toast.LENGTH_LONG);
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(Boolean aBoolean) {
+                        requireActivity().runOnUiThread(() ->
+                                mainActivity.makeToast(R.string.remove_from_pantry_failed, Toast.LENGTH_LONG));
+                    }
+                });
+
             }
         });
         alert.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {

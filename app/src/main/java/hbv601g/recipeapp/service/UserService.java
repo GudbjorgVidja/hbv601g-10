@@ -9,12 +9,10 @@ import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,35 +21,54 @@ import java.util.List;
 import hbv601g.recipeapp.entities.IngredientMeasurement;
 import hbv601g.recipeapp.entities.Unit;
 import hbv601g.recipeapp.entities.User;
-import hbv601g.recipeapp.exceptions.DeleteFailedException;
+import hbv601g.recipeapp.networking.CustomCallback;
 import hbv601g.recipeapp.networking.NetworkingService;
 
 public class UserService extends Service {
     private NetworkingService mNetworkingService;
-    private JsonElement mElement;
 
-    public UserService(NetworkingService networkingService){
-        this.mNetworkingService =networkingService;
+    public UserService(NetworkingService networkingService) {
+        this.mNetworkingService = networkingService;
     }
 
 
-
     /**
-     * makes a delete request to send to the external API, to try to delete a user
-     * @param uid the id of the user to delete
+     * makes a delete request to send to the external API, to try to delete a user. Starts by
+     * getting the user to confirm the information given
+     *
+     * @param uid      the id of the user to delete
      * @param password the password to use for confirmation
+     * @param callback - a callback to the fragment
      */
-    public void deleteAccount(long uid, String password){
-        User user = getUser(uid, uid);
-        if (user == null || !user.getPassword().equals(password)){
-            throw new DeleteFailedException();
-        }
-        String url = String.format("user/delete?uid=%s&password=%s",uid, password);
-        try {
-            mNetworkingService.deleteRequest(url);
-        } catch (IOException e) {
-            Log.d("Networking exception", "Delete user failed");
-        }
+    public void deleteAccount(long uid, String password, CustomCallback<User> callback) {
+        // TODO: ath hvort það þurfi að sækja userinn. Held ekki.
+        getUser(uid, uid, new CustomCallback<>() {
+            @Override
+            public void onSuccess(User user) {
+                if (!user.getPassword().equals(password))
+                    callback.onFailure(null);
+                else {
+                    // If the information given is correct, delete the user
+                    String url = String.format("user/delete?uid=%s&password=%s", uid, password);
+                    mNetworkingService.deleteRequest(url, new CustomCallback<>() {
+                        @Override
+                        public void onSuccess(JsonElement jsonElement) {
+                            callback.onSuccess(null);
+                        }
+
+                        @Override
+                        public void onFailure(JsonElement jsonElement) {
+                            callback.onFailure(null);
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(User user) {
+                callback.onFailure(null);
+            }
+        });
     }
 
     /**
@@ -59,167 +76,181 @@ public class UserService extends Service {
      * for a user with the usedId reqUid. If uid an reqUid are the same, a user is requesting
      * information about themselves
      *
-     * @param uid the usedId of the user to get
-     * @param reqUid the userId of the user making the request
-     * @return the user with the userId uid
+     * @param uid      the usedId of the user to get
+     * @param reqUid   the userId of the user making the request
+     * @param callback returning the user with the given id on success, or null on failure
      */
-    public User getUser(long uid, long reqUid){
-        String url = String.format("user/id/%s?uid=%s",uid, reqUid);
-        try {
-            mElement = mNetworkingService.getRequest(url);
-        } catch (IOException e) {
-            Log.d("Networking exception", "get user failed");
-        }
+    public void getUser(long uid, long reqUid, CustomCallback<User> callback) {
+        String url = String.format("user/id/%s?uid=%s", uid, reqUid);
+        mNetworkingService.getRequest(url, new CustomCallback<>() {
+            @Override
+            public void onSuccess(JsonElement jsonElement) {
+                if (jsonElement != null) {
+                    Gson gson = new Gson();
+                    callback.onSuccess(gson.fromJson(jsonElement, User.class));
+                }
+                else callback.onFailure(null);
+            }
 
-        User user = null;
-        if(mElement != null){
-            Gson gson = new Gson();
-            user = gson.fromJson(mElement, User.class);
-            Log.d("API", "user object, name:" + user.getUsername());
-        }
+            @Override
+            public void onFailure(JsonElement jsonElement) {
+                callback.onFailure(null);
+            }
+        });
 
-        return user;
     }
 
     /**
-     * Athugar hvort notandi með gefið notandanafn og lykilorð sé í gagnagrunninum,
-     * skilar honum ef hann er til en annars null
+     * Athugar hvort notandi með gefið notandanafn og lykilorð sé í gagnagrunninum, skilar honum ef
+     * hann er til en annars null
+     *
      * @param username notandanafn til að skrá inn
      * @param password lykilorð notanda
-     * @return User object ef innskráning tókst, annars null
+     * @param callback skilar User object með onSuccess ef innskráning tókst, annars failure
      */
-    public User logIn(String username, String password){
+    public void logIn(String username, String password, CustomCallback<User> callback) {
         String url = "user/login";
-        url += String.format("?username=%s&password=%s",username, password);
+        url += String.format("?username=%s&password=%s", username, password);
 
-        try {
-            mElement = mNetworkingService.getRequest(url);
-        } catch (IOException e) {
-            Log.d("Networking exception", "Login failed");
-            //throw new RuntimeException(e);
-        }
+        mNetworkingService.getRequest(url, new CustomCallback<>() {
+            @Override
+            public void onSuccess(JsonElement jsonElement) {
+                if (jsonElement != null) {
+                    Gson gson = new Gson();
+                    callback.onSuccess(gson.fromJson(jsonElement, User.class));
+                }
+                else callback.onFailure(null);
+            }
 
-        User user = null;
-        if(mElement != null){
-            Gson gson = new Gson();
-            user = gson.fromJson(mElement, User.class);
-            Log.d("API", "user object, name:" + user.getUsername());
-        }
+            @Override
+            public void onFailure(JsonElement jsonElement) {
+                callback.onFailure(null);
+            }
+        });
 
-        return user;
     }
 
-    public User signup(String username, String password){
+    /**
+     * Makes a new account with the given information, if possible.
+     *
+     * @param username - the username for the account
+     * @param password - the password for the account
+     * @param callback - a callback returning the new user on success, or null on failure
+     */
+    public void signup(String username, String password, CustomCallback<User> callback) {
         String url = "user/signup";
-        String params = String.format("?username=%s&password=%s",username, password);
+        url += String.format("?username=%s&password=%s", username, password);
 
-        User user = null;
-        try {
-            mElement = mNetworkingService.postRequest(url + params, null);
-        } catch (IOException e) {
-            Log.d("Networking exception", "Signup failed");
-        }
+        mNetworkingService.postRequest(url, null, new CustomCallback<>() {
+            @Override
+            public void onSuccess(JsonElement jsonElement) {
+                if (jsonElement != null) {
+                    Gson gson = new Gson();
+                    callback.onSuccess(gson.fromJson(jsonElement, User.class));
+                }
+                else callback.onFailure(null);
+            }
 
-        if(mElement != null){
-            Gson gson = new Gson();
-            user = gson.fromJson(mElement, User.class);
-            Log.d("API", "user object, name:" + user.getUsername());
-        }
+            @Override
+            public void onFailure(JsonElement jsonElement) {
+                callback.onFailure(null);
+            }
+        });
 
-        return user;
     }
 
     /**
      * Skilar pantry hjá notanda með gefið user id
      *
-     * @param uid user id
-     * @return Lista af IngredientMeasurements
+     * @param uid      user id
+     * @param callback callback returning the pantry of the user on success,
+     *                 or an empty list on failure
      */
-    public List<IngredientMeasurement> getUserPantry(long uid) {
-        String url = "user/pantry";
-        String params ="?uid=" + uid;
-        ArrayList<IngredientMeasurement> pantry = new ArrayList<>();
+    public void getUserPantry(long uid, CustomCallback<List<IngredientMeasurement>> callback) {
+        String url = "user/pantry?uid=" + uid;
 
-        /*if(uid == 0){
-            return pantry;
-        }*/
+        mNetworkingService.getRequest(url, new CustomCallback<>() {
+            @Override
+            public void onSuccess(JsonElement jsonElement) {
+                if (jsonElement != null) {
+                    Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+                    Type collectionType = new TypeToken<Collection<IngredientMeasurement>>() {}.getType();
+                    callback.onSuccess(gson.fromJson(jsonElement, collectionType));
+                } else callback.onFailure(new ArrayList<>());
+            }
 
-        try {
-            mElement = mNetworkingService.getRequest(url + params);
-            Log.d("UserService", "fetched element is: " + mElement);
-        } catch (IOException e) {
-            Log.d("Networking exception", "Failed to get user pantry");
-            return pantry;
-        }
-
-        if(mElement != null && !mElement.isJsonNull()){
-            Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-            if(!mElement.isJsonArray()) return null;
-            Log.d("UserService", "element: " + mElement);
-
-            JsonArray arr = mElement.getAsJsonArray();
-
-
-            Type collectionType = new TypeToken<Collection<IngredientMeasurement>>(){}.getType();
-            pantry = gson.fromJson(arr, collectionType);
-        }
-        return pantry;
+            @Override
+            public void onFailure(JsonElement jsonElement) {
+                Log.d("Networking failure", "Failed to get user pantry");
+                callback.onFailure(new ArrayList<>());
+            }
+        });
     }
 
     /**
      * API call to remove an ingredient from the users pantry.
-     * @param uid - User ID
-     * @param iid - Ingredient ID
-     * @return True if the API call returns an empty response, else false.
+     *
+     * @param uid      - User ID
+     * @param iid      - Ingredient ID
+     * @param callback - always returns null, but onSuccess called if the ingredient is removed.
      */
-    public boolean removeIngredientFromPantry(long uid, long iid){
+    public void removeIngredientFromPantry(long uid, long iid, CustomCallback<Boolean> callback) {
         String url = "user/pantry/delete";
-        String params = String.format("?iid=%s&uid=%s", iid, uid);
+        url += String.format("?iid=%s&uid=%s", iid, uid);
 
+        mNetworkingService.putRequest(url, null, new CustomCallback<>() {
+            @Override
+            public void onSuccess(JsonElement jsonElement) {
+                Log.d("API", "remove pantry response: " + jsonElement);
+                callback.onSuccess(null);
+            }
 
-        try {
-            mElement = mNetworkingService.putRequest(url + params, null);
-            Log.d("API", "remove pantry response: " + mElement);
-        } catch (IOException e) {
-            Log.d("Networking exception", "Failed to delete item from pantry");
-        }
+            @Override
+            public void onFailure(JsonElement jsonElement) {
+                Log.d("Networking failure", "Failed to delete item from pantry");
+                callback.onFailure(null);
+            }
+        });
 
-        boolean itemDeleted = false;
-
-        if(mElement == null || mElement.isJsonNull()){
-            itemDeleted = true;
-            Log.d("API", "item deleted: " + itemDeleted);
-        }
-        return itemDeleted;
     }
 
     /**
+     * adds an ingredient to the user's pantry
      *
-     * @param uid - User ID
-     * @param iid - Ingredient ID
-     * @param unit - Unit
-     * @param qty - Quantity
-     * @return IngredientMeasurement that was added to the pantry
+     * @param uid      - User ID
+     * @param iid      - Ingredient ID
+     * @param unit     - Unit
+     * @param qty      - Quantity
+     * @param callback - returns the IngredientMeasurement added on success. If the ingredient is in
+     *                   the pantry already, that item is returned on failure, otherwise null
      */
-    public IngredientMeasurement addIngredientToPantry(long uid, long iid, Unit unit, double qty){
+    public void addIngredientToPantry(long uid, long iid, Unit unit, double qty, CustomCallback<IngredientMeasurement> callback) {
         String url = "user/pantry/add";
-        String params = String.format("?iid=%s&unit=%s&qty=%s&uid=%s", iid, unit.toString().toUpperCase(), qty, uid);
+        String params = String.format("?iid=%s&unit=%s&qty=%s&uid=%s", iid, unit.name(), qty, uid);
 
-        IngredientMeasurement ingredient = null;
+        mNetworkingService.putRequest(url + params, null, new CustomCallback<>() {
+            @Override
+            public void onSuccess(JsonElement jsonElement) {
+                if (jsonElement == null) callback.onFailure(null);
+                else {
+                    Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+                    IngredientMeasurement pantryItem = gson.fromJson(jsonElement, IngredientMeasurement.class);
 
-        try{
-            mElement = mNetworkingService.putRequest(url + params, null);
-            Log.d("API", "Ingredient added: " + mElement);
-        } catch (IOException e) {
-            Log.d("Networking exception", "Failed to add ingredient to pantry");
-        }
+                    // if the item does not match the input, the ingredient was already in the pantry
+                    if (pantryItem.getUnit() != unit || pantryItem.getQuantity() != qty) {
+                        Log.d("Callback", "unit or quantity does not match, this was already in the pantry");
+                        callback.onFailure(pantryItem);
+                    } else callback.onSuccess(pantryItem);
+                }
+            }
 
-        if(mElement != null && !mElement.isJsonNull()){
-            Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-            JsonElement res = mElement.getAsJsonObject();
-            ingredient = gson.fromJson(res, IngredientMeasurement.class);
-        }
-        return ingredient;
+            @Override
+            public void onFailure(JsonElement jsonElement) {
+                Log.d("Networking failure", "Failed to add ingredient to pantry");
+                callback.onFailure(null);
+            }
+        });
+
     }
 
 
