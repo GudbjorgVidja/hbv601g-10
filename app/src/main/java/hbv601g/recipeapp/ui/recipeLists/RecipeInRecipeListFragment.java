@@ -23,7 +23,6 @@ import java.util.Objects;
 import hbv601g.recipeapp.MainActivity;
 import hbv601g.recipeapp.R;
 import hbv601g.recipeapp.adapters.IngredientMeasurementAdapter;
-import hbv601g.recipeapp.databinding.FragmentRecipeBinding;
 import hbv601g.recipeapp.databinding.FragmentRecipeInRecipeListBinding;
 import hbv601g.recipeapp.entities.Recipe;
 import hbv601g.recipeapp.entities.RecipeList;
