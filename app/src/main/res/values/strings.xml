@@ -95,6 +95,7 @@
     <string name="add_recipe_to_list_failed_toast">Failed to add recipe to list.</string>
     <string name="add_recipe_to_list_success_toast">The recipe has been added to the list</string>
     <string name="get_recipe_lists_failed_toast">Something went wrong fetching the lists.</string>
+    <string name="home_photo_description">A photo stored on the device</string>
 
     <!-- variables -->
     <string name="selected_ingredient">Ingredient</string>
@@ -106,6 +107,7 @@
     <string name="request_msmt">Ingredient measurement result</string>
     <string name="tic_string">tic:</string>
     <string name="tpc_string">tpc:</string>
+    <string name="home_photo_name">saved_photo.jpg</string>
 
     <!-- Alert strings -->
     <string name="delete_recipe_alert_title">Delete recipe</string>

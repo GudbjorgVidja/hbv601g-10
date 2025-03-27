@@ -15,10 +15,19 @@
         android:layout_marginEnd="8dp"
         android:textAlignment="center"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/home_image"
+        android:layout_width="260dp"
+        android:layout_height="312dp"
+        android:contentDescription="@string/home_photo_description"
+        app:layout_constraintBottom_toTopOf="@id/home_camera_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_home" />
 
     <Button
         android:id="@+id/home_camera_button"
@@ -28,7 +37,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_home" />
+        app:layout_constraintTop_toBottomOf="@id/home_image" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,7 +10,6 @@ import androidx.annotation.Nullable;
 import androidx.camera.core.CameraSelector;
 import androidx.camera.core.ImageCapture;
 import androidx.camera.core.ImageCaptureException;
-import androidx.camera.core.ImageProxy;
 import androidx.camera.view.CameraController;
 import androidx.camera.view.LifecycleCameraController;
 import androidx.camera.view.PreviewView;
@@ -18,17 +17,16 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.io.File;
 
 import hbv601g.recipeapp.MainActivity;
+import hbv601g.recipeapp.R;
 import hbv601g.recipeapp.databinding.FragmentCameraBinding;
 
 /**
@@ -40,8 +38,7 @@ import hbv601g.recipeapp.databinding.FragmentCameraBinding;
 public class CameraFragment extends Fragment implements ActivityCompat.OnRequestPermissionsResultCallback {
     private final String TAG = "Camera";
     private FragmentCameraBinding mBinding;
-    private ImageCapture mImageCapture;
-    private ExecutorService mExecutorService;
+    //private ExecutorService mExecutorService;
     private final String CAMERA_PERMISSION_STRING = "android.permission.CAMERA";
     private ActivityResultLauncher<String> requestPermissionLauncher;
 
@@ -57,18 +54,13 @@ public class CameraFragment extends Fragment implements ActivityCompat.OnRequest
                         Log.d(TAG, "Camera permission denied");
                     }
                 });
-        mExecutorService = Executors.newSingleThreadExecutor();
+        //mExecutorService = Executors.newSingleThreadExecutor();
     }
-
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = FragmentCameraBinding.inflate(inflater, container, false);
         View root = mBinding.getRoot();
-
-        MainActivity mainActivity = (MainActivity) getActivity();
-        assert mainActivity != null;
 
         if (checkCameraPermission()) startCamera();
         else requestPermissionLauncher.launch(CAMERA_PERMISSION_STRING);
@@ -118,27 +110,32 @@ public class CameraFragment extends Fragment implements ActivityCompat.OnRequest
         MainActivity mainActivity = (MainActivity) getActivity();
         assert mainActivity != null;
 
-        cameraController.takePicture(ContextCompat.getMainExecutor(mainActivity), new ImageCapture.OnImageCapturedCallback() {
+        File tempFile = new File(mainActivity.getFilesDir(), getString(R.string.home_photo_name));
+        ImageCapture.OutputFileOptions outputOptions =
+                new ImageCapture.OutputFileOptions.Builder(tempFile).build();
+
+        cameraController.takePicture(outputOptions, ContextCompat.getMainExecutor(mainActivity), new ImageCapture.OnImageSavedCallback() {
             @Override
-            public void onCaptureSuccess(@NonNull ImageProxy image) {
-                //super.onCaptureSuccess(image);
+            public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
+                Log.d(TAG,"Photo captured successfully!");
                 Toast.makeText(getContext(), "Photo captured successfully!", Toast.LENGTH_SHORT).show();
-                image.close();
+
             }
 
             @Override
             public void onError(@NonNull ImageCaptureException exception) {
-                //super.onError(exception);
-                Log.e("CameraX", "Photo capture failed: " + exception.getMessage(), exception);
+                Toast.makeText(requireContext(), "Photo capture failed", Toast.LENGTH_SHORT).show();
+                Log.d(TAG,"Photo capture failed" );
 
             }
         });
+
     }
 
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mExecutorService.shutdown();
+        //mExecutorService.shutdown();
     }
 }
