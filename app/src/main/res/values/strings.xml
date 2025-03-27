@@ -19,6 +19,7 @@
     <string name="title_new_recipe_list">New recipe list</string>
     <string name="change_password_title">Change password</string>
     <string name="title_recipe_list">Recipe list</string>
+    <string name="title_rename_recipe_list">Change recipe list name</string>
 
 
     <!-- Buttons/textfields -->
@@ -44,6 +45,12 @@
     <string name="ingredient_price_store">%1$dkr at %2$s</string>
     <string name="ingredient_quantity_brand">%1$s%2$s, %3$s brand</string>
     <string name="pantry_ingredient_quantity_brand">%1$s%2$s, %3$s brand</string>
+    <string name="delete_button_text">Delete</string>
+    <string name="rename_button_text">Rename</string>
+    <string name="new_ingredient_title_hint">Title</string>
+    <string name="new_ingredient_quantity_hint">Qty.</string>
+    <string name="new_ingredient_price_hint">Price</string>
+    <string name="new_ingredient_store_hint">Store</string>
     <string name="confirm_new_ingredient_button">Create ingredient</string>
     <string name="create_new_ingredient_button">New ingredient</string>
     <string name="privacy_selection_label">Make private</string>
@@ -70,7 +77,8 @@
     <string name="recipe_list_description">Description</string>
     <string name="recipe_list_recipes">Recipes</string>
     <string name="recipe_list_text">Recipe Lists</string>
-
+    <string name="add_to_list_button">Add to list</string>
+    <string name="save_button">Save</string>
 
     <!-- Messages/toasts -->
     <string name="login_failed_toast">Login failed. Please ensure username and password are correct.</string>
@@ -101,6 +109,8 @@
     <string name="password_invalid_toast">Invalid password</string>
     <string name="password_has_no_input_toast">The password field can not be empty</string>
     <string name="new_password_invalid_toast">The password must be the same</string>
+    <string name="recipe_list_rename_blank">Input cannot be blank</string>
+    <string name="recipe_list_rename_not_authorized">You must be the creator of this list to change the title</string>
     <string name="delete_user_failed_toast">Failed to delete the user account.</string>
     <string name="delete_user_success_toast">User account deleted successfully.</string>
 

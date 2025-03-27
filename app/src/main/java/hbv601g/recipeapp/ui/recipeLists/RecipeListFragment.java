@@ -1,5 +1,6 @@
 package hbv601g.recipeapp.ui.recipeLists;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,7 +12,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -32,6 +37,7 @@ public class RecipeListFragment extends Fragment {
     private RecipeList mRecipeList;
     private RecipeList mClickedList;
     private RecipeListService mRecipeListService;
+    private TextView mRecipeListTitle;
 
 
     @Override
@@ -49,10 +55,10 @@ public class RecipeListFragment extends Fragment {
         NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
         mRecipeListService = new RecipeListService(new NetworkingService(), mainActivity.getUserId());
 
-        /**
-         * We use the ID of mClickedList to fetch the list from the API
-         * so that it will update when a recipe is added to the list while
-         * the list is still open.
+        /*
+          We use the ID of mClickedList to fetch the list from the API
+          so that it will update when a recipe is added to the list while
+          the list is still open.
          */
         mRecipeList = mRecipeListService.getListById(mClickedList.getId());
 
@@ -71,11 +77,58 @@ public class RecipeListFragment extends Fragment {
             Bundle bundle = new Bundle();
             bundle.putParcelable(getString(R.string.selected_recipe), recipe);
             navController.navigate(R.id.nav_recipe, bundle);
-
         });
 
+        mRecipeListTitle = mBinding.recipeListTitle;
+        Button mRenameListButton = mBinding.recipeListRenameButton;
+
+        if(mainActivity.getUserId() == mRecipeList.getCreatedBy().getId()){
+            // On click listener for renaming the recipe list
+            mRenameListButton.setOnClickListener(
+                    v -> makeRenameAlert(mainActivity)
+            );
+
+        } else {
+            mainActivity.makeToast(R.string.recipe_list_rename_not_authorized, Toast.LENGTH_LONG);
+            mRenameListButton.setVisibility(View.GONE);
+        }
 
         return root;
+    }
+
+
+    /**
+     * Makes an alert dialog where the user can rename the recipe list. The dialog does not accept
+     * an empty input when the user clicks save, if the user saves with a valid input the API is
+     * called to rename the recipe list. If cancel is clicked, the dialog closes and nothing happens.
+     * @param mainActivity - The MainActivity of the app
+     */
+    private void makeRenameAlert(MainActivity mainActivity){
+        AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
+        builder.setTitle(getString(R.string.title_rename_recipe_list));
+
+        final EditText input = new EditText(mainActivity);
+        input.setText(mRecipeListTitle.getText().toString());
+        builder.setView(input);
+
+        builder.setPositiveButton(getString(R.string.save_button), null);
+        builder.setNegativeButton(getString(R.string.cancel_button_text), (dialog, which) -> dialog.cancel());
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        // Listens for empty input when clicking save, makes a toast if input is empty.
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(view -> {
+            String newTitle = input.getText().toString().trim();
+
+            if (!newTitle.isEmpty()) {
+                mRecipeListTitle.setText(newTitle);
+                mRecipeListService.updateRecipeListTitle(mRecipeList.getId(), newTitle);
+                dialog.dismiss();
+            } else {
+                mainActivity.makeToast(R.string.recipe_list_rename_blank, Toast.LENGTH_LONG);
+            }
+        });
     }
 
     /**
