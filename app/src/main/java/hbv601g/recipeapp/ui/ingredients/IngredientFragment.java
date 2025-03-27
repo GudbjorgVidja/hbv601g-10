@@ -19,7 +19,7 @@ import hbv601g.recipeapp.MainActivity;
 import hbv601g.recipeapp.R;
 import hbv601g.recipeapp.databinding.FragmentIngredientBinding;
 import hbv601g.recipeapp.entities.Ingredient;
-import hbv601g.recipeapp.exceptions.DeleteFailedException;
+import hbv601g.recipeapp.networking.CustomCallback;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.IngredientService;
 
@@ -92,16 +92,23 @@ public class IngredientFragment extends Fragment{
             String newTitle = editText.getText().toString();
             if (newTitle.isEmpty()) editText.setError(errorMessage);
             else {
-                Ingredient ingredient = mIngredientService.changeIngredientTitle(mIngredient.getId(), newTitle);
-                if (ingredient == null){
-                    mainActivity.makeToast(R.string.rename_ingredient_failed_toast, Toast.LENGTH_LONG);
-                }
-                else{
-                    Bundle bundle = new Bundle();
-                    bundle.putParcelable(getString(R.string.selected_ingredient), ingredient);
-                    navController.popBackStack();
-                    navController.navigate(R.id.nav_ingredient, bundle);
-                }
+                mIngredientService.changeIngredientTitle(mIngredient.getId(), newTitle, new CustomCallback<>() {
+                    @Override
+                    public void onSuccess(Ingredient ingredient) {
+                        requireActivity().runOnUiThread(() -> {
+                            Bundle bundle = new Bundle();
+                            bundle.putParcelable(getString(R.string.selected_ingredient), ingredient);
+                            navController.popBackStack();
+                            navController.navigate(R.id.nav_ingredient, bundle);
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(Ingredient ingredient) {
+                        requireActivity().runOnUiThread(() ->
+                                mainActivity.makeToast(R.string.rename_ingredient_failed_toast, Toast.LENGTH_LONG));
+                    }
+                });
             }
         });
 
@@ -119,13 +126,22 @@ public class IngredientFragment extends Fragment{
         alert.setTitle(getString(R.string.delete_ingredient_alert_title));
         alert.setMessage(getString(R.string.delete_ingredient_alert_message));
         alert.setPositiveButton(android.R.string.yes, (dialog, which) -> {
-            try {
-                mIngredientService.deleteIngredient(mIngredient.getId());
-                navController.popBackStack();
-                mainActivity.makeToast(R.string.delete_ingredient_success, Toast.LENGTH_LONG);
-            } catch (DeleteFailedException e) {
-                mainActivity.makeToast(R.string.delete_ingredient_failed, Toast.LENGTH_LONG);
-            }
+            mIngredientService.deleteIngredient(mIngredient.getId(), new CustomCallback<>() {
+                @Override
+                public void onSuccess(Ingredient ingredient) {
+                    requireActivity().runOnUiThread(() -> {
+                        navController.popBackStack();
+                        mainActivity.makeToast(R.string.delete_ingredient_success, Toast.LENGTH_LONG);
+                    });
+                }
+
+                @Override
+                public void onFailure(Ingredient ingredient) {
+                    requireActivity().runOnUiThread(() ->
+                            mainActivity.makeToast(R.string.delete_ingredient_failed, Toast.LENGTH_LONG));
+                }
+            });
+
         });
         alert.setNegativeButton(android.R.string.no, (dialog, which) -> {});
         alert.show();

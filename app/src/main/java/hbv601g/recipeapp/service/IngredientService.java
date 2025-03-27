@@ -9,11 +9,9 @@ import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,120 +31,139 @@ public class IngredientService extends Service {
 
     private NetworkingService mNetworkingService;
     private long mUid;
-    private JsonElement mElement;
 
-    public IngredientService(NetworkingService networkingService, long uid){
+    public IngredientService(NetworkingService networkingService, long uid) {
         this.mNetworkingService = networkingService;
         this.mUid = uid;
     }
 
     /**
      * makes a delete request to send to the external API, to try to delete an ingredient
-     * @param iid - the id of the ingredient to delete
+     *
+     * @param iid      - the id of the ingredient to delete
+     * @param callback - a callback to the fragment
      */
-    public void deleteIngredient(long iid){
-        String url = String.format("ingredient/delete/%s?uid=%s",iid, mUid);
-        try {
-            mNetworkingService.deleteRequest(url);
-        } catch (IOException e) {
-            Log.d("Networking exception", "Delete ingredient failed");
-        }
+    public void deleteIngredient(long iid, CustomCallback<Ingredient> callback) {
+        String url = String.format("ingredient/delete/%s?uid=%s", iid, mUid);
+
+        mNetworkingService.deleteRequest(url, new CustomCallback<>() {
+            @Override
+            public void onSuccess(JsonElement jsonElement) {
+                callback.onSuccess(null);
+            }
+
+            @Override
+            public void onFailure(JsonElement jsonElement) {
+                Log.d("Networking failure", "Delete ingredient failed");
+                callback.onFailure(null);
+            }
+        });
     }
 
     /**
      * Makes a patch request to change the title of an ingredient
-     * @param iid - the id of the ingredient to be renamed
+     *
+     * @param iid      - the id of the ingredient to be renamed
      * @param newTitle - the new title of the ingredient
-     * @return - the ingredient with the updated title
+     * @param callback - returns the ingredient with the updated title on success,
+     *                   or null on failure
      */
-    public Ingredient changeIngredientTitle(long iid, String newTitle){
-        String url = String.format("ingredient/updateTitle/%s?uid=%s",iid,mUid);
+    public void changeIngredientTitle(long iid, String newTitle, CustomCallback<Ingredient> callback) {
+        String url = String.format("ingredient/updateTitle/%s?uid=%s", iid, mUid);
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
         Map<String, String> requestBody = new HashMap<>();
-        requestBody.put("title",newTitle);
+        requestBody.put("title", newTitle);
         String data = gson.toJson(requestBody);
 
-        try {
-            mElement = mNetworkingService.patchRequest(url, data);
-        } catch (IOException e) {
-            Log.d("Networking exception", "rename ingredient failed");
-            mElement = null;
-        }
+        mNetworkingService.patchRequest(url, data, new CustomCallback<>() {
+            @Override
+            public void onSuccess(JsonElement jsonElement) {
+                if (jsonElement != null)
+                    callback.onSuccess(gson.fromJson(jsonElement, Ingredient.class));
+                else
+                    callback.onFailure(null);
+            }
 
-        Ingredient ingredient = null;
-        if(mElement != null){
-            ingredient = gson.fromJson(mElement, Ingredient.class);
-        }
-        return ingredient;
+            @Override
+            public void onFailure(JsonElement jsonElement) {
+                Log.d("Networking failure", "rename ingredient failed");
+                callback.onFailure(null);
+            }
+        });
+
     }
 
 
     /**
      * Makes a get request to get all ingredients visible to the user.
-     * On failure, an empty list is returned
-     * @param callback - a callback to return the result
+     *
+     * @param callback - a callback returning a list of the ingredients on success,
+     *                   or an empty list on failure
      */
-    public void getAllIngredients(CustomCallback<List<Ingredient>> callback){
-        String url = "ingredient/all";
-        url += "?uid="+ mUid;
+    public void getAllIngredients(CustomCallback<List<Ingredient>> callback) {
+        String url = "ingredient/all?uid=" + mUid;
 
-        CustomCallback<JsonElement> customCallback = new CustomCallback<>() {
+        mNetworkingService.getRequest(url, new CustomCallback<>() {
             @Override
             public void onSuccess(JsonElement jsonElement) {
-                Log.d("Callback", "onSuccess í service");
-                Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-                JsonArray array = jsonElement.getAsJsonArray();
+                if (jsonElement != null) {
+                    Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+                    Type collectionType = new TypeToken<Collection<Ingredient>>() {}.getType();
+                    callback.onSuccess(gson.fromJson(jsonElement, collectionType));
+                }
+                else callback.onFailure(new ArrayList<>());
 
-                Type collectionType = new TypeToken<Collection<Ingredient>>(){}.getType();
-                callback.onSuccess(gson.fromJson(array, collectionType));
             }
 
             @Override
             public void onFailure(JsonElement jsonElement) {
-                Log.d("Callback", "onFailure í service");
                 callback.onFailure(new ArrayList<>());
             }
-        };
+        });
 
-        mNetworkingService.getRequest(url, customCallback);
     }
 
 
     /**
-     * makes a post request which is sent to the API, to create an
-     * ingredient with the specified attributes.
-     * @param title - title of the new ingredient
-     * @param quantity - quantity in a package of the ingredient
-     * @param unit - the unit of measure for the ingredient
-     * @param price - the price of this ingredient
-     * @param store - store name, can be empty or null
-     * @param brand - brand name, can be empty or null
+     * makes a post request which is sent to the API, to create an ingredient with the specified
+     * attributes.
+     *
+     * @param title     - title of the new ingredient
+     * @param quantity  - quantity in a package of the ingredient
+     * @param unit      - the unit of measure for the ingredient
+     * @param price     - the price of this ingredient
+     * @param store     - store name, can be empty or null
+     * @param brand     - brand name, can be empty or null
      * @param isPrivate - if the ingredient should be visible to only the creator
-     * @return the ingredient object
+     * @param callback  - a callback returning the ingredient object on success,
+     *                    or null on failure
      */
-    public Ingredient createIngredient(String title, double quantity, Unit unit, double price, String store, String brand, boolean isPrivate){
+    public void createIngredient(String title, double quantity, Unit unit, double price, String store, String brand, boolean isPrivate, CustomCallback<Ingredient> callback) {
         String url = "ingredient/created?uid=" + mUid;
 
-        if(store.trim().isEmpty()) store = null;
-        if(brand.trim().isEmpty()) brand = null;
+        if (store.trim().isEmpty()) store = null;
+        if (brand.trim().isEmpty()) brand = null;
         Ingredient ingredient = new Ingredient(title, unit, quantity, price, store, brand);
         ingredient.setPrivate(isPrivate);
 
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
         String data = gson.toJson(ingredient, Ingredient.class);
-        try {
-        mElement = mNetworkingService.postRequest(url, data);
-        } catch (IOException e) {
-            Log.d("Networking exception", "create ingredient failed");
-            mElement = null;
-        }
 
-        if(mElement != null && mElement.isJsonObject()){
-            ingredient = gson.fromJson(mElement, Ingredient.class);
-        }
-        else throw new NullPointerException("Failed to create ingredient");
+        mNetworkingService.postRequest(url, data, new CustomCallback<>() {
+            @Override
+            public void onSuccess(JsonElement jsonElement) {
+                if (jsonElement != null)
+                    callback.onSuccess(gson.fromJson(jsonElement, Ingredient.class));
+                else
+                    callback.onFailure(null);
+            }
 
-        return ingredient;
+            @Override
+            public void onFailure(JsonElement jsonElement) {
+                callback.onFailure(null);
+            }
+        });
+
     }
 
 

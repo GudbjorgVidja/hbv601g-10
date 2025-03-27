@@ -3,7 +3,6 @@ package hbv601g.recipeapp.ui.ingredients;
 import static android.view.View.GONE;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +34,6 @@ public class IngredientsFragment extends Fragment {
     private FragmentIngredientsBinding mBinding;
     private IngredientService mIngredientService;
     private List<Ingredient> mAllIngredients;
-    private ListView mIngredientsListView;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -47,64 +45,56 @@ public class IngredientsFragment extends Fragment {
         MainActivity mainActivity = (MainActivity) getActivity();
         assert mainActivity != null;
 
+        NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
+
         long uid = mainActivity.getUserId();
         mIngredientService = new IngredientService(new NetworkingService(), uid);
 
 
-        Log.d("Callback", "Fyrir service kall");
-        // TODO: ath hvort við viljum nýjan þráð
-        new Thread(() -> mIngredientService.getAllIngredients(new CustomCallback<>() {
+        mIngredientService.getAllIngredients(new CustomCallback<>() {
             @Override
             public void onSuccess(List<Ingredient> ingredients) {
-                Log.d("Callback", "onSuccess in fragment");
                 mAllIngredients = ingredients;
-                mainActivity.runOnUiThread(() -> {
-                    makeView(mainActivity);
-                });
+                requireActivity().runOnUiThread(() ->
+                        makeIngredientsView(mainActivity, navController));
             }
 
             @Override
             public void onFailure(List<Ingredient> ingredients) {
-                Log.d("Callback", "onFailure in fragment");
                 mAllIngredients = new ArrayList<>();
-                mainActivity.runOnUiThread(() -> {
-                    mainActivity.makeToast(R.string.null_ingredient_list, Toast.LENGTH_LONG);
-                    makeView(mainActivity);
-                });
+                requireActivity().runOnUiThread(() ->
+                        mainActivity.makeToast(R.string.null_ingredient_list, Toast.LENGTH_LONG));
             }
 
-        })).start();
+        });
 
+        Button newIngredientButton = mBinding.newIngredientButton;
+        if(mainActivity.getUserId() == 0) newIngredientButton.setVisibility(GONE);
 
+        newIngredientButton.setOnClickListener(v -> navController.navigate(R.id.nav_new_ingredient));
 
         return root;
     }
 
     /**
-     * updates the view on the ui thread
+     * updates the view with the ingredients list
      * @param mainActivity - the MainActivity
+     * @param navController - the NavController
      */
-    private void makeView(MainActivity mainActivity){
+    private void makeIngredientsView(MainActivity mainActivity, NavController navController){
 
-            NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
-
-            mIngredientsListView = mBinding.ingredientsListView;
+            ListView ingredientsListView = mBinding.ingredientsListView;
 
             // Gera adapter til að tengja lista af ingredients við listView hlutinn
             IngredientAdapter ingredientAdapter = new IngredientAdapter(mainActivity.getApplicationContext(), mAllIngredients);
-            mIngredientsListView.setAdapter(ingredientAdapter);
+            ingredientsListView.setAdapter(ingredientAdapter);
 
-            mIngredientsListView.setOnItemClickListener((parent, view, position, id) -> {
+            ingredientsListView.setOnItemClickListener((parent, view, position, id) -> {
                 Ingredient ingredient = (Ingredient) parent.getItemAtPosition(position);
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(getString(R.string.selected_ingredient), ingredient);
                 navController.navigate(R.id.nav_ingredient, bundle);
             });
-
-            Button newIngredientButton = mBinding.newIngredientButton;
-            if(mainActivity.getUserId() == 0) newIngredientButton.setVisibility(GONE);
-
-            newIngredientButton.setOnClickListener(v -> navController.navigate(R.id.nav_new_ingredient));
 
     }
 
