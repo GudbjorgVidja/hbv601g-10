@@ -25,7 +25,7 @@ import hbv601g.recipeapp.R;
 import hbv601g.recipeapp.adapters.IngredientMeasurementAdapter;
 import hbv601g.recipeapp.databinding.FragmentRecipeBinding;
 import hbv601g.recipeapp.entities.Recipe;
-import hbv601g.recipeapp.exceptions.DeleteFailedException;
+import hbv601g.recipeapp.networking.CustomCallback;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.RecipeService;
 import hbv601g.recipeapp.ui.recipeLists.AddRecipeToListDialogFragment;
@@ -91,13 +91,25 @@ public class RecipeFragment extends Fragment {
         alert.setTitle(getString(R.string.delete_recipe_alert_title));
         alert.setMessage(getString(R.string.delete_recipe_alert_message));
         alert.setPositiveButton(android.R.string.yes, (dialog, which) -> {
-            try{
-                mRecipeService.deleteRecipe(mRecipe.getId());
-                navController.popBackStack();
-                mainActivity.makeToast(R.string.delete_recipe_success, Toast.LENGTH_LONG);
-            } catch (DeleteFailedException e) {
-                mainActivity.makeToast(R.string.delete_recipe_failed, Toast.LENGTH_LONG);
-            }
+
+            mRecipeService.deleteRecipe(mRecipe.getId(), new CustomCallback<>() {
+                @Override
+                public void onSuccess(Boolean aBoolean) {
+                    requireActivity().runOnUiThread(() -> {
+                        navController.popBackStack();
+                        mainActivity.makeToast(R.string.delete_recipe_success, Toast.LENGTH_LONG);
+                    });
+                }
+
+                @Override
+                public void onFailure(Boolean aBoolean) {
+                    requireActivity().runOnUiThread(() ->
+                            mainActivity.makeToast(R.string.delete_recipe_failed, Toast.LENGTH_LONG));
+
+                }
+            });
+
+
         });
         alert.setNegativeButton(android.R.string.no, (dialog, which) -> {});
         alert.show();
@@ -125,9 +137,23 @@ public class RecipeFragment extends Fragment {
 
         MainActivity mainActivity = (MainActivity) getActivity();
         if (mainActivity != null && mainActivity.getUserId() != 0){
-            double ppc = mRecipeService.getPersonalizedPurchaseCost(mRecipe.getId());
-            tmp = getString(R.string.recipe_ppc, ppc+"");
-            mBinding.recipePpc.setText(tmp);
+            mRecipeService.getPersonalizedPurchaseCost(mRecipe.getId(), new CustomCallback<>() {
+                @Override
+                public void onSuccess(Double ppc) {
+                    requireActivity().runOnUiThread(() -> {
+                        String tmp = getString(R.string.recipe_ppc, ppc+"");
+                        mBinding.recipePpc.setText(tmp);
+                    });
+                }
+
+                @Override
+                public void onFailure(Double ppc) {
+                    Log.d("Callback", "Failed to get personalized purchase cost");
+                }
+            });
+            //double ppc = mRecipeService.getPersonalizedPurchaseCost(mRecipe.getId());
+            // tmp = getString(R.string.recipe_ppc, ppc+"");
+            // mBinding.recipePpc.setText(tmp);
         }
         else {
             mBinding.recipePpc.setVisibility(GONE);

@@ -21,6 +21,7 @@ import java.util.List;
 
 import hbv601g.recipeapp.entities.IngredientMeasurement;
 import hbv601g.recipeapp.entities.Recipe;
+import hbv601g.recipeapp.networking.CustomCallback;
 import hbv601g.recipeapp.networking.NetworkingService;
 
 public class RecipeService extends Service {
@@ -38,35 +39,48 @@ public class RecipeService extends Service {
      * @param rid - the id of the recipe
      * @return the personalized purchase cost for the current user
      */
-    public double getPersonalizedPurchaseCost(long rid){
-        String url = String.format("recipe/id/%s/personal?uid=%s",rid,mUid);
+    public void getPersonalizedPurchaseCost(long rid, CustomCallback<Double> callback){
+        String url = String.format("recipe/id/%s/personal?uid=%s", rid, mUid);
 
-        try{
-            mJsonElement=mNetworkingService.getRequest(url);
-        } catch (IOException e){
-            Log.d("Networking exception", "Failed to get PPC");
-        }
+        mNetworkingService.getRequest(url, new CustomCallback<>() {
+            @Override
+            public void onSuccess(JsonElement jsonElement) {
+                if(jsonElement!=null){
+                    callback.onSuccess(jsonElement.getAsDouble());
+                }
+                else callback.onFailure(null);
+            }
 
-        double ppc = 0;
+            @Override
+            public void onFailure(JsonElement jsonElement) {
+                // TODO: null eða 0.0?
+                Log.d("Networking failure", "Failed to get PPC");
+                callback.onFailure(null);
+            }
+        });
 
-        if(mJsonElement!=null){
-            ppc = mJsonElement.getAsDouble();
-            Log.d("API", "PPC: " + ppc);
-        }
-        return ppc;
     }
 
     /**
      * makes a delete request to send to the external API, to try to delete a recipe
      * @param rid - the id of the recipe to delete
      */
-    public void deleteRecipe(long rid){
+    public void deleteRecipe(long rid, CustomCallback<Boolean> callback){
         String url = String.format("recipe/delete/%s?uid=%s",rid, mUid);
-        try {
-            mNetworkingService.deleteRequest(url);
-        } catch (IOException e) {
-            Log.d("Networking exception", "Delete recipe failed");
-        }
+
+        mNetworkingService.deleteRequest(url, new CustomCallback<>() {
+            @Override
+            public void onSuccess(JsonElement jsonElement) {
+                callback.onSuccess(null);
+            }
+
+            @Override
+            public void onFailure(JsonElement jsonElement) {
+                Log.d("Networking exception", "Delete recipe failed");
+                callback.onFailure(null);
+            }
+        });
+
     }
 
 

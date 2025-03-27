@@ -74,7 +74,7 @@ public class NewIngredientFragment extends Fragment{
                 CustomCallback<Ingredient> callback = new CustomCallback<>() {
                     @Override
                     public void onSuccess(Ingredient ingredient) {
-                        mainActivity.runOnUiThread(() -> {
+                        requireActivity().runOnUiThread(() -> {
                             Bundle bundle = new Bundle();
                             bundle.putParcelable(getString(R.string.selected_ingredient), ingredient);
                             navController.popBackStack();

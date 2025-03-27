@@ -54,20 +54,20 @@ public class AddIngredientMeasurementFragment extends Fragment {
         ingredientService.getAllIngredients(new CustomCallback<>() {
             @Override
             public void onSuccess(List<Ingredient> ingredients) {
-                mainActivity.runOnUiThread(() -> {
+                requireActivity().runOnUiThread(() -> {
                     makeIngredientView(mainActivity, ingredients);
                 });
             }
 
             @Override
             public void onFailure(List<Ingredient> ingredients) {
-                mainActivity.runOnUiThread(() -> {
+                requireActivity().runOnUiThread(() -> {
                     makeIngredientView(mainActivity, ingredients);
                 });
             }
         });
 
-        mBinding.spinnerUnit.setAdapter(new ArrayAdapter<Unit>(
+        mBinding.spinnerUnit.setAdapter(new ArrayAdapter<>(
                 mainActivity.getApplicationContext(),
                 android.R.layout.simple_spinner_dropdown_item,
                 Unit.values()));

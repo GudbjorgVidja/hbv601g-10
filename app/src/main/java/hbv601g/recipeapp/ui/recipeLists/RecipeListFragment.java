@@ -79,10 +79,13 @@ public class RecipeListFragment extends Fragment {
         });
 
 
+
         if(mRecipeList != null && mRecipeList.getCreatedBy() != null && mainActivity.getUserId() != 0 &&
                 mRecipeList.getCreatedBy().getId() == mainActivity.getUserId() ){
-            mBinding.deleteListButton.setOnClickListener(
+           /* mBinding.deleteListButton.setOnClickListener(
                     v -> makeDeleteListAlert(navController, mainActivity));
+
+            */
         }
         else {
             mBinding.deleteListButton.setVisibility(GONE);
@@ -118,6 +121,7 @@ public class RecipeListFragment extends Fragment {
     }
 
 
+    /*
     private void makeDeleteListAlert(NavController navController, MainActivity mainActivity) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());
         alert.setTitle(getString(R.string.delete_list_alert_title));
@@ -133,4 +137,6 @@ public class RecipeListFragment extends Fragment {
         alert.setNegativeButton(android.R.string.no, (dialog, which) -> {});
         alert.show();
     }
+
+     */
 }

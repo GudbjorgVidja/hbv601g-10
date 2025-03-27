@@ -194,6 +194,7 @@ public class RecipeListService extends Service {
         return listRecipes;
     }
 
+    /*
     public boolean deleteRecipeList(long lid){
         String url = String.format("list/id/%s/delete?uid=%s", lid, mUid);
         try {
@@ -209,6 +210,7 @@ public class RecipeListService extends Service {
         }
         return listDeleted;
     }
+     */
 
 
     @Nullable
