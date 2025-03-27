@@ -76,7 +76,7 @@ public class EditRecipeFragment extends Fragment {
         });
 
         mBinding.editRecipe.setOnClickListener(view -> {
-            Recipe recipe = editRecipe();
+            Recipe recipe = editRecipe(mainActivity);
             if (recipe != null) {
                 Bundle res = new Bundle();
                 res.putParcelable(getString(R.string.selected_recipe), recipe);
@@ -131,10 +131,12 @@ public class EditRecipeFragment extends Fragment {
     /**
      * update the recipe
      *
+     * @param activity : MainActivity value, is the activity of the fragment
+     *
      * @return the updated recipe if possible else return null
      */
-    private Recipe editRecipe(){
-        if(mRecipe.getCreatedBy().getId() != ((MainActivity) getActivity()).getUserId()){
+    private Recipe editRecipe(MainActivity activity){
+        if(mRecipe.getCreatedBy().getId() != activity.getUserId()){
             return null;
         }
 
