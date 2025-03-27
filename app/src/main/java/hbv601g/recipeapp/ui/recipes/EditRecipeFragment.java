@@ -1,8 +1,3 @@
-/**
- * Precondition: when navigating to this class it must have a bundle that must contain a not null
- *               recipe that has the bundle key "Recipe"
- */
-
 package hbv601g.recipeapp.ui.recipes;
 
 import android.os.Bundle;
@@ -59,9 +54,15 @@ public class EditRecipeFragment extends Fragment {
             navController.popBackStack();
         }
 
-        mRecipe = getArguments().getParcelable("Recipe");
-        if(mRecipe.getCreatedBy() == null){
-            Log.e("EditRecipeFragment", "No ones owns this");
+        try {
+            mRecipe = getArguments().getParcelable("Recipe");
+            if (mRecipe.getCreatedBy() == null) {
+                Log.e("EditRecipeFragment", "No ones owns this");
+                navController.popBackStack();
+            }
+        }
+        catch (NullPointerException e){
+            mainActivity.makeToast(R.string.recipe_missing_toast, Toast.LENGTH_LONG);
             navController.popBackStack();
         }
 
