@@ -180,11 +180,11 @@ public class RecipeService extends Service {
     }
 
     /**
-     * This function look for all recipe with the tile that is similar to the in put string.
+     * This function look for all recipe with the tile that is contains the in put string.
      *
      * @param inPut : String value, is the sting that is use in the search.
      *
-     * @return a list of recipes that have similar titles as the input string.
+     * @return a list of recipes having titles that contains the input string.
      */
     public List<Recipe> SearchRecipe (String inPut){
         String url = "recipe/search/" + inPut + "?uid=" + mUid;
@@ -200,10 +200,8 @@ public class RecipeService extends Service {
             Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
             if(!mJsonElement.isJsonArray()) return null;
 
-            JsonArray array = mJsonElement.getAsJsonArray();
-
             Type collectionType = new TypeToken<Collection<Recipe>>(){}.getType();
-            repList = gson.fromJson(array, collectionType);
+            repList = gson.fromJson(mJsonElement, collectionType);
         }
         return repList;
     }
