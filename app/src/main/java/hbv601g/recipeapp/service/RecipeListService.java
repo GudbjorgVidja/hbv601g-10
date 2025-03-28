@@ -173,15 +173,15 @@ public class RecipeListService extends Service {
     }
 
     /**
-     * This function removes the recipe form the recipeList list if and only if recipe is in the
+     * This function removes the recipe form the recipe list if and only if recipe is in the
      * list
      *
      * @param list   : RecipeList value, is the list that is being removed form.
      * @param recipe : Is the recipe that is being removed form list.
      *
-     * @return if recipe was removed form the list then true else false
+     * @return if recipe was removed from the list then true else false
      */
-    public boolean removeRecipeFormList(RecipeList list, Recipe recipe){
+    public boolean removeRecipeFromList(RecipeList list, Recipe recipe){
         String url = "list/id/" + list.getId() + "/recipe/" + recipe.getId() +
                 "/remove?uid=" + mUid;
 

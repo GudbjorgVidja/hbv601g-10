@@ -94,8 +94,8 @@
     <string name="add_recipe_to_list_failed_toast">Failed to add recipe to list.</string>
     <string name="add_recipe_to_list_success_toast">The recipe has been added to the list</string>
     <string name="get_recipe_lists_failed_toast">Something went wrong fetching the lists.</string>
-    <string name="recipe_removed_form_list_success_toast"> Recipe was successfully removed form the list</string>
-    <string name="recipe_removed_form_list_failed_toast">Recipe was not removed form the list</string>
+    <string name="recipe_removed_from_list_success_toast"> Recipe was successfully removed from the list</string>
+    <string name="recipe_removed_from_list_failed_toast">Recipe was not removed from the list</string>
     <string name="recipe_list_rename_blank">Input cannot be blank</string>
     <string name="recipe_list_rename_not_authorized">You must be the creator of this list to change the title</string>
     <string name="delete_user_failed_toast">Failed to delete the user account.</string>

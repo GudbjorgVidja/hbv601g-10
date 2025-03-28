@@ -139,7 +139,7 @@
            app:argType="hbv601g.recipeapp.entities.Recipe"/>
        <argument
            android:name="@string/selected_recipe_list"
-           app:argType="hbv601g.recipeapp.entities.Recipe"/>
+           app:argType="hbv601g.recipeapp.entities.RecipeList"/>
    </fragment>
 
 </navigation>

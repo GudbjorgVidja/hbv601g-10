@@ -129,7 +129,7 @@ public class RecipeInRecipeListFragment extends Fragment {
     }
 
     /**
-     * Make a dialog to conform if user wants to remove the recipe form the recipe list.
+     * Make a dialog to confirm if user wants to remove the recipe from the recipe list.
      *
      * @param navController : the NavController being used for navigation.
      * @param mainActivity  : the MainActivity of the app.
@@ -141,10 +141,10 @@ public class RecipeInRecipeListFragment extends Fragment {
 
         alert.setNegativeButton(android.R.string.no, null);
         alert.setPositiveButton(android.R.string.yes, (dialog, which) -> {
-            if(mRecipeListService.removeRecipeFormList(mList, mRecipe)){
+            if(mRecipeListService.removeRecipeFromList(mList, mRecipe)){
                 mainActivity.makeToast
                         (
-                                R.string.recipe_removed_form_list_success_toast,
+                                R.string.recipe_removed_from_list_success_toast,
                                 Toast.LENGTH_LONG
                         );
 
@@ -153,7 +153,7 @@ public class RecipeInRecipeListFragment extends Fragment {
             else {
                 mainActivity.makeToast
                         (
-                                R.string.recipe_removed_form_list_failed_toast,
+                                R.string.recipe_removed_from_list_failed_toast,
                                 Toast.LENGTH_LONG
                         );
             }
