@@ -55,7 +55,7 @@ public class EditRecipeFragment extends Fragment {
         }
 
         try {
-            mRecipe = getArguments().getParcelable("Recipe");
+            mRecipe = getArguments().getParcelable(getString(R.string.selected_recipe));
             if (mRecipe.getCreatedBy() == null) {
                 Log.e("EditRecipeFragment", "No ones owns this");
                 navController.popBackStack();
