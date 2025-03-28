@@ -105,7 +105,6 @@ public class RecipeFragment extends Fragment {
                 public void onFailure(Boolean aBoolean) {
                     requireActivity().runOnUiThread(() ->
                             mainActivity.makeToast(R.string.delete_recipe_failed, Toast.LENGTH_LONG));
-
                 }
             });
 
@@ -151,9 +150,6 @@ public class RecipeFragment extends Fragment {
                     Log.d("Callback", "Failed to get personalized purchase cost");
                 }
             });
-            //double ppc = mRecipeService.getPersonalizedPurchaseCost(mRecipe.getId());
-            // tmp = getString(R.string.recipe_ppc, ppc+"");
-            // mBinding.recipePpc.setText(tmp);
         }
         else {
             mBinding.recipePpc.setVisibility(GONE);

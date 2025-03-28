@@ -88,7 +88,9 @@
     <string name="add_to_pantry_already_existing">The ingredient has not been added since it\'s already in the pantry.</string>
     <string name="create_ingredient_failed_toast">Failed to create ingredient.</string>
     <string name="rename_ingredient_failed_toast">Failed to rename ingredient.</string>
-    <string name="recipe_unknown_error">Recipe could not be crated, unknown error</string>
+    <string name="create_recipe_success_toast">The recipe has been created</string>
+    <string name="create_recipe_failed_toast">Failed to create recipe</string>
+    <string name="create_recipe_ingredients_failed_toast">Failed to add ingredients to recipe</string>
     <string name="create_recipe_list_failed_toast">Failed to create recipe list.</string>
     <string name="create_recipe_list_success_toast">Successfully created recipe list.</string>
     <string name="null_recipe_lists">Something went wrong displaying the recipe lists</string>
