@@ -15,14 +15,16 @@
         android:layout_marginEnd="8dp"
         android:textAlignment="center"
         android:textSize="20sp"
+        android:text="@string/home_information_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/home_image"
-        android:layout_width="260dp"
-        android:layout_height="312dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.7"
         android:contentDescription="@string/home_photo_description"
         app:layout_constraintBottom_toTopOf="@id/home_camera_button"
         app:layout_constraintEnd_toEndOf="parent"

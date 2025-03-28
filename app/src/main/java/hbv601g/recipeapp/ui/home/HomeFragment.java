@@ -15,8 +15,11 @@ import androidx.navigation.Navigation;
 import hbv601g.recipeapp.MainActivity;
 import hbv601g.recipeapp.R;
 import hbv601g.recipeapp.databinding.FragmentHomeBinding;
-import hbv601g.recipeapp.localstorage.ImageLab;
+import hbv601g.recipeapp.localstorage.PhotoBaseLab;
 
+/**
+ * This fragment displays a photo and provides access to the camera
+ */
 public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding mBinding;
@@ -41,15 +44,15 @@ public class HomeFragment extends Fragment {
     }
 
     /**
-     * gets a photo from the files directory and displays it if it exists. if there isn't a photo
-     * there, a predetermined photo is shown
+     * Gets a photo from the device and displays it if it exists. If the photo isn't found, a
+     * predetermined photo is shown
      */
     private void showPhoto(){
-        Bitmap bitmap = ImageLab.get(getActivity()).getPhoto();
+        Bitmap bitmap = PhotoBaseLab.get(getActivity()).getPhoto();
         if (bitmap!=null){
             mBinding.homeImage.setImageBitmap(bitmap);
         }
-        else mBinding.homeImage.setImageResource(R.drawable.ic_home_black_24dp);
+        else mBinding.homeImage.setImageResource(R.drawable.no_image_available);
     }
 
     @Override

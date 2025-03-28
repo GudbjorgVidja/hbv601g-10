@@ -4,20 +4,22 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-
-public class DbHelper extends SQLiteOpenHelper {
+/**
+ * A helper class to manage database creation and version management for the photo database
+ */
+public class PhotoBaseHelper extends SQLiteOpenHelper {
     private static final int VERSION = 1;
     private static final String DATABASE_NAME = "imageBase.db";
 
-    public DbHelper(Context context){
+    public PhotoBaseHelper(Context context){
         super(context, DATABASE_NAME, null, VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table " + DbSchema.ImageTable.NAME + "(" +
-                DbSchema.ImageTable.Cols.PHOTO_ID+ " integer primary key autoincrement, " +
-                DbSchema.ImageTable.Cols.PHOTO_BLOB + " blob" +
+        db.execSQL("create table " + PhotoBaseSchema.ImageTable.NAME + "(" +
+                PhotoBaseSchema.ImageTable.Cols.PHOTO_ID + " integer primary key autoincrement, " +
+                PhotoBaseSchema.ImageTable.Cols.PHOTO_BLOB + " blob" +
                 ")"
         );
     }
