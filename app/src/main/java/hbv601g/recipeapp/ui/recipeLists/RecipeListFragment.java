@@ -181,9 +181,9 @@ public class RecipeListFragment extends Fragment {
             try{
                 mRecipeListService.deleteRecipeList(mRecipeList.getId());
                 navController.popBackStack();
-                mainActivity.makeToast(R.string.delete_list_success, Toast.LENGTH_LONG);
+                mainActivity.makeToast(R.string.delete_list_success_toast, Toast.LENGTH_LONG);
             } catch (DeleteFailedException e) {
-                mainActivity.makeToast(R.string.delete_list_failed, Toast.LENGTH_LONG);
+                mainActivity.makeToast(R.string.delete_list_failed_toast, Toast.LENGTH_LONG);
             }
 
         });
