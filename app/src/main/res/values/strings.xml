@@ -67,7 +67,7 @@
     <string name="add_to_list_button">Add to list</string>
     <string name="camera_shutter_button">Take Photo</string>
     <string name="home_camera_button_text">Camera</string>
-
+    <string name="home_information_text">Come cook with us!</string>
 
     <!-- Messages/toasts -->
     <string name="login_failed_toast">Login failed. Please ensure username and password are correct.</string>
@@ -96,6 +96,10 @@
     <string name="add_recipe_to_list_success_toast">The recipe has been added to the list</string>
     <string name="get_recipe_lists_failed_toast">Something went wrong fetching the lists.</string>
     <string name="home_photo_description">A photo stored on the device</string>
+    <string name="camera_photo_success_toast">Photo captured successfully!</string>
+    <string name="camera_photo_failure_toast">Photo captured failed</string>
+    <string name="camera_no_access_toast">Unable to take photo. Please make sure to allow access to the camera.</string>
+    <string name="camera_not_initialized_toast">Please wait for the camera to start before taking photos.</string>
 
     <!-- variables -->
     <string name="selected_ingredient">Ingredient</string>

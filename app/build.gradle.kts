@@ -38,11 +38,10 @@ android {
 dependencies {
 
     implementation(libs.camera.core)
-    implementation (libs.camera.camera2)
-    implementation (libs.camera.lifecycle)
-    implementation (libs.camera.view)
-    implementation (libs.camera.extensions)
-    implementation ("com.github.bumptech.glide:glide:4.12.0")
+    implementation(libs.camera.camera2)
+    implementation(libs.camera.lifecycle)
+    implementation(libs.camera.view)
+    implementation(libs.camera.extensions)
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.constraintlayout)
