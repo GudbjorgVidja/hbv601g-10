@@ -149,7 +149,7 @@ public class UserFragment extends Fragment{
         EditText editText = new EditText(mainActivity.getApplicationContext());
         editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());
-        alert.setTitle(getString(R.string.delete_user_alert_message));
+        alert.setTitle(getString(R.string.delete_user_alert_title));
         alert.setMessage(getString(R.string.delete_user_alert_message));
         alert.setView(editText);
         alert.setPositiveButton(getString(R.string.confirm_button), null);

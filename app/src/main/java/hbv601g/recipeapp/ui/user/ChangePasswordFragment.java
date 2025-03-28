@@ -1,7 +1,6 @@
 package hbv601g.recipeapp.ui.user;
 
 import android.app.AlertDialog;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,9 +55,39 @@ public class ChangePasswordFragment extends Fragment {
      * This function set the color for the new Password and validate New Password fields as red
      */
     private void newPassInvalid(){
-        mBinding.newPasswordInputLayout.setBoxBackgroundColor(Color.RED);
-        mBinding.validatePasswordInputLayout.setBoxBackgroundColor(Color.RED);
+        mBinding.newPasswordInputLayout.setError(getString(R.string.new_password_invalid_error));
+        mBinding.validatePasswordInputLayout.setError
+                (
+                        getString(R.string.new_password_invalid_error)
+                );
     }
+
+    /**
+     * Creates a dialog let ask if the user if sure if they want to change there password.
+     */
+    private void confirmAlert(){
+        AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());
+        alert.setTitle(R.string.change_password_dialog_title);
+        alert.setMessage(R.string.change_password_alert_message);
+
+        alert.setPositiveButton(android.R.string.yes, (dialog, which) -> {
+            mUserService.changePassword
+                    (
+                            ((MainActivity) getActivity()).getUserId(),
+                            mBinding.newPasswordInput.getText().toString()
+                    );
+
+            mNavController.popBackStack();
+        });
+
+        alert.setNegativeButton(android.R.string.no, (dialog, which) -> {
+            newPassInvalid();
+            mBinding.validateNewPasswordInput.setText("");
+        });
+
+        alert.show();
+    }
+
 
     /**
      * The function checks if the new password is valid if it is the password for the user is
@@ -69,40 +98,14 @@ public class ChangePasswordFragment extends Fragment {
             String nPass = mBinding.newPasswordInput.getText().toString();
             if(nPass.isEmpty()){
                 newPassInvalid();
-                Toast.makeText(
-                        getActivity(), R.string.password_has_no_input_toast, Toast.LENGTH_SHORT
-                ).show();
                 return;
             }
 
             if(nPass.equals(mBinding.validateNewPasswordInput.getText().toString())){
-                AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());
-                alert.setTitle(R.string.change_password_dialog_title);
-                alert.setMessage(R.string.change_password_alert_message);
-
-                alert.setPositiveButton(android.R.string.yes, (dialog, which) -> {
-                    mUserService.changePassword
-                            (
-                                    ((MainActivity) getActivity()).getUserId(),
-                                    mBinding.newPasswordInput.getText().toString()
-                            );
-
-                    mNavController.popBackStack();
-                });
-
-                alert.setNegativeButton(android.R.string.no, (dialog, which) -> {
-                   newPassInvalid();
-                   mBinding.validateNewPasswordInput.setText("");
-                });
-
-                alert.show();
+                confirmAlert();
             }
             else {
                 newPassInvalid();
-                Toast.makeText(
-                        getActivity(), R.string.new_password_invalid_toast,
-                        Toast.LENGTH_SHORT
-                ).show();
             }
         }
         catch (NullPointerException e){

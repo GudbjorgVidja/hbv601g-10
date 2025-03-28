@@ -79,7 +79,7 @@
     <fragment
         android:id="@+id/nav_change_password"
         android:name="hbv601g.recipeapp.ui.user.ChangePasswordFragment"
-        android:label="@string/change_password_title"
+        android:label="@string/title_change_password"
         tools:layout="@layout/fragment_change_password"/>
 
     <fragment

@@ -245,8 +245,9 @@ public class UserService extends Service {
     public void changePassword(long uId, String newPass){
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 
-        String url = "user/changePassword?uid=" + uId +
-                String.format("&newPassword=%s&oldPassword=%s", newPass, getUser(uId, uId).getPassword());
+        String url = "user/changePassword?uid=" + uId + "&newPassword=" + newPass
+                + "&oldPassword=" + getUser(uId, uId).getPassword();
+
 
         try {
             mNetworkingService.patchRequest(url, null);
