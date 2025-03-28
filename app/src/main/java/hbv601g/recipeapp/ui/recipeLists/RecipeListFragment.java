@@ -27,6 +27,7 @@ import hbv601g.recipeapp.adapters.RecipeAdapter;
 import hbv601g.recipeapp.databinding.FragmentRecipeListBinding;
 import hbv601g.recipeapp.entities.Recipe;
 import hbv601g.recipeapp.entities.RecipeList;
+import hbv601g.recipeapp.exceptions.DeleteFailedException;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.RecipeListService;
 
@@ -177,12 +178,14 @@ public class RecipeListFragment extends Fragment {
         alert.setTitle(getString(R.string.delete_list_alert_title));
         alert.setMessage(getString(R.string.delete_list_alert_message));
         alert.setPositiveButton(android.R.string.yes, (dialog, which) -> {
-            boolean result = mRecipeListService.deleteRecipeList(mRecipeList.getId());
-            if (result){
+            try{
+                mRecipeListService.deleteRecipeList(mRecipeList.getId());
                 navController.popBackStack();
                 mainActivity.makeToast(R.string.delete_list_success, Toast.LENGTH_LONG);
+            } catch (DeleteFailedException e) {
+                mainActivity.makeToast(R.string.delete_list_failed, Toast.LENGTH_LONG);
             }
-            else mainActivity.makeToast(R.string.delete_list_failed, Toast.LENGTH_LONG);
+
         });
         alert.setNegativeButton(android.R.string.no, (dialog, which) -> {});
         alert.show();

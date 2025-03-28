@@ -200,22 +200,15 @@ public class RecipeListService extends Service {
     /**
      * Deletes the given recipe list from database
      * @param lid - id of the recipe list
-     * @return true if the list was deleted successfully, else false
      */
-    public boolean deleteRecipeList(long lid){
+    public void deleteRecipeList(long lid){
         String url = String.format("list/id/%s/delete?uid=%s", lid, mUid);
         try {
-            mJsonElement = mNetworkingService.deleteRequest(url);
+            mNetworkingService.deleteRequest(url);
         } catch (IOException e) {
             Log.d("Networking exception", "Delete recipe list failed");
         }
 
-        boolean listDeleted = false;
-        if(mJsonElement != null){
-            listDeleted = mJsonElement.getAsBoolean();
-            Log.d("API", "Recipe list deleted: " + listDeleted);
-        }
-        return listDeleted;
     }
 
 
