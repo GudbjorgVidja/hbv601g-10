@@ -169,7 +169,6 @@ public class RecipeListFragment extends Fragment {
         Log.d("RecipeListFragment", "List recipes are: " + mRecipeList.getRecipes());
         recipeListView.setAdapter(adapter);
     }
-}
 
     /**
      * Makes an alert to delete this recipe list. If confirmed, the list gets deleted.
