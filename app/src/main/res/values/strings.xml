@@ -118,7 +118,6 @@
     <string name="request_msmt">Ingredient measurement result</string>
     <string name="tic_string">tic:</string>
     <string name="tpc_string">tpc:</string>
-    <string name="home_photo_name">saved_photo.jpg</string>
 
     <!-- Alert strings -->
     <string name="delete_recipe_alert_title">Delete recipe</string>
