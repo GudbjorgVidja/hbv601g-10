@@ -76,11 +76,7 @@ public class RecipeListFragment extends Fragment {
             Recipe recipe = (Recipe) parent.getItemAtPosition(position);
             Log.d("Selected", recipe.toString());
 
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(getString(R.string.selected_recipe), recipe);
-            bundle.putParcelable(getString(R.string.selected_recipe_list), mRecipeList);
-	    
-            navController.navigate(R.id.nav_recipe_in_recipe_list, bundle);
+            makeRecipeChoiceAlert(navController, mainActivity, recipe);
         });
 
         mRecipeListTitle = mBinding.recipeListTitle;
@@ -168,6 +164,80 @@ public class RecipeListFragment extends Fragment {
         RecipeAdapter adapter = new RecipeAdapter(mainActivity.getApplicationContext(), mListRecipes);
         Log.d("RecipeListFragment", "List recipes are: " + mRecipeList.getRecipes());
         recipeListView.setAdapter(adapter);
+    }
+
+    /**
+     * Make an alert for the choices that the User make for a recipe they picked
+     *
+     * @param navController : the navController instance
+     * @param activity      : the current mainActivity
+     * @param recipe        : Recipe value, is the recipe that the user picked.
+     */
+    private void makeRecipeChoiceAlert(NavController navController, MainActivity activity,
+                                       Recipe recipe){
+        AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());
+        alert.setTitle(String.format(getString(R.string.recipe_choice_alert_title),
+                recipe.getTitle())
+        );
+
+        alert.setMessage(getString(R.string.recipe_choice_alert_massage));
+
+        alert.setNeutralButton(R.string.look_at_recipe_button,
+                (dialog, which) -> {
+
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable(getString(R.string.selected_recipe), recipe);
+
+                    navController.navigate(R.id.nav_recipe, bundle);
+        });
+
+        alert.setNegativeButton(R.string.remove_button, (dialog, which) -> {
+            removeRecipeAlert(navController, activity, recipe);
+        });
+
+        alert.setPositiveButton(R.string.cancel_button_text, null);
+
+        alert.show();
+    }
+
+    /**
+     * Make a dialog to confirm if user wants to remove the recipe from the recipe list.
+     *
+     * @param navController : the NavController being used for navigation.
+     * @param mainActivity  : the MainActivity of the app.
+     * @param recipe        : Recipe value, is the recipe that the user picked.
+     */
+    private void removeRecipeAlert(NavController navController, MainActivity mainActivity,
+                                  Recipe recipe){
+        AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());
+        alert.setTitle(R.string.remove_recipe_from_recipe_list_alert_title);
+        alert.setMessage(R.string.remove_recipe_from_recipe_list_alert_message);
+
+        alert.setPositiveButton(android.R.string.yes, (dialog, which) -> {
+            if(mRecipeListService.removeRecipeFromList(mRecipeList, recipe)){
+                mainActivity.makeToast
+                        (
+                                R.string.recipe_removed_from_list_success_toast,
+                                Toast.LENGTH_LONG
+                        );
+
+                mRecipeList = mRecipeListService.getListById(mRecipeList.getId());
+                setRecipeList();
+            }
+            else {
+                mainActivity.makeToast
+                        (
+                                R.string.recipe_removed_from_list_failed_toast,
+                                Toast.LENGTH_LONG
+                        );
+            }
+        });
+
+        alert.setNegativeButton(android.R.string.no, (dialog, which) -> {
+            makeRecipeChoiceAlert(navController, mainActivity, recipe);
+        });
+
+        alert.show();
     }
 
     /**

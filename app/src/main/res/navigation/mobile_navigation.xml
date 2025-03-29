@@ -129,17 +129,4 @@
         android:label="@string/title_recipe_list"
         tools:layout="@layout/fragment_recipe_list" />
 
-   <fragment
-       android:id="@+id/nav_recipe_in_recipe_list"
-       android:name="hbv601g.recipeapp.ui.recipeLists.RecipeInRecipeListFragment"
-       android:label="@string/title_recipe"
-       tools:layout="@layout/fragment_recipe_in_recipe_list">
-       <argument
-           android:name="@string/selected_recipe"
-           app:argType="hbv601g.recipeapp.entities.Recipe"/>
-       <argument
-           android:name="@string/selected_recipe_list"
-           app:argType="hbv601g.recipeapp.entities.RecipeList"/>
-   </fragment>
-
 </navigation>
