@@ -96,6 +96,7 @@
     <string name="null_recipe_lists">Something went wrong displaying the recipe lists</string>
     <string name="add_recipe_to_list_failed_toast">Failed to add recipe to list.</string>
     <string name="add_recipe_to_list_success_toast">The recipe has been added to the list</string>
+    <string name="add_recipe_to_list_existing_toast">The recipe was already on this list, and still is.</string>
     <string name="get_recipe_lists_failed_toast">Something went wrong fetching the lists.</string>
     <string name="delete_user_failed_toast">Failed to delete the user account.</string>
     <string name="delete_user_success_toast">User account deleted successfully.</string>

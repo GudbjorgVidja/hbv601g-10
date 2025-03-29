@@ -25,6 +25,7 @@ import hbv601g.recipeapp.adapters.RecipeAdapter;
 import hbv601g.recipeapp.databinding.FragmentRecipeListBinding;
 import hbv601g.recipeapp.entities.Recipe;
 import hbv601g.recipeapp.entities.RecipeList;
+import hbv601g.recipeapp.networking.CustomCallback;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.RecipeListService;
 
@@ -53,30 +54,80 @@ public class RecipeListFragment extends Fragment {
         NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
         mRecipeListService = new RecipeListService(new NetworkingService(), mainActivity.getUserId());
 
-        /**
+        /*
          * We use the ID of mClickedList to fetch the list from the API
          * so that it will update when a recipe is added to the list while
          * the list is still open.
          */
-        mRecipeList = mRecipeListService.getListById(mClickedList.getId());
+        mRecipeListService.getListById(mClickedList.getId(), new CustomCallback<>() {
+            @Override
+            public void onSuccess(RecipeList recipeList) {
+                requireActivity().runOnUiThread(() -> {
+                    mRecipeList = recipeList;
+                    setRecipeList(mainActivity, navController);
+                });
+            }
 
-        // UI set with list information
-        if(mRecipeList != null) {
-            setRecipeList();
-        }
-
-        ListView mRecipeListListView = mBinding.recipeListRecipes;
-
-        // On click listener so the user can click and view recipes from the list
-        mRecipeListListView.setOnItemClickListener((parent, view, position, id) -> {
-            Recipe recipe = (Recipe) parent.getItemAtPosition(position);
-            Log.d("Selected", recipe.toString());
-
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(getString(R.string.selected_recipe), recipe);
-            navController.navigate(R.id.nav_recipe, bundle);
-
+            @Override
+            public void onFailure(RecipeList recipeList) {
+                requireActivity().runOnUiThread(() -> {
+                    mRecipeList = recipeList;
+                    Toast.makeText(mainActivity, "Whoops, something went wrong!", Toast.LENGTH_LONG).show();
+                });
+            }
         });
+
+
+        return root;
+    }
+
+    /**
+     * Function to set recipe list information in the UI.
+     */
+    private void setRecipeList(MainActivity mainActivity, NavController navController){
+        mBinding.recipeListTitle.setText(mRecipeList.getTitle());
+
+        String tmp = mRecipeList.getCreatedBy() == null ? "Unknown" : mRecipeList.getCreatedBy().getUsername();
+        mBinding.recipeListCreatedBy.setText(tmp);
+
+        tmp = mRecipeList.getDescription().isEmpty() ? "No description available" : mRecipeList.getDescription();
+
+        mBinding.recipeListDescription.setText(tmp);
+
+        ListView recipeListView = mBinding.recipeListRecipes;
+
+        mRecipeListService.getRecipesFromList(mRecipeList.getId(), new CustomCallback<>() {
+            @Override
+            public void onSuccess(List<Recipe> recipes) {
+                requireActivity().runOnUiThread(() -> {
+                    RecipeAdapter adapter = new RecipeAdapter(mainActivity.getApplicationContext(), recipes);
+                    //Log.d("RecipeListFragment", "List recipes are: " + mRecipeList.getRecipes());
+                    recipeListView.setAdapter(adapter);
+
+
+                    ListView mRecipeListListView = mBinding.recipeListRecipes;
+
+                    // On click listener so the user can click and view recipes from the list
+                    mRecipeListListView.setOnItemClickListener((parent, view, position, id) -> {
+                        Recipe recipe = (Recipe) parent.getItemAtPosition(position);
+                        Log.d("Selected", recipe.toString());
+
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable(getString(R.string.selected_recipe), recipe);
+                        navController.navigate(R.id.nav_recipe, bundle);
+
+                    });
+                });
+
+            }
+
+            @Override
+            public void onFailure(List<Recipe> recipes) {
+                requireActivity().runOnUiThread(() ->
+                        Toast.makeText(mainActivity, "Whoops, something went wrong!", Toast.LENGTH_LONG).show());
+            }
+        });
+
 
 
 
@@ -91,33 +142,6 @@ public class RecipeListFragment extends Fragment {
             mBinding.deleteListButton.setVisibility(GONE);
         }
 
-
-        return root;
-    }
-
-    /**
-     * Function to set recipe list information in the UI.
-     */
-    private void setRecipeList(){
-        mBinding.recipeListTitle.setText(mRecipeList.getTitle());
-
-        String tmp = mRecipeList.getCreatedBy() == null ? "Unknown" : mRecipeList.getCreatedBy().getUsername();
-        mBinding.recipeListCreatedBy.setText(tmp);
-
-        tmp = mRecipeList.getDescription().isEmpty() ? "No description available" : mRecipeList.getDescription();
-
-        mBinding.recipeListDescription.setText(tmp);
-
-        MainActivity mainActivity = (MainActivity) getActivity();
-
-        assert mainActivity != null;
-
-        ListView recipeListView = mBinding.recipeListRecipes;
-        List<Recipe> mListRecipes = mRecipeListService.getRecipesFromList(mRecipeList.getId());
-
-        RecipeAdapter adapter = new RecipeAdapter(mainActivity.getApplicationContext(), mListRecipes);
-        Log.d("RecipeListFragment", "List recipes are: " + mRecipeList.getRecipes());
-        recipeListView.setAdapter(adapter);
     }
 
 

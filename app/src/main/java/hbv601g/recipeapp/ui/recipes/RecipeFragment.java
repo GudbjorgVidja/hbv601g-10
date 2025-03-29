@@ -18,17 +18,20 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import hbv601g.recipeapp.MainActivity;
 import hbv601g.recipeapp.R;
 import hbv601g.recipeapp.adapters.IngredientMeasurementAdapter;
+import hbv601g.recipeapp.adapters.RecipeListAdapter;
 import hbv601g.recipeapp.databinding.FragmentRecipeBinding;
 import hbv601g.recipeapp.entities.Recipe;
+import hbv601g.recipeapp.entities.RecipeList;
 import hbv601g.recipeapp.networking.CustomCallback;
 import hbv601g.recipeapp.networking.NetworkingService;
+import hbv601g.recipeapp.service.RecipeListService;
 import hbv601g.recipeapp.service.RecipeService;
-import hbv601g.recipeapp.ui.recipeLists.AddRecipeToListDialogFragment;
 
 /**
  * A fragment for single recipes
@@ -37,6 +40,7 @@ public class RecipeFragment extends Fragment {
     private FragmentRecipeBinding mBinding;
     private Recipe mRecipe;
     private RecipeService mRecipeService;
+    private RecipeListService mRecipeListService;
 
     @Nullable
     @Override
@@ -54,6 +58,7 @@ public class RecipeFragment extends Fragment {
 
         NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
         mRecipeService = new RecipeService(new NetworkingService(), mainActivity.getUserId());
+        mRecipeListService = new RecipeListService(new NetworkingService(), mainActivity.getUserId());
 
         if (getArguments() == null ||
                 getArguments().getParcelable(getString(R.string.selected_recipe)) == null){
@@ -61,10 +66,7 @@ public class RecipeFragment extends Fragment {
             return root;
         }
 
-        mBinding.addToListButton.setOnClickListener(v -> {
-            AddRecipeToListDialogFragment dialog = AddRecipeToListDialogFragment.newInstance(mRecipe.getId());
-            dialog.show(mainActivity.getSupportFragmentManager(), "AddRecipeToListDialogFragment");
-        });
+        mBinding.addToListButton.setOnClickListener(v -> makeAddToListAlert(mainActivity) );
 
         mRecipe = getArguments().getParcelable(getString(R.string.selected_recipe));
         setRecipe();
@@ -113,6 +115,7 @@ public class RecipeFragment extends Fragment {
         alert.setNegativeButton(android.R.string.no, (dialog, which) -> {});
         alert.show();
     }
+
     /**
      * Puts information from a selected recipe into the user interface
      */
@@ -164,6 +167,79 @@ public class RecipeFragment extends Fragment {
 
         ingredientMeasurementListView.setAdapter(adapter);
     }
+
+
+
+    /**
+     * Makes and shows an alert dialog for adding the currently open recipe to a recipe list.
+     * If any lists are found for the current user, the lists are displayed in a dialog.
+     * After an item is selected, an attempt is made to add the recipe to the list.
+     *
+     * @param mainActivity - the MainActivity of the app
+     */
+    private void makeAddToListAlert(MainActivity mainActivity) {
+        // hmm??
+        if(mRecipe == null) return;
+
+        long rid = mRecipe.getId();
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());
+
+        mRecipeListService.getUserRecipeLists(mainActivity.getUserId(), new CustomCallback<>() {
+            @Override
+            public void onSuccess(List<RecipeList> recipeLists) {
+                if(recipeLists.isEmpty()){
+                    Log.d("Callback", "No lists found");
+                    requireActivity().runOnUiThread(() ->
+                            Toast.makeText(mainActivity, "No lists found", Toast.LENGTH_LONG).show());
+
+                    return;
+                }
+                alert.setTitle(getString(R.string.add_recipe_to_list_dialog_title));
+
+
+                RecipeListAdapter adapter = new RecipeListAdapter(getActivity(), recipeLists);
+
+                alert.setAdapter(adapter, (dialog, which) -> {
+                    long lid = ((RecipeList) adapter.getItem(which)).getId();
+                    mRecipeListService.addRecipeToList(rid, lid, new CustomCallback<>() {
+                        @Override
+                        public void onSuccess(Integer listSize) {
+                            requireActivity().runOnUiThread(() -> {
+                                if(listSize == ((RecipeList) adapter.getItem(which)).getRecipes().size())
+                                    mainActivity.makeToast(R.string.add_recipe_to_list_existing_toast, Toast.LENGTH_LONG);
+                                else
+                                    mainActivity.makeToast(R.string.add_recipe_to_list_success_toast, Toast.LENGTH_LONG);
+                            });
+                        }
+
+                        @Override
+                        public void onFailure(Integer listSize) {
+                            requireActivity().runOnUiThread(() -> mainActivity.makeToast(R.string.add_recipe_to_list_failed_toast, Toast.LENGTH_LONG));
+                        }
+                    });
+
+                });
+                alert.setNegativeButton(getString(R.string.cancel_button_text), null);
+
+                requireActivity().runOnUiThread(() -> alert.create().show());
+
+            }
+
+            @Override
+            public void onFailure(List<RecipeList> recipeLists) {
+                requireActivity().runOnUiThread(() -> Toast.makeText(mainActivity, "Something went wrong, No lists found", Toast.LENGTH_LONG).show());
+            }
+        });
+
+
+
+
+
+    }
+
+
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
