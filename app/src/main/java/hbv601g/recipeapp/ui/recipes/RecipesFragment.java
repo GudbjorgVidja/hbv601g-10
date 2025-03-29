@@ -2,11 +2,11 @@ package hbv601g.recipeapp.ui.recipes;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -77,22 +77,23 @@ public class RecipesFragment extends Fragment {
             mBinding.addRecipe.hide();
         }
 
-        mBinding.recipeSearchBar.setOnKeyListener(new View.OnKeyListener() {
+        mBinding.recipeSearchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                    List<Recipe> temp = searchForRec();
+            public boolean onQueryTextSubmit(String query) {
+                mRecipeList = searchForRec();
+                recipeAdapter.setList(mRecipeList);
+                recipeAdapter.notifyDataSetChanged();
+                return true;
+            }
 
-                    if(temp != null){
-                        mRecipeList = temp;
-
-                        recipeAdapter.setList(mRecipeList);
-                        recipeAdapter.notifyDataSetChanged();
-                        return true;
-                    }
-                    return false;
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (newText.isEmpty()) {
+                    mRecipeList = searchForRec();
+                    recipeAdapter.setList(mRecipeList);
+                    recipeAdapter.notifyDataSetChanged();
                 }
-                return false;
+                return true;
             }
         });
 
@@ -105,14 +106,14 @@ public class RecipesFragment extends Fragment {
      * @return a list of recipe that have the title of the recipe in the Search bar or if the
      *         Search bar is empty then it returns all of the recipes that the user can see.
      */
-    private List<Recipe> searchForRec(){
-        String inPut = mBinding.recipeSearchBar.getText().toString();
+    private List<Recipe> searchForRec() {
+        String input = mBinding.recipeSearchBar.getQuery().toString();
+        List<Recipe> searchResult = mRecipeService.getAllRecipes();
 
-        if (!inPut.isEmpty()){
-            return mRecipeService.SearchRecipe(inPut);
-        }
+        if (!input.isEmpty()) searchResult = mRecipeService.SearchRecipe(input);
 
-        return mRecipeService.getAllRecipes();
+        if (searchResult == null) searchResult = new ArrayList<>();
+        return searchResult;
     }
 
     @Override
