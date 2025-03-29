@@ -113,6 +113,7 @@
     <string name="selected_recipe">Recipe</string>
     <string name="selected_unit">Unit</string>
     <string name="selected_ingredient_measurement">Ingredient measurement</string>
+    <string name="selected_user">User</string>
     <string name="request_ingredient_measurement">Ingredient measurement result</string>
     <string name="request_new_recipe">New recipe result</string>
     <string name="request_edit_recipe">Edited recipe result</string>

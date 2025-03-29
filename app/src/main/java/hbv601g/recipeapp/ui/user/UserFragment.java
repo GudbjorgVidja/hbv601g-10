@@ -39,6 +39,7 @@ public class UserFragment extends Fragment{
     private List<RecipeList> mRecipeLists;
     private RecipeListService mRecipeListService;
     private ListView mRecipeListListView;
+    private long mUidOfProfile;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -52,6 +53,12 @@ public class UserFragment extends Fragment{
         View root = mBinding.getRoot();
 
         mRecipeListService = new RecipeListService(new NetworkingService(), mainActivity.getUserId());
+
+        if (getArguments() != null) {
+            mUidOfProfile= getArguments().getLong(getString(R.string.selected_user)) ;
+        }
+        else mUidOfProfile = 0;
+
 
         if(mainActivity.getUserId() != 0) setWithUserView(mainActivity,navController);
         else setNoUserView(mainActivity,navController);
@@ -76,21 +83,15 @@ public class UserFragment extends Fragment{
         mBinding.loginButton.setOnClickListener(v -> navController.navigate(R.id.nav_login));
         mBinding.signupButton.setOnClickListener(v -> navController.navigate(R.id.nav_signup));
     }
-    //TODO add own profile and other profile views
+
     private void setWithUserView(MainActivity mainActivity, NavController navController){
         // Set visibility of UI components
         mBinding.usernameDisplay.setVisibility(VISIBLE);
         mBinding.userRecipeListSection.setVisibility(VISIBLE);
         mBinding.userRecipeLists.setVisibility(VISIBLE);
-        mBinding.createRecipeListButton.setVisibility(VISIBLE);
-        mBinding.logoutButton.setVisibility(VISIBLE);
-        mBinding.deleteUserButton.setVisibility(VISIBLE);
         mBinding.noUserButtonLayout.setVisibility(GONE);
         mBinding.loginButton.setVisibility(GONE);
         mBinding.signupButton.setVisibility(GONE);
-
-        // Set the username
-        mBinding.usernameDisplay.setText(mainActivity.getUserName());
 
         // Populate the list of recipe lists and display them
         try {
@@ -112,6 +113,22 @@ public class UserFragment extends Fragment{
             navController.navigate(R.id.nav_recipe_list, bundle);
         });
 
+        if(mUidOfProfile == mainActivity.getUserId() || mUidOfProfile==0){
+            ownProfile(mainActivity,navController);
+        }
+        else setOtherProfile(mainActivity,navController);
+    }
+
+    private void ownProfile(MainActivity mainActivity, NavController navController){
+        // Set visibility of UI components
+        mBinding.createRecipeListButton.setVisibility(VISIBLE);
+        mBinding.logoutButton.setVisibility(VISIBLE);
+        mBinding.deleteUserButton.setVisibility(VISIBLE);
+
+
+        // Set the username
+        mBinding.usernameDisplay.setText(mainActivity.getUserName());
+
         // Set listeners on buttons
         mBinding.logoutButton.setOnClickListener(v -> mainActivity.removeCurrentUser());
 
@@ -120,6 +137,17 @@ public class UserFragment extends Fragment{
 
         mBinding.deleteUserButton.setOnClickListener(v -> deleteUserAlert(mainActivity));
     }
+
+    private void setOtherProfile(MainActivity mainActivity, NavController navController){
+            // Set visibility of UI components
+            mBinding.createRecipeListButton.setVisibility(GONE);
+            mBinding.logoutButton.setVisibility(GONE);
+            mBinding.deleteUserButton.setVisibility(GONE);
+
+        // Set the username
+        mBinding.usernameDisplay.setText("That bitch");
+    }
+
 
 
     /**

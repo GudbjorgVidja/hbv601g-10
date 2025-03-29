@@ -91,6 +91,12 @@ public class RecipeFragment extends Fragment {
                     }
                 });
 
+        mBinding.recipeCreator.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putLong(getString(R.string.selected_user), mRecipe.getCreatedBy().getId());
+            navController.navigate(R.id.nav_user,bundle);
+        });
+
         return root;
     }
 
