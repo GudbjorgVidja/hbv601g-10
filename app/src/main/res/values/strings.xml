@@ -68,10 +68,8 @@
     <string name="confirm_create_recipe_list_button">Create recipe list</string>
     <string name="add_to_list_button">Add to list</string>
     <string name="save_button">Save</string>
-    <string name="delete_button_text">Delete</string>
     <string name="edit_button_text">Edit</string>
     <string name="rename_ingredient_button_text">Rename</string>
-    <string name="rename_button_text">Rename</string>
 
     <!-- Messages/toasts -->
     <string name="login_failed_toast">Login failed. Please ensure username and password are correct.</string>
