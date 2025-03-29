@@ -63,7 +63,7 @@
     <string name="add_to_list_button">Add to list</string>
     <string name="change_password_button">Change password</string>
     <string name="add_button_text">Add</string>
-    <string name="check_password_buttom">Check if password is valid</string>
+    <string name="check_password_button">Check if password is valid</string>
     <string name="save_button">Save</string>
     <string name="recipe_tpc">Total purchase cost: %1$s kr</string>
     <string name="recipe_tic">Total ingredient cost: %1$s kr</string>
