@@ -56,7 +56,8 @@ public class NewRecipeListFragment extends Fragment {
                             mBinding.newRecipeListPrivateSelection.isChecked());
                     mainActivity.makeToast(R.string.create_recipe_list_success_toast, Toast.LENGTH_LONG);
                     Bundle bundle = new Bundle();
-                    bundle.putLong(getString(R.string.selected_user), mainActivity.getUserId());
+                    bundle.putLong(getString(R.string.selected_user_id), mainActivity.getUserId());
+                    bundle.putString(getString(R.string.selected_user_name), mainActivity.getUserName());
                     navController.navigate(R.id.nav_user, bundle);
                 } catch (NullPointerException e) {
                     mainActivity.makeToast(R.string.create_recipe_list_failed_toast, Toast.LENGTH_LONG);

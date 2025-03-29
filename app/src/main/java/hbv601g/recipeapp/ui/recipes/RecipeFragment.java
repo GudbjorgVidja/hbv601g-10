@@ -93,7 +93,8 @@ public class RecipeFragment extends Fragment {
 
         mBinding.recipeCreator.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
-            bundle.putLong(getString(R.string.selected_user), mRecipe.getCreatedBy().getId());
+            bundle.putLong(getString(R.string.selected_user_id), mRecipe.getCreatedBy().getId());
+            bundle.putString(getString(R.string.selected_user_name), mRecipe.getRecipeCreator());
             navController.navigate(R.id.nav_user,bundle);
         });
 

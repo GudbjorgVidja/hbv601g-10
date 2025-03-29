@@ -32,6 +32,12 @@ import hbv601g.recipeapp.service.RecipeListService;
 import hbv601g.recipeapp.exceptions.DeleteFailedException;
 import hbv601g.recipeapp.service.UserService;
 
+/**
+ * A fragment that displays a user's profile. This shows the current user's profile
+ * by default (or a login/signup page if no user is logged in). By passing values
+ * in a bundle while navigating to the fragment, it is possible to view the profile
+ * of other users
+ */
 public class UserFragment extends Fragment{
 
     private FragmentUserBinding mBinding;
@@ -40,6 +46,7 @@ public class UserFragment extends Fragment{
     private RecipeListService mRecipeListService;
     private ListView mRecipeListListView;
     private long mUidOfProfile;
+    private String mNameOfProfile;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -55,9 +62,14 @@ public class UserFragment extends Fragment{
         mRecipeListService = new RecipeListService(new NetworkingService(), mainActivity.getUserId());
 
         if (getArguments() != null) {
-            mUidOfProfile= getArguments().getLong(getString(R.string.selected_user)) ;
+            mUidOfProfile = getArguments().getLong(getString(R.string.selected_user_id));
+            mNameOfProfile = getArguments().getString(getString(R.string.selected_user_name));
         }
-        else mUidOfProfile = 0;
+        else {
+            mUidOfProfile = mainActivity.getUserId();
+            mNameOfProfile = mainActivity.getUserName();
+        }
+
 
 
         if(mainActivity.getUserId() != 0) setWithUserView(mainActivity,navController);
@@ -139,13 +151,13 @@ public class UserFragment extends Fragment{
     }
 
     private void setOtherProfile(MainActivity mainActivity, NavController navController){
-            // Set visibility of UI components
-            mBinding.createRecipeListButton.setVisibility(GONE);
-            mBinding.logoutButton.setVisibility(GONE);
-            mBinding.deleteUserButton.setVisibility(GONE);
+        // Set visibility of UI components
+        mBinding.createRecipeListButton.setVisibility(GONE);
+        mBinding.logoutButton.setVisibility(GONE);
+        mBinding.deleteUserButton.setVisibility(GONE);
 
         // Set the username
-        mBinding.usernameDisplay.setText("That bitch");
+        mBinding.usernameDisplay.setText(mNameOfProfile);
     }
 
 

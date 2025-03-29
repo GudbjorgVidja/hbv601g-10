@@ -68,7 +68,10 @@
         android:label="@string/title_user"
         tools:layout="@layout/fragment_user">
         <argument
-            android:name="@string/selected_user"
+            android:name="@string/selected_user_name"
+            app:argType="string" />
+        <argument
+            android:name="@string/selected_user_id"
             app:argType="long" />
     </fragment>
 
