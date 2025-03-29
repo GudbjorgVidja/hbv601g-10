@@ -17,9 +17,9 @@
     <string name="title_new_ingredient">New ingredient</string>
     <string name="title_recipe">Recipe</string>
     <string name="title_new_recipe_list">New recipe list</string>
+    <string name="title_edit_recipe">Edit recipe</string>
     <string name="title_recipe_list">Recipe list</string>
     <string name="title_rename_recipe_list">Change recipe list name</string>
-
 
     <!-- Buttons/textfields -->
     <string name="ingredients_text">Ingredients</string>
@@ -42,8 +42,6 @@
     <string name="ingredient_price_store">%1$dkr at %2$s</string>
     <string name="ingredient_quantity_brand">%1$s%2$s, %3$s brand</string>
     <string name="pantry_ingredient_quantity_brand">%1$s%2$s, %3$s brand</string>
-    <string name="delete_button_text">Delete</string>
-    <string name="rename_button_text">Rename</string>
     <string name="new_ingredient_title_hint">Title</string>
     <string name="new_ingredient_quantity_hint">Qty.</string>
     <string name="new_ingredient_price_hint">Price</string>
@@ -67,8 +65,10 @@
     <string name="recipe_list_text">Recipe Lists</string>
     <string name="add_to_list_button">Add to list</string>
     <string name="save_button">Save</string>
-
-
+    <string name="delete_button_text">Delete</string>
+    <string name="edit_button_text">Edit</string>
+    <string name="rename_ingredient_button_text">Rename</string>
+    <string name="rename_button_text">Rename</string>
 
     <!-- Messages/toasts -->
     <string name="login_failed_toast">Login failed. Please ensure username and password are correct.</string>
@@ -90,6 +90,7 @@
     <string name="create_ingredient_failed_toast">Failed to create ingredient.</string>
     <string name="rename_ingredient_failed_toast">Failed to rename ingredient.</string>
     <string name="recipe_unknown_error">Recipe could not be crated, unknown error</string>
+    <string name="recipe_edit_unknown_error">Recipe could not be edited, unknown error</string>
     <string name="create_recipe_list_failed_toast">Failed to create recipe list.</string>
     <string name="create_recipe_list_success_toast">Successfully created recipe list.</string>
     <string name="null_recipe_lists">Something went wrong displaying the recipe lists</string>
@@ -100,6 +101,7 @@
     <string name="recipe_list_rename_not_authorized">You must be the creator of this list to change the title</string>
     <string name="delete_user_failed_toast">Failed to delete the user account.</string>
     <string name="delete_user_success_toast">User account deleted successfully.</string>
+    <string name="recipe_missing_toast">Recipe is missing</string>
     <string name="delete_list_failed_toast">Something went wrong when trying to delete the recipe list.</string>
     <string name="delete_list_success_toast">Recipe list deleted successfully.</string>
 
@@ -110,7 +112,9 @@
     <string name="selected_recipe">Recipe</string>
     <string name="selected_unit">Unit</string>
     <string name="selected_ingredient_measurement">Ingredient measurement</string>
-    <string name="request_msmt">Ingredient measurement result</string>
+    <string name="request_ingredient_measurement">Ingredient measurement result</string>
+    <string name="request_new_recipe">New recipe result</string>
+    <string name="request_edit_recipe">Edited recipe result</string>
     <string name="tic_string">tic:</string>
     <string name="tpc_string">tpc:</string>
 

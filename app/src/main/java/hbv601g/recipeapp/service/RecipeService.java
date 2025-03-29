@@ -103,12 +103,12 @@ public class RecipeService extends Service {
      * This function takes in 5 parameters, 2 String, int, arrayList and
      * Boolean.
      *
-     * @param title         - String value, is the name of the recipe.
-     * @param instructions  - String value, is the step by step progress to make the recipe
-     * @param ingredList    - IngredientMeasurement list array, content all in ingredients, unit and
+     * @param title       : String value, is the name of the recipe.
+     * @param instructions: String value, is the step by step progress to make the recipe
+     * @param ingredList  : IngredientMeasurement list array, content all in ingredients, unit and
      *                        there quantity in the recipe.
-     * @param isPrivate     - Boolean, ture if the author want it to be private and false for the
-     *                        recipe to be public.
+     * @param isPrivate   : Boolean, ture if the author want it to be private and false for the
+     *                      recipe to be public.
      * @return Return the newly created recipe
      */
     public Recipe createRecipe(
@@ -131,22 +131,74 @@ public class RecipeService extends Service {
             mJsonElement = mNetworkingService.postRequest(url, data);
         } catch (IOException e) {
             Log.d("Networking exception", "Failed to create recipe");
-            //throw new RuntimeException(e);
         }
 
         if(mJsonElement != null){
             rep = gson.fromJson(mJsonElement, Recipe.class);
             Log.d("API", "recipe object, title:" + rep.getTitle());
         }
+        else{
+            return null;
+        }
+
+        return addIngredientMeasurement(rep.getId(), ingredList);
+    }
+
+    /**
+     * This function update the recipe that has the ID value of id.
+     *
+     * @param rep         : Recipe value, is a recipe that has all of the updates for the recipe.
+     * @param id          : long value, is the id of recipe that is being updated
+     * @param upIngredList: arrayList value, is a list that contains all of the now ingredients in
+     *                      the recipe.
+     *
+     * @return The updated recipe if all thing ar in order.
+     */
+    public Recipe updateRecipe(Recipe rep, long id, List<IngredientMeasurement> upIngredList){
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+
+        String url = "recipe/" + id + "/update?uid=" + mUid;
+        String data = gson.toJson(rep);
+
+        try {
+            mJsonElement = mNetworkingService.putRequest(url, data);
+        } catch (IOException e) {
+            Log.d("Networking exception", "Failed to create recipe");
+        }
+
+        if(mJsonElement != null){
+            rep = gson.fromJson(mJsonElement, Recipe.class);
+            Log.d("API", "recipe object updated, title:" + rep.getTitle());
+        }
+        else{
+            return null;
+        }
+
+        return addIngredientMeasurement(id, upIngredList);
+    }
+
+    /**
+     * This function add new ingredient measurement to a recipe with the same ID value of id
+     * @param id         : long value, ist the id of the recipe.
+     * @param ingredList: arrayList value, is a list of IngredientMeasurement that will be added
+     *                     to a recipe
+     *
+     * @return the recipe with ID value id and contains the added ingredient measurement list
+     */
+    private Recipe addIngredientMeasurement(long id, List<IngredientMeasurement> ingredList){
+        Gson gson = new Gson();
 
         StringBuilder units = new StringBuilder();
-        StringBuilder ingredientIDs = new StringBuilder();;
-        StringBuilder qty = new StringBuilder();;
+        StringBuilder ingredientIDs = new StringBuilder();
+        StringBuilder qty = new StringBuilder();
 
         for(int i = 0; i < ingredList.size(); i++){
-            units.append(ingredList.get(i).getUnit().name() + ",");
-            ingredientIDs.append(ingredList.get(i).getIngredient().getId() + ",");
-            qty.append(ingredList.get(i).getQuantity() + ",");
+            units.append(ingredList.get(i).getUnit().name());
+            units.append(",");
+            ingredientIDs.append(ingredList.get(i).getIngredient().getId());
+            ingredientIDs.append(",");
+            qty.append(ingredList.get(i).getQuantity());
+            qty.append(",");
         }
 
         if(!units.toString().isEmpty()){
@@ -155,7 +207,7 @@ public class RecipeService extends Service {
             qty = qty.deleteCharAt(qty.length() - 1);
         }
 
-        url = "recipe/addIngredients?recipeID=" + rep.getId()
+        String url = "recipe/addIngredients?recipeID=" + id
                 + "&uid=" + mUid
                 + "&units=" + units
                 + "&ingredientIDs="+ingredientIDs
@@ -169,14 +221,13 @@ public class RecipeService extends Service {
         }
 
         if(mJsonElement != null){
-            rep = gson.fromJson(mJsonElement, Recipe.class);
+            Recipe rep = gson.fromJson(mJsonElement, Recipe.class);
             Log.d("API", "recipe object, title:" + rep.getTitle());
+            return rep;
         }
         else {
-            rep = null;
+            return null;
         }
-
-        return rep;
     }
 
     @Nullable
