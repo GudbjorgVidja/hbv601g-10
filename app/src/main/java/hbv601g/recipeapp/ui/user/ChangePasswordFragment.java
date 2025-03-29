@@ -53,13 +53,18 @@ public class ChangePasswordFragment extends Fragment {
 
     /**
      * This function set the color for the new Password and validate New Password fields as red
+     *
+     * @param empty : Boolean value, if one or both password filed are empty, else ture.
      */
-    private void newPassInvalid(){
-        mBinding.newPasswordInputLayout.setError(getString(R.string.new_password_invalid_error));
-        mBinding.validatePasswordInputLayout.setError
-                (
-                        getString(R.string.new_password_invalid_error)
-                );
+    private void newPassInvalid(boolean empty){
+        if(empty){
+            mBinding.newPasswordInputLayout.setError(getString(R.string.new_password_empty_error));
+            mBinding.validatePasswordInputLayout.setError(null);
+        }
+        else {
+            mBinding.newPasswordInputLayout.setError(getString(R.string.new_password_invalid_error));
+            mBinding.validatePasswordInputLayout.setError(null);
+        }
     }
 
     /**
@@ -81,7 +86,6 @@ public class ChangePasswordFragment extends Fragment {
         });
 
         alert.setNegativeButton(android.R.string.no, (dialog, which) -> {
-            newPassInvalid();
             mBinding.validateNewPasswordInput.setText("");
         });
 
@@ -97,7 +101,7 @@ public class ChangePasswordFragment extends Fragment {
         try {
             String nPass = mBinding.newPasswordInput.getText().toString();
             if(nPass.isEmpty()){
-                newPassInvalid();
+                newPassInvalid(true);
                 return;
             }
 
@@ -105,14 +109,11 @@ public class ChangePasswordFragment extends Fragment {
                 confirmAlert();
             }
             else {
-                newPassInvalid();
+                newPassInvalid(false);
             }
         }
         catch (NullPointerException e){
-            newPassInvalid();
-            Toast.makeText(
-                    getActivity(), R.string.password_has_no_input_toast, Toast.LENGTH_SHORT
-            ).show();
+            newPassInvalid(false);
         }
     }
 }

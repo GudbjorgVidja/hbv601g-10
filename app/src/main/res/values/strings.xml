@@ -74,7 +74,6 @@
     <string name="save_button">Save</string>
     <string name="edit_button_text">Edit</string>
     <string name="rename_ingredient_button_text">Rename</string>
->>>>>>> master
 
     <!-- Messages/toasts -->
     <string name="login_failed_toast">Login failed. Please ensure username and password are correct.</string>
@@ -109,7 +108,8 @@
     <string name="recipe_list_rename_not_authorized">You must be the creator of this list to change the title</string>
     <string name="delete_user_failed_toast">Failed to delete the user account.</string>
     <string name="delete_user_success_toast">User account deleted successfully.</string>
-    <string name="new_password_invalid_error">The passwords must be the same and not empty</string>
+    <string name="new_password_invalid_error">The passwords must be the same</string>
+    <string name="new_password_empty_error">The password field can not be empty</string>
     <string name="recipe_missing_toast">Recipe is missing</string>
     <string name="delete_list_failed_toast">Something went wrong when trying to delete the recipe list.</string>
     <string name="delete_list_success_toast">Recipe list deleted successfully.</string>
