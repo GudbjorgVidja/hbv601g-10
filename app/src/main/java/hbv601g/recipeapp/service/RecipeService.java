@@ -179,6 +179,11 @@ public class RecipeService extends Service {
         return rep;
     }
 
+    /**
+     * Fetches all recipes under a given TPC.
+     * @param tpc - Total Purchase Cost to filter by.
+     * @return List of recipes under given TIC.
+     */
     public List<Recipe> getAllRecipesUnderTPC(int tpc) {
         String url = String.format("recipe/underTPC/%s?uid=%s", tpc, mUid);
 
@@ -204,6 +209,11 @@ public class RecipeService extends Service {
         return recipes;
     }
 
+    /**
+     * Fetches all recipes under a given TIC.
+     * @param tic - Total Ingredient Cost to filter by
+     * @return List of recipes under given TIC
+     */
     public List<Recipe> getAllRecipesUnderTIC(int tic) {
         String url = String.format("recipe/underTIC/%s?uid=%s", tic, mUid);
 
