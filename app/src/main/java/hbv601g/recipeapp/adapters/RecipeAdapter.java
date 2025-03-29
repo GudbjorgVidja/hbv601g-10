@@ -39,6 +39,10 @@ public class RecipeAdapter extends BaseAdapter {
         return position;//mRecipeList.get(position).getId();
     }
 
+    public void setList(List<Recipe> list){
+        mRecipeList = list;
+    }
+
     /**
      *
      * @param position The position of the item within the adapter's data set of the item whose view
