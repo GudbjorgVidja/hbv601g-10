@@ -17,44 +17,35 @@
     <string name="title_new_ingredient">New ingredient</string>
     <string name="title_recipe">Recipe</string>
     <string name="title_new_recipe_list">New recipe list</string>
+    <string name="title_edit_recipe">Edit recipe</string>
     <string name="title_recipe_list">Recipe list</string>
     <string name="title_rename_recipe_list">Change recipe list name</string>
     <string name="title_filter_tpc">Filter by TPC</string>
     <string name="title_filter_tic">Filter by TIC</string>
-
 
     <!-- Buttons/textfields -->
     <string name="ingredients_text">Ingredients</string>
     <string name="instructions_text">Instructions</string>
     <string name="name_text">Name</string>
     <string name="value_text">Value</string>
-    <string name="login_button_text">Login</string>
-    <string name="signup_button_text">Signup</string>
-    <string name="logout_button_text">Log out</string>
-    <string name="cancel_button_text">Cancel</string>
-    <string name="create_button_text">Create</string>
-    <string name="add_button_text">Add</string>
     <string name="password_hint">Password</string>
     <string name="username_hint">Username</string>
     <string name="recipe_hint">Name of recipe</string>
     <string name="instructions_hint">Instructions steps</string>
     <string name="ingredient_value_hint">Quantity needed</string>
+    <string name="recipe_search_bar_hint">Search for recipe</string>
     <string name="add_to_pantry">Add to pantry</string>
     <string name="remove_from_pantry">Remove</string>
     <string name="ingredient_price_store">%1$dkr at %2$s</string>
     <string name="ingredient_quantity_brand">%1$s%2$s, %3$s brand</string>
     <string name="pantry_ingredient_quantity_brand">%1$s%2$s, %3$s brand</string>
-    <string name="delete_button_text">Delete</string>
-    <string name="rename_button_text">Rename</string>
     <string name="new_ingredient_title_hint">Title</string>
     <string name="new_ingredient_quantity_hint">Qty.</string>
     <string name="new_ingredient_price_hint">Price</string>
     <string name="new_ingredient_store_hint">Store</string>
     <string name="confirm_new_ingredient_button">Create ingredient</string>
-    <string name="create_new_ingredient_button">New ingredient</string>
     <string name="new_ingredient_brand_hint">Brand</string>
     <string name="privacy_selection_label">Make private</string>
-    <string name="confirm_button">Confirm</string>
     <string name="recipe_tpc">Total purchase cost: %1$s kr</string>
     <string name="recipe_tic">Total ingredient cost: %1$s kr</string>
     <string name="recipe_ppc">Personalized purchase cost: %1$s kr</string>
@@ -63,18 +54,28 @@
     <string name="create_new_recipe_list_button">New Recipe List</string>
     <string name="new_recipe_list_title_hint">Title</string>
     <string name="new_recipe_list_description_hint">Description</string>
-    <string name="confirm_create_recipe_list_button">Create recipe list</string>
     <string name="recipe_list_description">Description</string>
     <string name="recipe_list_recipes">Recipes</string>
     <string name="recipe_list_text">Recipe Lists</string>
+    <string name="login_button_text">Login</string>
+    <string name="signup_button_text">Signup</string>
+    <string name="logout_button_text">Log out</string>
+    <string name="cancel_button_text">Cancel</string>
+    <string name="create_button_text">Create</string>
+    <string name="add_button_text">Add</string>
+    <string name="delete_button_text">Delete</string>
+    <string name="rename_button_text">Rename</string>
+    <string name="create_new_ingredient_button">New ingredient</string>
+    <string name="confirm_button">Confirm</string>
+    <string name="confirm_create_recipe_list_button">Create recipe list</string>
     <string name="add_to_list_button">Add to list</string>
     <string name="filter_tpc_button">Filter by TPC</string>
     <string name="filter_tic_button">Filter by TIC</string>
     <string name="confirm_filter_button">Confirm</string>
     <string name="clear_filter_button">Clear filter</string>
     <string name="save_button">Save</string>
-
-
+    <string name="edit_button_text">Edit</string>
+    <string name="rename_ingredient_button_text">Rename</string>
 
     <!-- Messages/toasts -->
     <string name="login_failed_toast">Login failed. Please ensure username and password are correct.</string>
@@ -96,6 +97,7 @@
     <string name="create_ingredient_failed_toast">Failed to create ingredient.</string>
     <string name="rename_ingredient_failed_toast">Failed to rename ingredient.</string>
     <string name="recipe_unknown_error">Recipe could not be crated, unknown error</string>
+    <string name="recipe_edit_unknown_error">Recipe could not be edited, unknown error</string>
     <string name="create_recipe_list_failed_toast">Failed to create recipe list.</string>
     <string name="create_recipe_list_success_toast">Successfully created recipe list.</string>
     <string name="null_recipe_lists">Something went wrong displaying the recipe lists</string>
@@ -107,6 +109,7 @@
     <string name="invalid_price_input_toast">Input is invalid</string>
     <string name="delete_user_failed_toast">Failed to delete the user account.</string>
     <string name="delete_user_success_toast">User account deleted successfully.</string>
+    <string name="recipe_missing_toast">Recipe is missing</string>
     <string name="delete_list_failed_toast">Something went wrong when trying to delete the recipe list.</string>
     <string name="delete_list_success_toast">Recipe list deleted successfully.</string>
 
@@ -117,7 +120,9 @@
     <string name="selected_recipe">Recipe</string>
     <string name="selected_unit">Unit</string>
     <string name="selected_ingredient_measurement">Ingredient measurement</string>
-    <string name="request_msmt">Ingredient measurement result</string>
+    <string name="request_ingredient_measurement">Ingredient measurement result</string>
+    <string name="request_new_recipe">New recipe result</string>
+    <string name="request_edit_recipe">Edited recipe result</string>
     <string name="tic_string">tic:</string>
     <string name="tpc_string">tpc:</string>
 

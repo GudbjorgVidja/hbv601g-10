@@ -38,6 +38,18 @@
     </fragment>
 
     <fragment
+        android:id="@+id/nav_edit_recipe"
+        android:name="hbv601g.recipeapp.ui.recipes.EditRecipeFragment"
+        android:label="@string/title_edit_recipe"
+        tools:layout="@layout/fragment_edit_recipe">
+        <argument
+            android:name="@string/selected_ingredient_measurement"
+            app:argType="hbv601g.recipeapp.entities.IngredientMeasurement"
+            />
+    </fragment>
+
+
+    <fragment
         android:id="@+id/nav_add_ingredient_measurement_to_recipe"
         android:name="hbv601g.recipeapp.ui.recipes.AddIngredientMeasurementFragment"
         android:label="@string/title_add_ingredient_measurement_recipes"

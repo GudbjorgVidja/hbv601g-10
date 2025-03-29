@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -99,6 +100,26 @@ public class RecipesFragment extends Fragment {
             mBinding.addRecipe.hide();
         }
 
+        mBinding.recipeSearchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                mRecipeList = searchForRec();
+                recipeAdapter.setList(mRecipeList);
+                recipeAdapter.notifyDataSetChanged();
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (newText.isEmpty()) {
+                    mRecipeList = searchForRec();
+                    recipeAdapter.setList(mRecipeList);
+                    recipeAdapter.notifyDataSetChanged();
+                }
+                return true;
+            }
+        });
+
         return  root;
     }
 
@@ -177,6 +198,22 @@ public class RecipesFragment extends Fragment {
         mRecipeListView.setAdapter(adapter);
     }
 
+
+    /**
+     * This function Search for the recipe with the title that the user input in the Search bar.
+     *
+     * @return a list of recipe that have the title of the recipe in the Search bar or if the
+     *         Search bar is empty then it returns all of the recipes that the user can see.
+     */
+    private List<Recipe> searchForRec() {
+        String input = mBinding.recipeSearchBar.getQuery().toString();
+        List<Recipe> searchResult = mRecipeService.getAllRecipes();
+
+        if (!input.isEmpty()) searchResult = mRecipeService.SearchRecipe(input);
+
+        if (searchResult == null) searchResult = new ArrayList<>();
+        return searchResult;
+    }
 
     @Override
     public void onDestroyView() {
