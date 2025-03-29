@@ -74,10 +74,24 @@ public class RecipeFragment extends Fragment {
         if (mRecipe != null && mRecipe.getCreatedBy() != null && mainActivity.getUserId() != 0 && mRecipe.getCreatedBy().getId() == mainActivity.getUserId()){
             mBinding.deleteRecipeButton.setOnClickListener(
                     v -> makeDeleteRecipeAlert(navController, mainActivity));
+
+            mBinding.editRecipeButton.setOnClickListener(view ->{
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(getString(R.string.selected_recipe), mRecipe);
+                navController.navigate(R.id.nav_edit_recipe, bundle);
+            });
         }
         else mBinding.deleteRecipeButton.setVisibility(GONE);
 
-
+        getParentFragmentManager().setFragmentResultListener(getString(R.string.request_edit_recipe),
+                this, (requestKey, result) -> {
+                    Recipe temp
+                            = result.getParcelable(getString(R.string.selected_recipe));
+                    if (temp != null){
+                        mRecipe = temp;
+                        setRecipe();
+                    }
+                });
 
         return root;
     }
@@ -169,7 +183,6 @@ public class RecipeFragment extends Fragment {
     }
 
 
-
     /**
      * Makes and shows an alert dialog for adding the currently open recipe to a recipe list.
      * If any lists are found for the current user, the lists are displayed in a dialog.
@@ -232,10 +245,6 @@ public class RecipeFragment extends Fragment {
             }
         });
 
-
-
-
-
     }
 
 
@@ -243,6 +252,6 @@ public class RecipeFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mBinding =null;
+        mBinding = null;
     }
 }

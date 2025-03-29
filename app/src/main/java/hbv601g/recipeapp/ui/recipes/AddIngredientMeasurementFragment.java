@@ -78,7 +78,7 @@ public class AddIngredientMeasurementFragment extends Fragment {
             if(ingrMeas != null){
                 Bundle res = new Bundle();
                 res.putParcelable(getString(R.string.selected_ingredient_measurement), ingrMeas);
-                getParentFragmentManager().setFragmentResult(getString(R.string.request_msmt), res);
+                getParentFragmentManager().setFragmentResult(getString(R.string.request_ingredient_measurement), res);
                 navController.popBackStack();
             }
             else {

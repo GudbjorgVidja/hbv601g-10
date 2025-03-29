@@ -16,7 +16,9 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import hbv601g.recipeapp.entities.Recipe;
 import hbv601g.recipeapp.entities.RecipeList;
@@ -190,23 +192,44 @@ public class RecipeListService extends Service {
 
     }
 
-    /*
-    public boolean deleteRecipeList(long lid){
+    /**
+     * Sends a patch request to the API with a new title for the recipe list.
+     * @param id - Id of the recipe list being renamed
+     * @param newTitle - New title of the recipe list
+     */
+    public void updateRecipeListTitle(long id, String newTitle){
+        String url = String.format("list/updateTitle/%s?uid=%s", id, mUid);
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+        Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("title",newTitle);
+        String data = gson.toJson(requestBody);
+
+        try {
+            mJsonElement = mNetworkingService.patchRequest(url, data);
+            Log.d("API", "Updated recipe list title: " + mJsonElement);
+        } catch(IOException e) {
+            Log.d("Networking exception", "Failed to update list title");
+        }
+
+        if(mJsonElement == null){
+            throw new NullPointerException("Renamed recipe list is null");
+        }
+    }
+
+
+    /**
+     * Deletes the given recipe list from database
+     * @param lid - id of the recipe list
+     */
+    public void deleteRecipeList(long lid){
         String url = String.format("list/id/%s/delete?uid=%s", lid, mUid);
         try {
-            mJsonElement = mNetworkingService.deleteRequest(url);
+            mNetworkingService.deleteRequest(url);
         } catch (IOException e) {
             Log.d("Networking exception", "Delete recipe list failed");
         }
 
-        boolean listDeleted = false;
-        if(mJsonElement != null){
-            listDeleted = mJsonElement.getAsBoolean();
-            Log.d("API", "Recipe list deleted: " + listDeleted);
-        }
-        return listDeleted;
     }
-     */
 
 
     @Nullable

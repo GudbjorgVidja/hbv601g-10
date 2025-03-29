@@ -26,7 +26,7 @@ public class RecipeService extends Service {
     private NetworkingService mNetworkingService;
     private long mUid;
 
-    public RecipeService(NetworkingService networkingService, long uid) {
+    public RecipeService(NetworkingService networkingService, long uid){
         this.mNetworkingService = networkingService;
         this.mUid = uid;
     }
