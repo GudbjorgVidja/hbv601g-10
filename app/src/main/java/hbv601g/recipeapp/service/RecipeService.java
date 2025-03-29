@@ -187,6 +187,58 @@ public class RecipeService extends Service {
         return rep;
     }
 
+    public List<Recipe> getAllRecipesUnderTPC(int tpc) {
+        String url = String.format("recipe/underTPC/%s?uid=%s", tpc, mUid);
+
+        try {
+            mJsonElement = mNetworkingService.getRequest(url);
+        } catch (IOException e) {
+            Log.d("Networking exception", "Failed to fetch recipes");
+        }
+
+        List<Recipe> recipes = new ArrayList<>();
+
+        if(mJsonElement != null){
+            Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+            if(!mJsonElement.isJsonArray()) return null;
+
+            JsonArray array = mJsonElement.getAsJsonArray();
+
+            Type collectionType = new TypeToken<Collection<Recipe>>(){}.getType();
+            recipes = gson.fromJson(array, collectionType);
+        } else {
+            throw new NullPointerException("Recipes are null");
+        }
+        return recipes;
+    }
+
+    public List<Recipe> getAllRecipesUnderTIC(int tic) {
+        String url = String.format("recipe/underTIC/%s?uid=%s", tic, mUid);
+
+        try {
+            mJsonElement = mNetworkingService.getRequest(url);
+        } catch (IOException e) {
+            Log.d("Networking exception", "Failed to fetch recipes");
+        }
+
+        List<Recipe> recipes = new ArrayList<>();
+
+        if(mJsonElement != null){
+            Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+            if(!mJsonElement.isJsonArray()) return null;
+
+            JsonArray array = mJsonElement.getAsJsonArray();
+
+            Type collectionType = new TypeToken<Collection<Recipe>>(){}.getType();
+            recipes = gson.fromJson(array, collectionType);
+        } else {
+            throw new NullPointerException("Recipes are null");
+        }
+        return recipes;
+    }
+
+
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
