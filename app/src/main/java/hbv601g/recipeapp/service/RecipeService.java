@@ -59,22 +59,14 @@ public class RecipeService extends Service {
     /**
      * makes a delete request to send to the external API, to try to delete a recipe
      * @param rid - the id of the recipe to delete
-     * @return boolean value indicating success
      */
-    public boolean deleteRecipe(long rid){
+    public void deleteRecipe(long rid){
         String url = String.format("recipe/delete/%s?uid=%s",rid, mUid);
         try {
-            mJsonElement = mNetworkingService.deleteRequest(url);
+            mNetworkingService.deleteRequest(url);
         } catch (IOException e) {
             Log.d("Networking exception", "Delete recipe failed");
         }
-
-        boolean recipeDeleted = false;
-        if(mJsonElement != null){
-            recipeDeleted = mJsonElement.getAsBoolean();
-            Log.d("API", "recipe deleted: " + recipeDeleted);
-        }
-        return recipeDeleted;
     }
 
 
