@@ -2,6 +2,7 @@ package hbv601g.recipeapp.ui.recipes;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,9 +44,9 @@ public class RecipesFragment extends Fragment {
         MainActivity mainActivity = (MainActivity) getActivity();
         assert mainActivity != null;
 
-        Button mFilterTPCButton = mBinding.filterTpcButton;
-        Button mFilterTICButton = mBinding.filterTicButton;
-        Button mClearFilterButton = mBinding.clearFilterButton;
+        Button filterTpcButton = mBinding.filterTpcButton;
+        Button filterTicButton = mBinding.filterTicButton;
+        Button clearFilterButton = mBinding.clearFilterButton;
 
         NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
 
@@ -74,10 +75,10 @@ public class RecipesFragment extends Fragment {
             navController.navigate(R.id.nav_recipe, bundle);
         });
 
-        mFilterTPCButton.setOnClickListener(v -> makeFilterTPCAlert(mainActivity));
-        mFilterTICButton.setOnClickListener(v -> makeFilterTICAlert(mainActivity));
+        filterTpcButton.setOnClickListener(v -> makeFilterTPCAlert(mainActivity));
+        filterTicButton.setOnClickListener(v -> makeFilterTICAlert(mainActivity));
 
-        mClearFilterButton.setOnClickListener(v -> {
+        clearFilterButton.setOnClickListener(v -> {
             try {
                 mRecipeList = mRecipeService.getAllRecipes();
                 updateListView(mRecipeList);
@@ -112,19 +113,20 @@ public class RecipesFragment extends Fragment {
 
         final EditText input = new EditText(mainActivity);
         input.setHint("Enter max TPC");
+        input.setInputType(InputType.TYPE_CLASS_NUMBER);
         alert.setView(input);
 
-        alert.setPositiveButton(R.string.confirm_filter, (dialog, which) -> {
+        alert.setPositiveButton(R.string.confirm_filter_button, (dialog, which) -> {
             try {
                 int maxTPC = Integer.parseInt(input.getText().toString());
-                List<Recipe> filteredRecipes = mRecipeService.getAllRecipesUnderTPC(maxTPC);
+                List<Recipe> filteredRecipes = mRecipeService.getAllRecipesUnderTPC(maxTPC + 1);
                 if (filteredRecipes != null) {
                     updateListView(filteredRecipes);
                 } else {
                     mainActivity.makeToast(R.string.get_recipes_failed_toast, Toast.LENGTH_SHORT);
                 }
             } catch (NumberFormatException e) {
-                mainActivity.makeToast(R.string.invalid_price_input, Toast.LENGTH_SHORT);
+                mainActivity.makeToast(R.string.invalid_price_input_toast, Toast.LENGTH_SHORT);
             }
         });
 
@@ -144,19 +146,20 @@ public class RecipesFragment extends Fragment {
 
         final EditText input = new EditText(mainActivity);
         input.setHint("Enter max TIC");
+        input.setInputType(InputType.TYPE_CLASS_NUMBER);
         alert.setView(input);
 
-        alert.setPositiveButton(R.string.confirm_filter, (dialog, which) -> {
+        alert.setPositiveButton(R.string.confirm_filter_button, (dialog, which) -> {
             try {
                 int maxTIC = Integer.parseInt(input.getText().toString());
-                List<Recipe> filteredRecipes = mRecipeService.getAllRecipesUnderTIC(maxTIC);
+                List<Recipe> filteredRecipes = mRecipeService.getAllRecipesUnderTIC(maxTIC + 1);
                 if (filteredRecipes != null) {
                     updateListView(filteredRecipes);
                 } else {
                     mainActivity.makeToast(R.string.get_recipes_failed_toast, Toast.LENGTH_SHORT);
                 }
             } catch (NumberFormatException e) {
-                mainActivity.makeToast(R.string.invalid_price_input, Toast.LENGTH_SHORT);
+                mainActivity.makeToast(R.string.invalid_price_input_toast, Toast.LENGTH_SHORT);
             }
         });
 
