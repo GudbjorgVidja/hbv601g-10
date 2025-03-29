@@ -20,6 +20,8 @@
     <string name="title_edit_recipe">Edit recipe</string>
     <string name="title_recipe_list">Recipe list</string>
     <string name="title_rename_recipe_list">Change recipe list name</string>
+    <string name="title_filter_tpc">Filter by TPC</string>
+    <string name="title_filter_tic">Filter by TIC</string>
 
     <!-- Buttons/textfields -->
     <string name="ingredients_text">Ingredients</string>
@@ -64,6 +66,10 @@
     <string name="recipe_list_recipes">Recipes</string>
     <string name="recipe_list_text">Recipe Lists</string>
     <string name="add_to_list_button">Add to list</string>
+    <string name="filter_tpc_button">Filter by TPC</string>
+    <string name="filter_tic_button">Filter by TIC</string>
+    <string name="confirm_filter">Confirm</string>
+    <string name="clear_filter">Clear filter</string>
     <string name="save_button">Save</string>
     <string name="delete_button_text">Delete</string>
     <string name="edit_button_text">Edit</string>
@@ -99,6 +105,7 @@
     <string name="get_recipe_lists_failed_toast">Something went wrong fetching the lists.</string>
     <string name="recipe_list_rename_blank">Input cannot be blank</string>
     <string name="recipe_list_rename_not_authorized">You must be the creator of this list to change the title</string>
+    <string name="invalid_price_input">Input is invalid</string>
     <string name="delete_user_failed_toast">Failed to delete the user account.</string>
     <string name="delete_user_success_toast">User account deleted successfully.</string>
     <string name="recipe_missing_toast">Recipe is missing</string>
