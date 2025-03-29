@@ -249,8 +249,6 @@ public class RecipeService extends Service {
         List<Recipe> repList = null;
         if(mJsonElement != null){
             Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-            if(!mJsonElement.isJsonArray()) return null;
-
             Type collectionType = new TypeToken<Collection<Recipe>>(){}.getType();
             repList = gson.fromJson(mJsonElement, collectionType);
         }
