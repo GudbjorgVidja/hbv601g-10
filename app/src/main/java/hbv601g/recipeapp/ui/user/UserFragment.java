@@ -1,5 +1,8 @@
 package hbv601g.recipeapp.ui.user;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.text.InputType;
@@ -50,46 +53,74 @@ public class UserFragment extends Fragment{
 
         mRecipeListService = new RecipeListService(new NetworkingService(), mainActivity.getUserId());
 
-        if(mainActivity.getUserId() != 0){
-            try {
-                mRecipeLists = mRecipeListService.getUserRecipeLists(mainActivity.getUserId());
-            } catch(NullPointerException e) {
-                mRecipeLists = new ArrayList<>();
-                mainActivity.makeToast(R.string.null_recipe_lists, Toast.LENGTH_LONG);
-            }
-            mRecipeListListView = mBinding.userRecipeLists;
-
-            RecipeListAdapter recipeListAdapter = new RecipeListAdapter(mainActivity.getApplicationContext(), mRecipeLists);
-            mRecipeListListView.setAdapter(recipeListAdapter);
-
-            mRecipeListListView.setOnItemClickListener((parent, view, position, id) -> {
-                RecipeList recipeList = (RecipeList) parent.getItemAtPosition(position);
-                Bundle bundle = new Bundle();
-                bundle.putParcelable(getString(R.string.selected_recipe_list), recipeList);
-                navController.navigate(R.id.nav_recipe_list, bundle);
-            });
-        }
+        if(mainActivity.getUserId() != 0) setWithUserView(mainActivity,navController);
+        else setNoUserView(mainActivity,navController);
 
 
-        mBinding.logoutButton.setOnClickListener(v -> mainActivity.removeCurrentUser());
-
-        if(mainActivity.getUserName() == null){
-            navController.popBackStack();
-            navController.navigate(R.id.nav_user_no_user);
-        }
-
-        mBinding.usernameDisplay.setText(mainActivity.getUserName());
-
-        mBinding.createRecipeListButton.setOnClickListener(v -> {
-            navController.navigate(R.id.navigation_new_recipe_list);
-        });
-        mBinding.usernameDisplay.setText(mainActivity.getUserName());
-
-        mBinding.deleteUserButton.setOnClickListener(v -> {
-            deleteUserAlert(mainActivity);
-        });
         return root;
     }
+
+    private void setNoUserView(MainActivity mainActivity, NavController navController){
+        // Set visibility of UI components
+        mBinding.usernameDisplay.setVisibility(GONE);
+        mBinding.createRecipeListButton.setVisibility(GONE);
+        mBinding.logoutButton.setVisibility(GONE);
+        mBinding.userRecipeListSection.setVisibility(GONE);
+        mBinding.userRecipeLists.setVisibility(GONE);
+        mBinding.deleteUserButton.setVisibility(GONE);
+        mBinding.noUserButtonLayout.setVisibility(VISIBLE);
+        mBinding.loginButton.setVisibility(VISIBLE);
+        mBinding.signupButton.setVisibility(VISIBLE);
+
+        // Set button listeners
+        mBinding.loginButton.setOnClickListener(v -> navController.navigate(R.id.nav_login));
+        mBinding.signupButton.setOnClickListener(v -> navController.navigate(R.id.nav_signup));
+    }
+    //TODO add own profile and other profile views
+    private void setWithUserView(MainActivity mainActivity, NavController navController){
+        // Set visibility of UI components
+        mBinding.usernameDisplay.setVisibility(VISIBLE);
+        mBinding.userRecipeListSection.setVisibility(VISIBLE);
+        mBinding.userRecipeLists.setVisibility(VISIBLE);
+        mBinding.createRecipeListButton.setVisibility(VISIBLE);
+        mBinding.logoutButton.setVisibility(VISIBLE);
+        mBinding.deleteUserButton.setVisibility(VISIBLE);
+        mBinding.noUserButtonLayout.setVisibility(GONE);
+        mBinding.loginButton.setVisibility(GONE);
+        mBinding.signupButton.setVisibility(GONE);
+
+        // Set the username
+        mBinding.usernameDisplay.setText(mainActivity.getUserName());
+
+        // Populate the list of recipe lists and display them
+        try {
+            mRecipeLists = mRecipeListService.getUserRecipeLists(mainActivity.getUserId());
+        } catch(NullPointerException e) {
+            mRecipeLists = new ArrayList<>();
+            mainActivity.makeToast(R.string.null_recipe_lists, Toast.LENGTH_LONG);
+        }
+
+        mRecipeListListView = mBinding.userRecipeLists;
+        RecipeListAdapter recipeListAdapter = new RecipeListAdapter(mainActivity.getApplicationContext(), mRecipeLists);
+        mRecipeListListView.setAdapter(recipeListAdapter);
+
+        // Set the on click listener for the recipe list list view
+        mRecipeListListView.setOnItemClickListener((parent, view, position, id) -> {
+            RecipeList recipeList = (RecipeList) parent.getItemAtPosition(position);
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(getString(R.string.selected_recipe_list), recipeList);
+            navController.navigate(R.id.nav_recipe_list, bundle);
+        });
+
+        // Set listeners on buttons
+        mBinding.logoutButton.setOnClickListener(v -> mainActivity.removeCurrentUser());
+
+        mBinding.createRecipeListButton.setOnClickListener(
+                v -> navController.navigate(R.id.navigation_new_recipe_list));
+
+        mBinding.deleteUserButton.setOnClickListener(v -> deleteUserAlert(mainActivity));
+    }
+
 
     /**
      * Creates and shows an alert dialog to confirm the deletion of a user account.
