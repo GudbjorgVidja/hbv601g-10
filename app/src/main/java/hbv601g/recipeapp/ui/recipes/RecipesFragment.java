@@ -29,6 +29,9 @@ import hbv601g.recipeapp.entities.Recipe;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.RecipeService;
 
+/**
+ * A fragment displaying an overview of recipes
+ */
 public class RecipesFragment extends Fragment {
 
     private FragmentRecipesBinding mBinding;
@@ -130,7 +133,7 @@ public class RecipesFragment extends Fragment {
     /**
      * Alert dialog that allows the user to input a maximum TPC to filter the recipe list by.
      * The filtered list is then sent to the UI. The user can only input numbers.
-     * @param mainActivity - The MainActivity of the application.
+     * @param mainActivity The MainActivity of the application.
      */
     private void makeFilterTPCAlert(MainActivity mainActivity) {
         AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
@@ -161,9 +164,9 @@ public class RecipesFragment extends Fragment {
 
 
     /**
-     * Alerti dialog that allows the user to input a maximum TIC to tilfet the recipe list by.
+     * Makes an Alert dialog that allows the user to input a maximum TIC to filter the recipes by.
      * The filtered list is then sent to the UI. The user can only input numbers.
-     * @param mainActivity - The MainActivity of the application
+     * @param mainActivity The MainActivity of the application
      */
     private void makeFilterTICAlert(MainActivity mainActivity) {
         AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
@@ -194,8 +197,8 @@ public class RecipesFragment extends Fragment {
 
 
     /**
-     * Method that sets the recipe list displayed in the Recipe ListView.
-     * @param newList - New list to send to the ListView
+     * Sets the recipe list displayed in the Recipe ListView.
+     * @param newList New list to send to the ListView
      */
     private void updateListView(List<Recipe> newList) {
         RecipeAdapter adapter = new RecipeAdapter(requireContext(), newList);
@@ -204,10 +207,9 @@ public class RecipesFragment extends Fragment {
 
 
     /**
-     * This function Search for the recipe with the title that the user input in the Search bar.
+     * Gets a search term from the UI and searches for recipes which contain it in the title
      *
-     * @return a list of recipe that have the title of the recipe in the Search bar or if the
-     *         Search bar is empty then it returns all of the recipes that the user can see.
+     * @return a list of recipes containing the search term in the title
      */
     private List<Recipe> searchForRec() {
         String input = mBinding.recipeSearchBar.getQuery().toString();

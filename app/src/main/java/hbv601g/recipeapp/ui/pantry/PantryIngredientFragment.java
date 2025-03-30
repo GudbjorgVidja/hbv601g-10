@@ -21,10 +21,9 @@ import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.UserService;
 
 /**
- * Fragment til að skoða tiltekið ingredient í pantry.
+ * A fragment for viewing a specific ingredient in a user's pantry
  */
 public class PantryIngredientFragment extends Fragment {
-
     FragmentPantryIngredientBinding mBinding;
     private IngredientMeasurement mPantryIngredient;
     private UserService mUserService;
@@ -48,7 +47,7 @@ public class PantryIngredientFragment extends Fragment {
             setPantryIngredient();
         }
 
-        // Takki til að eyða ingredient úr pantry
+        // A button to delete the ingredient from pantry
         mBinding.removeFromPantryButton.setOnClickListener(v -> {
             if(mainActivity.getUserId() != 0 && mPantryIngredient != null && mPantryIngredient.getIngredient() != null
                     && mPantryIngredient.getIngredient().getId() != 0){
@@ -64,12 +63,13 @@ public class PantryIngredientFragment extends Fragment {
     }
 
     /**
-     * Alert dialog sem birtist notanda þegar hann ætlar að eyða ingredient úr pantry. Notandi staðfestir
-     * og þá eyðist ingredient úr pantry. Ef notandi hættir við gerist ekkert.
+     * Creates an alert dialog asking the user to confirm the deletion of an ingredient from the
+     * pantry. If the user confirms, the ingredient is removed from the pantry. If the user
+     * cancels, nothing happens
      *
-     * @param navController NavController fyrir navigation
-     * @param mainActivity MainActivity í appinu
-     * @return alert sem user fær
+     * @param navController the NavController used for navigation between fragments
+     * @param mainActivity the current activity
+     * @return the alert to display to the user
      */
     private AlertDialog.Builder makeAlert(NavController navController, MainActivity mainActivity) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());
@@ -94,7 +94,9 @@ public class PantryIngredientFragment extends Fragment {
         return alert;
     }
 
-
+    /**
+     * Sets the information about the pantry ingredient in the UI
+     */
     private void setPantryIngredient() {
         mBinding.pantryIngredientTitle.setText(mPantryIngredient.getIngredient().getTitle());
         String tmp;

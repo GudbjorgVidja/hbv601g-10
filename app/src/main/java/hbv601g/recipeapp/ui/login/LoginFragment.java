@@ -22,7 +22,7 @@ import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.UserService;
 
 /**
- * Fragment fyrir login skjá, mögulegt ef enginn notandi innskráður
+ * A fragment for the login screen
  */
 public class LoginFragment extends Fragment{
     private FragmentLoginBinding mBinding;

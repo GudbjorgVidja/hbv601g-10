@@ -29,7 +29,7 @@ public class AddRecipeToListDialogFragment extends DialogFragment {
 
     /**
      * Method to create an instance of the fragment with arguments
-     * @param rid - id of recipe to add to list
+     * @param rid id of recipe to add to list
      * @return an instance of the fragment
      */
     public static AddRecipeToListDialogFragment newInstance(long rid) {
