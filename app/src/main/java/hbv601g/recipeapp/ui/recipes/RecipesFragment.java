@@ -1,10 +1,14 @@
 package hbv601g.recipeapp.ui.recipes;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Toast;
@@ -41,6 +45,12 @@ public class RecipesFragment extends Fragment {
         MainActivity mainActivity = (MainActivity) getActivity();
         assert mainActivity != null;
 
+        Button filterTpcButton = mBinding.filterTpcButton;
+        Button filterTicButton = mBinding.filterTicButton;
+        Button clearFilterButton = mBinding.clearFilterButton;
+        Button sortByPriceButton = mBinding.sortByPriceButton;
+        Button sortByTitleButton = mBinding.sortByTitleButton;
+
         NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
 
         long uid = mainActivity.getUserId();
@@ -67,6 +77,23 @@ public class RecipesFragment extends Fragment {
             bundle.putParcelable(getString(R.string.selected_recipe), recipe);
             navController.navigate(R.id.nav_recipe, bundle);
         });
+
+        filterTpcButton.setOnClickListener(v -> makeFilterTPCAlert(mainActivity));
+        filterTicButton.setOnClickListener(v -> makeFilterTICAlert(mainActivity));
+        sortByPriceButton.setOnClickListener(v -> updateListView(mRecipeService.getAllOrderedRecipes()));
+        sortByTitleButton.setOnClickListener(v -> updateListView(mRecipeService.getAllOrderedRecipesByTitle()));
+
+        clearFilterButton.setOnClickListener(v -> {
+            try {
+                mRecipeList = mRecipeService.getAllRecipes();
+                updateListView(mRecipeList);
+            } catch (NullPointerException e) {
+                mRecipeList = new ArrayList<>();
+                mainActivity.makeToast(R.string.get_recipes_failed_toast, Toast.LENGTH_LONG);
+            }
+        });
+
+
 
         if(mainActivity.getUserId() != 0) {
             mBinding.addRecipe.setOnClickListener(view -> {
@@ -99,6 +126,82 @@ public class RecipesFragment extends Fragment {
 
         return  root;
     }
+
+    /**
+     * Alert dialog that allows the user to input a maximum TPC to filter the recipe list by.
+     * The filtered list is then sent to the UI. The user can only input numbers.
+     * @param mainActivity - The MainActivity of the application.
+     */
+    private void makeFilterTPCAlert(MainActivity mainActivity) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+        alert.setTitle(getString(R.string.title_filter_tpc));
+
+        final EditText input = new EditText(mainActivity);
+        input.setHint("Enter max TPC");
+        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+        alert.setView(input);
+
+        alert.setPositiveButton(R.string.confirm_filter_button, (dialog, which) -> {
+            try {
+                int maxTPC = Integer.parseInt(input.getText().toString());
+                List<Recipe> filteredRecipes = mRecipeService.getAllRecipesUnderTPC(maxTPC + 1);
+                if (filteredRecipes != null) {
+                    updateListView(filteredRecipes);
+                } else {
+                    mainActivity.makeToast(R.string.get_recipes_failed_toast, Toast.LENGTH_SHORT);
+                }
+            } catch (NumberFormatException e) {
+                mainActivity.makeToast(R.string.invalid_price_input_toast, Toast.LENGTH_SHORT);
+            }
+        });
+
+        alert.setNegativeButton(R.string.cancel_button_text, (dialog, which) -> dialog.cancel());
+        alert.show();
+    }
+
+
+    /**
+     * Alerti dialog that allows the user to input a maximum TIC to tilfet the recipe list by.
+     * The filtered list is then sent to the UI. The user can only input numbers.
+     * @param mainActivity - The MainActivity of the application
+     */
+    private void makeFilterTICAlert(MainActivity mainActivity) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+        alert.setTitle(getString(R.string.title_filter_tic));
+
+        final EditText input = new EditText(mainActivity);
+        input.setHint("Enter max TIC");
+        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+        alert.setView(input);
+
+        alert.setPositiveButton(R.string.confirm_filter_button, (dialog, which) -> {
+            try {
+                int maxTIC = Integer.parseInt(input.getText().toString());
+                List<Recipe> filteredRecipes = mRecipeService.getAllRecipesUnderTIC(maxTIC + 1);
+                if (filteredRecipes != null) {
+                    updateListView(filteredRecipes);
+                } else {
+                    mainActivity.makeToast(R.string.get_recipes_failed_toast, Toast.LENGTH_SHORT);
+                }
+            } catch (NumberFormatException e) {
+                mainActivity.makeToast(R.string.invalid_price_input_toast, Toast.LENGTH_SHORT);
+            }
+        });
+
+        alert.setNegativeButton(R.string.cancel_button_text, (dialog, which) -> dialog.cancel());
+        alert.show();
+    }
+
+
+    /**
+     * Method that sets the recipe list displayed in the Recipe ListView.
+     * @param newList - New list to send to the ListView
+     */
+    private void updateListView(List<Recipe> newList) {
+        RecipeAdapter adapter = new RecipeAdapter(requireContext(), newList);
+        mRecipeListView.setAdapter(adapter);
+    }
+
 
     /**
      * This function Search for the recipe with the title that the user input in the Search bar.

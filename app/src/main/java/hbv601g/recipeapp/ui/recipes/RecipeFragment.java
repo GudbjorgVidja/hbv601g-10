@@ -79,7 +79,10 @@ public class RecipeFragment extends Fragment {
                 navController.navigate(R.id.nav_edit_recipe, bundle);
             });
         }
-        else mBinding.deleteRecipeButton.setVisibility(GONE);
+        else{
+            mBinding.deleteRecipeButton.setVisibility(GONE);
+            mBinding.editRecipeButton.setVisibility(GONE);
+        }
 
         getParentFragmentManager().setFragmentResultListener(getString(R.string.request_edit_recipe),
                 this, (requestKey, result) -> {
@@ -90,6 +93,13 @@ public class RecipeFragment extends Fragment {
                         setRecipe();
                     }
                 });
+
+        mBinding.recipeCreator.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putLong(getString(R.string.selected_user_id), mRecipe.getCreatedBy().getId());
+            bundle.putString(getString(R.string.selected_user_name), mRecipe.getRecipeCreator());
+            navController.navigate(R.id.nav_user,bundle);
+        });
 
         return root;
     }
@@ -116,6 +126,7 @@ public class RecipeFragment extends Fragment {
         alert.setNegativeButton(android.R.string.no, (dialog, which) -> {});
         alert.show();
     }
+
     /**
      * Puts information from a selected recipe into the user interface
      */
@@ -155,6 +166,23 @@ public class RecipeFragment extends Fragment {
                 Objects.requireNonNullElseGet(mRecipe.getIngredientMeasurements(), ArrayList::new));
 
         ingredientMeasurementListView.setAdapter(adapter);
+
+
+        // setting the listview height to fit the contents
+
+        int totalHeight = 0;
+
+        for (int i = 0; i < adapter.getCount(); i++) {
+            View listItem = adapter.getView(i, null, ingredientMeasurementListView);
+            listItem.measure(0, 0);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams params = ingredientMeasurementListView.getLayoutParams();
+        params.height = totalHeight + (ingredientMeasurementListView.getDividerHeight() * (adapter.getCount() - 1));
+        ingredientMeasurementListView.setLayoutParams(params);
+        ingredientMeasurementListView.requestLayout();
+
     }
 
     @Override
