@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -80,7 +79,10 @@ public class RecipeFragment extends Fragment {
                 navController.navigate(R.id.nav_edit_recipe, bundle);
             });
         }
-        else mBinding.deleteRecipeButton.setVisibility(GONE);
+        else{
+            mBinding.deleteRecipeButton.setVisibility(GONE);
+            mBinding.editRecipeButton.setVisibility(GONE);
+        }
 
         getParentFragmentManager().setFragmentResultListener(getString(R.string.request_edit_recipe),
                 this, (requestKey, result) -> {
