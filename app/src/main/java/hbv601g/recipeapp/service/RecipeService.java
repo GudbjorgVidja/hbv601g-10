@@ -23,33 +23,38 @@ import hbv601g.recipeapp.entities.IngredientMeasurement;
 import hbv601g.recipeapp.entities.Recipe;
 import hbv601g.recipeapp.networking.NetworkingService;
 
+/**
+ * A service class for interacting with the networking service in order to make requests related to
+ * the Recipe entity to the external API
+ */
 public class RecipeService extends Service {
     private NetworkingService mNetworkingService;
     private JsonElement mJsonElement;
     private long mUid;
 
-    public RecipeService(NetworkingService networkingService, long uid){
+    public RecipeService(NetworkingService networkingService, long uid) {
         this.mNetworkingService = networkingService;
         this.mUid = uid;
     }
 
     /**
      * Makes a request to get the personalized purchase cost (ppc) of a recipe
-     * @param rid - the id of the recipe
+     *
+     * @param rid the id of the recipe
      * @return the personalized purchase cost for the current user
      */
-    public double getPersonalizedPurchaseCost(long rid){
-        String url = String.format("recipe/id/%s/personal?uid=%s",rid,mUid);
+    public double getPersonalizedPurchaseCost(long rid) {
+        String url = String.format("recipe/id/%s/personal?uid=%s", rid, mUid);
 
-        try{
-            mJsonElement=mNetworkingService.getRequest(url);
-        } catch (IOException e){
+        try {
+            mJsonElement = mNetworkingService.getRequest(url);
+        } catch (IOException e) {
             Log.d("Networking exception", "Failed to get PPC");
         }
 
         double ppc = 0;
 
-        if(mJsonElement!=null){
+        if (mJsonElement != null) {
             ppc = mJsonElement.getAsDouble();
             Log.d("API", "PPC: " + ppc);
         }
@@ -58,10 +63,11 @@ public class RecipeService extends Service {
 
     /**
      * makes a delete request to send to the external API, to try to delete a recipe
-     * @param rid - the id of the recipe to delete
+     *
+     * @param rid the id of the recipe to delete
      */
-    public void deleteRecipe(long rid){
-        String url = String.format("recipe/delete/%s?uid=%s",rid, mUid);
+    public void deleteRecipe(long rid) {
+        String url = String.format("recipe/delete/%s?uid=%s", rid, mUid);
         try {
             mNetworkingService.deleteRequest(url);
         } catch (IOException e) {
@@ -71,51 +77,47 @@ public class RecipeService extends Service {
 
 
     /**
-     * Makes a get request for the external API, for the endpoint that gets all recipes
-     * and turns it from a JsonElement to a List of Recipes
+     * Makes a get request for the external API, for the endpoint that gets all recipes and turns it
+     * from a JsonElement to a List of Recipes
+     *
      * @return all recipes
      */
-    public List<Recipe> getAllRecipes(){
+    public List<Recipe> getAllRecipes() {
         String url = "recipe/all?uid=" + mUid;
 
-        try{
+        try {
             mJsonElement = mNetworkingService.getRequest(url);
-        } catch (IOException e){
+        } catch (IOException e) {
             Log.d("Networking exception", "Failed to get all recipes");
         }
 
         List<Recipe> recipes = new ArrayList<>();
-        if(mJsonElement != null){
+        if (mJsonElement != null) {
             Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-            if(!mJsonElement.isJsonArray()) return null;
+            if (!mJsonElement.isJsonArray()) return null;
 
             JsonArray array = mJsonElement.getAsJsonArray();
 
-            Type collectionType = new TypeToken<Collection<Recipe>>(){}.getType();
+            Type collectionType = new TypeToken<Collection<Recipe>>() {}.getType();
             recipes = gson.fromJson(array, collectionType);
-        }
-        else throw new NullPointerException("Recipe list is null");
+        } else throw new NullPointerException("Recipe list is null");
 
         return recipes;
     }
 
     /**
-     * This function takes in 5 parameters, 2 String, int, arrayList and
-     * Boolean.
+     * Creates a recipe with the given information
      *
-     * @param title       : String value, is the name of the recipe.
-     * @param instructions: String value, is the step by step progress to make the recipe
-     * @param ingredList  : IngredientMeasurement list array, content all in ingredients, unit and
-     *                        there quantity in the recipe.
-     * @param isPrivate   : Boolean, ture if the author want it to be private and false for the
-     *                      recipe to be public.
-     * @return Return the newly created recipe
+     * @param title the title of the recipe
+     * @param instructions instructions for how to make the recipe
+     * @param ingredList a list of IngredientMeasurements containing the ingredients needed
+     *         for making the recipe and their amounts
+     * @param isPrivate a boolean value indicating whether the recipe is visible to users
+     *         other than the one who created it
+     * @return the newly created recipe
      */
-    public Recipe createRecipe(
-            String title, String instructions,
-            List<IngredientMeasurement> ingredList, Boolean isPrivate
-    )
-    {
+    public Recipe createRecipe(String title, String instructions,
+                               List<IngredientMeasurement> ingredList, Boolean isPrivate) {
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 
         Recipe rep = new Recipe();
@@ -133,11 +135,10 @@ public class RecipeService extends Service {
             Log.d("Networking exception", "Failed to create recipe");
         }
 
-        if(mJsonElement != null){
+        if (mJsonElement != null) {
             rep = gson.fromJson(mJsonElement, Recipe.class);
             Log.d("API", "recipe object, title:" + rep.getTitle());
-        }
-        else{
+        } else {
             return null;
         }
 
@@ -145,16 +146,15 @@ public class RecipeService extends Service {
     }
 
     /**
-     * This function update the recipe that has the ID value of id.
+     * Updates the recipe with the given id
      *
-     * @param rep         : Recipe value, is a recipe that has all of the updates for the recipe.
-     * @param id          : long value, is the id of recipe that is being updated
-     * @param upIngredList: arrayList value, is a list that contains all of the now ingredients in
-     *                      the recipe.
-     *
+     * @param rep a recipe that has all of the updates for the recipe.
+     * @param id the id of recipe that is being updated
+     * @param upIngredList arrayList value, is a list that contains all of the now
+     *         ingredients in the recipe.
      * @return The updated recipe if all thing ar in order.
      */
-    public Recipe updateRecipe(Recipe rep, long id, List<IngredientMeasurement> upIngredList){
+    public Recipe updateRecipe(Recipe rep, long id, List<IngredientMeasurement> upIngredList) {
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 
         String url = "recipe/" + id + "/update?uid=" + mUid;
@@ -166,11 +166,10 @@ public class RecipeService extends Service {
             Log.d("Networking exception", "Failed to create recipe");
         }
 
-        if(mJsonElement != null){
+        if (mJsonElement != null) {
             rep = gson.fromJson(mJsonElement, Recipe.class);
             Log.d("API", "recipe object updated, title:" + rep.getTitle());
-        }
-        else{
+        } else {
             return null;
         }
 
@@ -178,31 +177,28 @@ public class RecipeService extends Service {
     }
 
     /**
-     * This function add new ingredient measurement to a recipe with the same ID value of id
-     * @param id         : long value, ist the id of the recipe.
-     * @param ingredList: arrayList value, is a list of IngredientMeasurement that will be added
-     *                     to a recipe
+     * Adds This function add new ingredient measurement to a recipe with the same ID value of id
      *
+     * @param id long value, ist the id of the recipe.
+     * @param ingredList arrayList value, is a list of IngredientMeasurement that will be
+     *         added to a recipe
      * @return the recipe with ID value id and contains the added ingredient measurement list
      */
-    private Recipe addIngredientMeasurement(long id, List<IngredientMeasurement> ingredList){
+    private Recipe addIngredientMeasurement(long id, List<IngredientMeasurement> ingredList) {
         Gson gson = new Gson();
 
         StringBuilder units = new StringBuilder();
         StringBuilder ingredientIDs = new StringBuilder();
         StringBuilder qty = new StringBuilder();
 
-        for(int i = 0; i < ingredList.size(); i++){
-            units.append(ingredList.get(i).getUnit().name());
-            units.append(",");
-            ingredientIDs.append(ingredList.get(i).getIngredient().getId());
-            ingredientIDs.append(",");
-            qty.append(ingredList.get(i).getQuantity());
-            qty.append(",");
+        for (int i = 0; i < ingredList.size(); i++) {
+            units.append(ingredList.get(i).getUnit().name()).append(",");
+            ingredientIDs.append(ingredList.get(i).getIngredient().getId()).append(",");
+            qty.append(ingredList.get(i).getQuantity()).append(",");
         }
 
-        if(!units.toString().isEmpty()){
-            units = units.deleteCharAt(units.length()-1);
+        if (!units.toString().isEmpty()) {
+            units = units.deleteCharAt(units.length() - 1);
             ingredientIDs = ingredientIDs.deleteCharAt(ingredientIDs.length() - 1);
             qty = qty.deleteCharAt(qty.length() - 1);
         }
@@ -217,28 +213,25 @@ public class RecipeService extends Service {
             mJsonElement = mNetworkingService.putRequest(url, null);
         } catch (IOException e) {
             Log.d("Networking exception", "Failed to update recipe");
-            //throw new RuntimeException(e);
         }
 
-        if(mJsonElement != null){
+        if (mJsonElement != null) {
             Recipe rep = gson.fromJson(mJsonElement, Recipe.class);
             Log.d("API", "recipe object, title:" + rep.getTitle());
             return rep;
-        }
-        else {
+        } else {
             return null;
         }
     }
 
     /**
-     * This function look for all recipe with the tile that is contains the in put string.
+     * Searches for recipes containing the input string in the title
      *
-     * @param inPut : String value, is the sting that is use in the search.
-     *
+     * @param input a string that should be included in the recipe titles
      * @return a list of recipes having titles that contains the input string.
      */
-    public List<Recipe> SearchRecipe (String inPut){
-        String url = "recipe/search/" + inPut + "?uid=" + mUid;
+    public List<Recipe> SearchRecipe(String input) {
+        String url = "recipe/search/" + input + "?uid=" + mUid;
 
         try {
             mJsonElement = mNetworkingService.getRequest(url);
@@ -247,9 +240,9 @@ public class RecipeService extends Service {
         }
 
         List<Recipe> repList = null;
-        if(mJsonElement != null){
+        if (mJsonElement != null) {
             Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-            Type collectionType = new TypeToken<Collection<Recipe>>(){}.getType();
+            Type collectionType = new TypeToken<Collection<Recipe>>() {}.getType();
             repList = gson.fromJson(mJsonElement, collectionType);
         }
         return repList;
@@ -257,7 +250,8 @@ public class RecipeService extends Service {
 
     /**
      * Fetches all recipes under a given TPC.
-     * @param tpc - Total Purchase Cost to filter by.
+     *
+     * @param tpc Total Purchase Cost to filter by.
      * @return List of recipes under given TIC.
      */
     public List<Recipe> getAllRecipesUnderTPC(int tpc) {
@@ -271,13 +265,13 @@ public class RecipeService extends Service {
 
         List<Recipe> recipes = new ArrayList<>();
 
-        if(mJsonElement != null){
+        if (mJsonElement != null) {
             Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-            if(!mJsonElement.isJsonArray()) return null;
+            if (!mJsonElement.isJsonArray()) return null;
 
             JsonArray array = mJsonElement.getAsJsonArray();
 
-            Type collectionType = new TypeToken<Collection<Recipe>>(){}.getType();
+            Type collectionType = new TypeToken<Collection<Recipe>>() {}.getType();
             recipes = gson.fromJson(array, collectionType);
         } else {
             throw new NullPointerException("Recipes are null");
@@ -287,7 +281,8 @@ public class RecipeService extends Service {
 
     /**
      * Fetches all recipes under a given TIC.
-     * @param tic - Total Ingredient Cost to filter by
+     *
+     * @param tic Total Ingredient Cost to filter by
      * @return List of recipes under given TIC
      */
     public List<Recipe> getAllRecipesUnderTIC(int tic) {
@@ -301,20 +296,19 @@ public class RecipeService extends Service {
 
         List<Recipe> recipes = new ArrayList<>();
 
-        if(mJsonElement != null){
+        if (mJsonElement != null) {
             Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-            if(!mJsonElement.isJsonArray()) return null;
+            if (!mJsonElement.isJsonArray()) return null;
 
             JsonArray array = mJsonElement.getAsJsonArray();
 
-            Type collectionType = new TypeToken<Collection<Recipe>>(){}.getType();
+            Type collectionType = new TypeToken<Collection<Recipe>>() {}.getType();
             recipes = gson.fromJson(array, collectionType);
         } else {
             throw new NullPointerException("Recipes are null");
         }
         return recipes;
     }
-
 
 
     @Nullable
