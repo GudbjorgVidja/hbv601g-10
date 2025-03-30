@@ -21,6 +21,8 @@
     <string name="title_edit_recipe">Edit recipe</string>
     <string name="title_recipe_list">Recipe list</string>
     <string name="title_rename_recipe_list">Change recipe list name</string>
+    <string name="title_filter_tpc">Filter by TPC</string>
+    <string name="title_filter_tic">Filter by TIC</string>
 
     <!-- Buttons/textfields -->
     <string name="ingredients_text">Ingredients</string>
@@ -71,6 +73,10 @@
     <string name="confirm_button">Confirm</string>
     <string name="confirm_create_recipe_list_button">Create recipe list</string>
     <string name="add_to_list_button">Add to list</string>
+    <string name="filter_tpc_button">Filter by TPC</string>
+    <string name="filter_tic_button">Filter by TIC</string>
+    <string name="confirm_filter_button">Confirm</string>
+    <string name="clear_filter_button">Clear filter</string>
     <string name="save_button">Save</string>
     <string name="edit_button_text">Edit</string>
     <string name="rename_ingredient_button_text">Rename</string>
@@ -107,6 +113,7 @@
     <string name="password_has_no_input_toast">The password field can not be empty</string>
     <string name="recipe_list_rename_blank">Input cannot be blank</string>
     <string name="recipe_list_rename_not_authorized">You must be the creator of this list to change the title</string>
+    <string name="invalid_price_input_toast">Input is invalid</string>
     <string name="delete_user_failed_toast">Failed to delete the user account.</string>
     <string name="delete_user_success_toast">User account deleted successfully.</string>
     <string name="new_password_invalid_error">The passwords must be the same</string>
