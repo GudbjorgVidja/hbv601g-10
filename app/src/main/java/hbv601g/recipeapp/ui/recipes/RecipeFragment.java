@@ -113,6 +113,7 @@ public class RecipeFragment extends Fragment {
             mRecipeService.deleteRecipe(mRecipe.getId(), new CustomCallback<>() {
                 @Override
                 public void onSuccess(Boolean aBoolean) {
+                    if(getActivity() == null) return;
                     requireActivity().runOnUiThread(() -> {
                         navController.popBackStack();
                         mainActivity.makeToast(R.string.delete_recipe_success, Toast.LENGTH_LONG);
@@ -121,6 +122,7 @@ public class RecipeFragment extends Fragment {
 
                 @Override
                 public void onFailure(Boolean aBoolean) {
+                    if(getActivity() == null) return;
                     requireActivity().runOnUiThread(() ->
                             mainActivity.makeToast(R.string.delete_recipe_failed, Toast.LENGTH_LONG));
                 }
@@ -158,6 +160,7 @@ public class RecipeFragment extends Fragment {
             mRecipeService.getPersonalizedPurchaseCost(mRecipe.getId(), new CustomCallback<>() {
                 @Override
                 public void onSuccess(Double ppc) {
+                    if(getActivity() == null) return;
                     requireActivity().runOnUiThread(() -> {
                         String tmp = getString(R.string.recipe_ppc, ppc+"");
                         mBinding.recipePpc.setText(tmp);
@@ -201,6 +204,7 @@ public class RecipeFragment extends Fragment {
         mRecipeListService.getUserRecipeLists(mainActivity.getUserId(), new CustomCallback<>() {
             @Override
             public void onSuccess(List<RecipeList> recipeLists) {
+                if(getActivity() == null) return;
                 if(recipeLists.isEmpty()){
                     Log.d("Callback", "No lists found");
                     requireActivity().runOnUiThread(() ->
@@ -217,6 +221,7 @@ public class RecipeFragment extends Fragment {
                     mRecipeListService.addRecipeToList(rid, lid, new CustomCallback<>() {
                         @Override
                         public void onSuccess(Integer listSize) {
+                            if(getActivity() == null) return;
                             requireActivity().runOnUiThread(() -> {
                                 if(listSize == ((RecipeList) adapter.getItem(which)).getRecipes().size())
                                     mainActivity.makeToast(R.string.add_recipe_to_list_existing_toast, Toast.LENGTH_LONG);
@@ -227,6 +232,7 @@ public class RecipeFragment extends Fragment {
 
                         @Override
                         public void onFailure(Integer listSize) {
+                            if(getActivity() == null) return;
                             requireActivity().runOnUiThread(() -> mainActivity.makeToast(R.string.add_recipe_to_list_failed_toast, Toast.LENGTH_LONG));
                         }
                     });
@@ -234,12 +240,14 @@ public class RecipeFragment extends Fragment {
                 });
                 alert.setNegativeButton(getString(R.string.cancel_button_text), null);
 
+                if(getActivity() == null) return;
                 requireActivity().runOnUiThread(() -> alert.create().show());
 
             }
 
             @Override
             public void onFailure(List<RecipeList> recipeLists) {
+                if(getActivity() == null) return;
                 requireActivity().runOnUiThread(() -> Toast.makeText(mainActivity, "Something went wrong, No lists found", Toast.LENGTH_LONG).show());
             }
         });

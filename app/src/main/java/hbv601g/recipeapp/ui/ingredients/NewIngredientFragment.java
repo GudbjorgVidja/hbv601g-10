@@ -74,6 +74,7 @@ public class NewIngredientFragment extends Fragment{
                 CustomCallback<Ingredient> callback = new CustomCallback<>() {
                     @Override
                     public void onSuccess(Ingredient ingredient) {
+                        if(getActivity() == null) return;
                         requireActivity().runOnUiThread(() -> {
                             Bundle bundle = new Bundle();
                             bundle.putParcelable(getString(R.string.selected_ingredient), ingredient);
@@ -84,6 +85,7 @@ public class NewIngredientFragment extends Fragment{
 
                     @Override
                     public void onFailure(Ingredient ingredient) {
+                        if(getActivity() == null) return;
                         requireActivity().runOnUiThread(() -> {
                             mainActivity.makeToast(R.string.create_ingredient_failed_toast, Toast.LENGTH_LONG);
                             navController.popBackStack();

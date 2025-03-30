@@ -58,6 +58,7 @@ public class PantryFragment extends Fragment {
             mUserService.getUserPantry(mUid, new CustomCallback<>() {
                 @Override
                 public void onSuccess(List<IngredientMeasurement> ingredientMeasurements) {
+                    if(getActivity() == null) return;
                     requireActivity().runOnUiThread(() -> {
                         mPantryIngredients = ingredientMeasurements;
                         setPantryView(mainActivity, navController);
@@ -66,6 +67,7 @@ public class PantryFragment extends Fragment {
 
                 @Override
                 public void onFailure(List<IngredientMeasurement> ingredientMeasurements) {
+                    if(getActivity() == null) return;
                     requireActivity().runOnUiThread(() -> {
                         mPantryIngredients = ingredientMeasurements;
                         mainActivity.makeToast(R.string.null_pantry_list, Toast.LENGTH_LONG);

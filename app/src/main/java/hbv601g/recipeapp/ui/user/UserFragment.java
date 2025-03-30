@@ -55,12 +55,14 @@ public class UserFragment extends Fragment{
             mRecipeListService.getUserRecipeLists(mainActivity.getUserId(), new CustomCallback<>() {
                 @Override
                 public void onSuccess(List<RecipeList> recipeLists) {
+                    if(getActivity() == null) return;
                     mRecipeLists = recipeLists;
                     requireActivity().runOnUiThread(() -> makeView(mainActivity, navController));
                 }
 
                 @Override
                 public void onFailure(List<RecipeList> recipeLists) {
+                    if(getActivity() == null) return;
                     mRecipeLists = recipeLists;
                     requireActivity().runOnUiThread(() -> {
                         makeView(mainActivity, navController);
@@ -119,6 +121,7 @@ public class UserFragment extends Fragment{
                     mUserService.deleteAccount(mainActivity.getUserId(), password, new CustomCallback<>() {
                         @Override
                         public void onSuccess(User user) {
+                            if(getActivity() == null) return;
                             requireActivity().runOnUiThread(() -> {
                                 mainActivity.removeCurrentUser();
                                 mainActivity.makeToast(R.string.delete_user_success_toast,Toast.LENGTH_LONG);
@@ -127,6 +130,7 @@ public class UserFragment extends Fragment{
 
                         @Override
                         public void onFailure(User user) {
+                            if(getActivity() == null) return;
                             requireActivity().runOnUiThread(() ->
                                     mainActivity.makeToast(R.string.delete_user_failed_toast, Toast.LENGTH_LONG));
 

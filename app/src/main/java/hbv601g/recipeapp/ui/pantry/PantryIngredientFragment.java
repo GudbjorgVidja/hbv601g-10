@@ -84,6 +84,7 @@ public class PantryIngredientFragment extends Fragment {
                 mUserService.removeIngredientFromPantry(mainActivity.getUserId(), mPantryIngredient.getIngredient().getId(), new CustomCallback<>() {
                     @Override
                     public void onSuccess(Boolean aBoolean) {
+                        if(getActivity() == null) return;
                         requireActivity().runOnUiThread(() -> {
                             navController.popBackStack();
                             mainActivity.makeToast(R.string.remove_from_pantry_successful, Toast.LENGTH_LONG);
@@ -92,6 +93,7 @@ public class PantryIngredientFragment extends Fragment {
 
                     @Override
                     public void onFailure(Boolean aBoolean) {
+                        if(getActivity() == null) return;
                         requireActivity().runOnUiThread(() ->
                                 mainActivity.makeToast(R.string.remove_from_pantry_failed, Toast.LENGTH_LONG));
                     }

@@ -54,16 +54,14 @@ public class AddIngredientMeasurementFragment extends Fragment {
         ingredientService.getAllIngredients(new CustomCallback<>() {
             @Override
             public void onSuccess(List<Ingredient> ingredients) {
-                requireActivity().runOnUiThread(() -> {
-                    makeIngredientView(mainActivity, ingredients);
-                });
+                if(getActivity() == null) return;
+                requireActivity().runOnUiThread(() -> makeIngredientView(mainActivity, ingredients));
             }
 
             @Override
             public void onFailure(List<Ingredient> ingredients) {
-                requireActivity().runOnUiThread(() -> {
-                    makeIngredientView(mainActivity, ingredients);
-                });
+                if(getActivity() == null) return;
+                requireActivity().runOnUiThread(() -> makeIngredientView(mainActivity, ingredients));
             }
         });
 

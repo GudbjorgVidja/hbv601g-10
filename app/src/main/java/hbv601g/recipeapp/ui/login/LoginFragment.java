@@ -53,6 +53,7 @@ public class LoginFragment extends Fragment{
                         new CustomCallback<>() {
                             @Override
                             public void onSuccess(User user) {
+                                if(getActivity() == null) return;
                                 requireActivity().runOnUiThread(() -> {
                                     mainActivity.updateCurrentUser(user);
                                     navController.popBackStack();
@@ -63,6 +64,7 @@ public class LoginFragment extends Fragment{
 
                             @Override
                             public void onFailure(User user) {
+                                if(getActivity() == null) return;
                                 requireActivity().runOnUiThread(() ->
                                         mainActivity.makeToast(R.string.login_failed_toast, Toast.LENGTH_LONG)
                                 );

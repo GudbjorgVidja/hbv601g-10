@@ -65,6 +65,7 @@ public class RecipeListFragment extends Fragment {
         mRecipeListService.getListById(mClickedList.getId(), new CustomCallback<>() {
             @Override
             public void onSuccess(RecipeList recipeList) {
+                if(getActivity() == null) return;
                 requireActivity().runOnUiThread(() -> {
                     mRecipeList = recipeList;
                     setRecipeList(mainActivity, navController);
@@ -73,6 +74,7 @@ public class RecipeListFragment extends Fragment {
 
             @Override
             public void onFailure(RecipeList recipeList) {
+                if(getActivity() == null) return;
                 requireActivity().runOnUiThread(() -> {
                     // if fetching the list fails, use mClickedList
                     mRecipeList = mClickedList;
@@ -114,12 +116,14 @@ public class RecipeListFragment extends Fragment {
                 mRecipeListService.updateRecipeListTitle(mRecipeList.getId(), newTitle, new CustomCallback<>() {
                     @Override
                     public void onSuccess(Boolean aBoolean) {
+                        if(getActivity() == null) return;
                         // Successfully updated
                         requireActivity().runOnUiThread(() -> mRecipeListTitle.setText(newTitle));
                     }
 
                     @Override
                     public void onFailure(Boolean aBoolean) {
+                        if(getActivity() == null) return;
                         requireActivity().runOnUiThread(() ->
                                 mainActivity.makeToast(R.string.rename_list_failed_toast, Toast.LENGTH_SHORT));
                     }
@@ -154,11 +158,13 @@ public class RecipeListFragment extends Fragment {
         mRecipeListService.getRecipesFromList(mRecipeList.getId(), new CustomCallback<>() {
             @Override
             public void onSuccess(List<Recipe> recipes) {
+
+                // TODO: á þetta allt að keyra á ui thread?
+                if(getActivity() == null) return;
                 requireActivity().runOnUiThread(() -> {
                     RecipeAdapter adapter = new RecipeAdapter(mainActivity.getApplicationContext(), recipes);
                     //Log.d("RecipeListFragment", "List recipes are: " + mRecipeList.getRecipes());
                     recipeListView.setAdapter(adapter);
-
 
                     ListView mRecipeListListView = mBinding.recipeListRecipes;
 
@@ -172,30 +178,37 @@ public class RecipeListFragment extends Fragment {
                         navController.navigate(R.id.nav_recipe, bundle);
 
                     });
+
+
+                    Button mRenameListButton = mBinding.recipeListRenameButton;
+
+                    if(mRecipeList != null && mRecipeList.getCreatedBy() != null && mainActivity.getUserId() != 0 &&
+                            mRecipeList.getCreatedBy().getId() == mainActivity.getUserId() ){
+                        mBinding.deleteListButton.setOnClickListener(
+                                v -> makeDeleteListAlert(navController, mainActivity));
+                        mRenameListButton.setOnClickListener(
+                                v -> makeRenameAlert(mainActivity)
+                        );
+                    }
+                    else {
+                        mBinding.deleteListButton.setVisibility(GONE);
+                        mRenameListButton.setVisibility(View.GONE);
+                    }
+
+
                 });
 
             }
 
             @Override
             public void onFailure(List<Recipe> recipes) {
+                if(getActivity() == null) return;
                 requireActivity().runOnUiThread(() ->
                         Toast.makeText(mainActivity, "Whoops, something went wrong!", Toast.LENGTH_LONG).show());
             }
         });
 
 
-
-
-        if(mRecipeList != null && mRecipeList.getCreatedBy() != null && mainActivity.getUserId() != 0 &&
-                mRecipeList.getCreatedBy().getId() == mainActivity.getUserId() ){
-           /* mBinding.deleteListButton.setOnClickListener(
-                    v -> makeDeleteListAlert(navController, mainActivity));
-
-            */
-        }
-        else {
-            mBinding.deleteListButton.setVisibility(GONE);
-        }
 
     }
 
@@ -212,6 +225,7 @@ public class RecipeListFragment extends Fragment {
             mRecipeListService.deleteRecipeList(mRecipeList.getId(), new CustomCallback<>() {
                 @Override
                 public void onSuccess(Boolean aBoolean) {
+                    if(getActivity() == null) return;
                     requireActivity().runOnUiThread(() -> {
                         navController.popBackStack();
                         mainActivity.makeToast(R.string.delete_list_success_toast, Toast.LENGTH_LONG);
@@ -220,6 +234,7 @@ public class RecipeListFragment extends Fragment {
 
                 @Override
                 public void onFailure(Boolean aBoolean) {
+                    if(getActivity() == null) return;
                     requireActivity().runOnUiThread(() ->
                             mainActivity.makeToast(R.string.delete_list_failed_toast, Toast.LENGTH_LONG));
                 }

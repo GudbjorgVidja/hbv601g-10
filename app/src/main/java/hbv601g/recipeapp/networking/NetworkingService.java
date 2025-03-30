@@ -32,8 +32,7 @@ public class NetworkingService extends Service {
     private int mResponseCode;
 
     public NetworkingService() {
-        mBaseURL = "http://10.0.2.2:8080/";
-        //mBaseURL = "https://hbv501g-26.onrender.com/";
+        mBaseURL = "https://hbv501g-26.onrender.com/";
     }
 
     @Nullable

@@ -57,6 +57,7 @@ public class NewRecipeListFragment extends Fragment {
                         new CustomCallback<>() {
                             @Override
                             public void onSuccess(RecipeList recipeList) {
+                                if(getActivity() == null) return;
                                 requireActivity().runOnUiThread(() -> {
                                     mainActivity.makeToast(R.string.create_recipe_list_success_toast, Toast.LENGTH_LONG);
                                     navController.navigate(R.id.nav_user);
@@ -65,6 +66,7 @@ public class NewRecipeListFragment extends Fragment {
 
                             @Override
                             public void onFailure(RecipeList recipeList) {
+                                if(getActivity() == null) return;
                                 requireActivity().runOnUiThread(() ->
                                         mainActivity.makeToast(R.string.create_recipe_list_failed_toast, Toast.LENGTH_LONG));
                             }

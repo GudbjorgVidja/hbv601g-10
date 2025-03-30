@@ -54,6 +54,7 @@ public class IngredientsFragment extends Fragment {
         mIngredientService.getAllIngredients(new CustomCallback<>() {
             @Override
             public void onSuccess(List<Ingredient> ingredients) {
+                if(getActivity() == null) return;
                 mAllIngredients = ingredients;
                 requireActivity().runOnUiThread(() ->
                         makeIngredientsView(mainActivity, navController));
@@ -61,6 +62,7 @@ public class IngredientsFragment extends Fragment {
 
             @Override
             public void onFailure(List<Ingredient> ingredients) {
+                if(getActivity() == null) return;
                 mAllIngredients = new ArrayList<>();
                 requireActivity().runOnUiThread(() ->
                         mainActivity.makeToast(R.string.null_ingredient_list, Toast.LENGTH_LONG));

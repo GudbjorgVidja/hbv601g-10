@@ -47,7 +47,7 @@ public class RecipesFragment extends Fragment {
         mRecipeService.getAllRecipes(new CustomCallback<>() {
             @Override
             public void onSuccess(List<Recipe> recipes) {
-                Log.d("Callback", "get all recipes success");
+                if(getActivity() == null) return;
                 requireActivity().runOnUiThread(() -> {
                     mRecipeList = recipes;
                     makeRecipesView(mainActivity, navController);
@@ -56,6 +56,7 @@ public class RecipesFragment extends Fragment {
 
             @Override
             public void onFailure(List<Recipe> recipes) {
+                if(getActivity() == null) return;
                 requireActivity().runOnUiThread(() -> {
                     mRecipeList = recipes;
                     mainActivity.makeToast(R.string.get_recipes_failed_toast, Toast.LENGTH_LONG);

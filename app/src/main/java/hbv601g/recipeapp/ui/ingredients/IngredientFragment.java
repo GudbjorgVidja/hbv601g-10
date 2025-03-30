@@ -95,6 +95,7 @@ public class IngredientFragment extends Fragment{
                 mIngredientService.changeIngredientTitle(mIngredient.getId(), newTitle, new CustomCallback<>() {
                     @Override
                     public void onSuccess(Ingredient ingredient) {
+                        if(getActivity() == null) return;
                         requireActivity().runOnUiThread(() -> {
                             Bundle bundle = new Bundle();
                             bundle.putParcelable(getString(R.string.selected_ingredient), ingredient);
@@ -105,6 +106,7 @@ public class IngredientFragment extends Fragment{
 
                     @Override
                     public void onFailure(Ingredient ingredient) {
+                        if(getActivity() == null) return;
                         requireActivity().runOnUiThread(() ->
                                 mainActivity.makeToast(R.string.rename_ingredient_failed_toast, Toast.LENGTH_LONG));
                     }
@@ -129,6 +131,7 @@ public class IngredientFragment extends Fragment{
             mIngredientService.deleteIngredient(mIngredient.getId(), new CustomCallback<>() {
                 @Override
                 public void onSuccess(Ingredient ingredient) {
+                    if(getActivity() == null) return;
                     requireActivity().runOnUiThread(() -> {
                         navController.popBackStack();
                         mainActivity.makeToast(R.string.delete_ingredient_success, Toast.LENGTH_LONG);
@@ -137,6 +140,7 @@ public class IngredientFragment extends Fragment{
 
                 @Override
                 public void onFailure(Ingredient ingredient) {
+                    if(getActivity() == null) return;
                     requireActivity().runOnUiThread(() ->
                             mainActivity.makeToast(R.string.delete_ingredient_failed, Toast.LENGTH_LONG));
                 }

@@ -131,6 +131,7 @@ public class EditRecipeFragment extends Fragment {
         mRecipeService.updateRecipe(upRes, mRecipe.getId(), mList, new CustomCallback<>() {
             @Override
             public void onSuccess(Recipe recipe) {
+                if(getActivity() == null) return;
                 requireActivity().runOnUiThread(() -> {
                     Bundle res = new Bundle();
                     res.putParcelable(getString(R.string.selected_recipe), recipe);
@@ -142,6 +143,7 @@ public class EditRecipeFragment extends Fragment {
 
             @Override
             public void onFailure(Recipe recipe) {
+                if(getActivity() == null) return;
                 requireActivity().runOnUiThread(() ->
                         Toast.makeText(getActivity(), R.string.recipe_edit_unknown_error, Toast.LENGTH_LONG).show());
             }

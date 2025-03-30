@@ -12,7 +12,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -71,16 +70,15 @@ public class RecipeListService extends Service {
 
     /**
      * Makes a request to get all recipe lists for the current user, public and private
-     *
-     * @return all of the user's recipe lists
+     * @param uid - user id
+     * @param callback - returns all of the user's recipe lists on success, or an empty list on failure
      */
-
-
     public void getUserRecipeLists(long uid, CustomCallback<List<RecipeList>> callback) {
         String url = "list/user/" + uid + "?uid=" + mUid;
-        mNetworkingService.getRequest(url, new CustomCallback<JsonElement>() {
+        mNetworkingService.getRequest(url, new CustomCallback<>() {
             @Override
             public void onSuccess(JsonElement jsonElement) {
+                // TODO: getur jsonElement verið null onSuccess?
                 if(jsonElement != null){
                     Log.d("Callback", "onSuccess í service");
                     Gson gson = new GsonBuilder().create();
@@ -157,7 +155,7 @@ public class RecipeListService extends Service {
 
     }
 
-    // TODO: ath hvort það eigi að nota þetta einhvers staðar annars staðar
+
     /**
      * Fetches all recipes from the recipe list with the Id 'lid'.
      * @param lid - id of the recipe list.
@@ -196,23 +194,29 @@ public class RecipeListService extends Service {
      * @param id - Id of the recipe list being renamed
      * @param newTitle - New title of the recipe list
      */
-    public void updateRecipeListTitle(long id, String newTitle){
+    public void updateRecipeListTitle(long id, String newTitle, CustomCallback<Boolean> callback){
         String url = String.format("list/updateTitle/%s?uid=%s", id, mUid);
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
         Map<String, String> requestBody = new HashMap<>();
         requestBody.put("title",newTitle);
         String data = gson.toJson(requestBody);
 
-        try {
-            mJsonElement = mNetworkingService.patchRequest(url, data);
-            Log.d("API", "Updated recipe list title: " + mJsonElement);
-        } catch(IOException e) {
-            Log.d("Networking exception", "Failed to update list title");
-        }
+        mNetworkingService.patchRequest(url, data, new CustomCallback<>() {
+            @Override
+            public void onSuccess(JsonElement jsonElement) {
+                Log.d("API", "Updated recipe list: " + jsonElement);
 
-        if(mJsonElement == null){
-            throw new NullPointerException("Renamed recipe list is null");
-        }
+                if(jsonElement != null) callback.onSuccess(null);
+                else callback.onFailure(null);
+            }
+
+            @Override
+            public void onFailure(JsonElement jsonElement) {
+                Log.d("Networking failure", "Failed to update list title");
+                callback.onFailure(null);
+            }
+        });
+
     }
 
 
@@ -220,13 +224,21 @@ public class RecipeListService extends Service {
      * Deletes the given recipe list from database
      * @param lid - id of the recipe list
      */
-    public void deleteRecipeList(long lid){
+    public void deleteRecipeList(long lid, CustomCallback<Boolean> callback){
         String url = String.format("list/id/%s/delete?uid=%s", lid, mUid);
-        try {
-            mNetworkingService.deleteRequest(url);
-        } catch (IOException e) {
-            Log.d("Networking exception", "Delete recipe list failed");
-        }
+
+        mNetworkingService.deleteRequest(url, new CustomCallback<>() {
+            @Override
+            public void onSuccess(JsonElement jsonElement) {
+                callback.onSuccess(null);
+            }
+
+            @Override
+            public void onFailure(JsonElement jsonElement) {
+                Log.d("Networking failure", "Delete recipe list failed");
+                callback.onFailure(null);
+            }
+        });
 
     }
 

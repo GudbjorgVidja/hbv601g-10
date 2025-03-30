@@ -80,6 +80,7 @@ public class AddToPantryFragment extends Fragment {
                         new CustomCallback<>() {
                             @Override
                             public void onSuccess(IngredientMeasurement ingredientMeasurement) {
+                                if(getActivity() == null) return;
                                 requireActivity().runOnUiThread(() -> {
                                     mainActivity.makeToast(R.string.add_to_pantry_success, Toast.LENGTH_LONG);
                                     navController.popBackStack();
@@ -88,6 +89,7 @@ public class AddToPantryFragment extends Fragment {
 
                             @Override
                             public void onFailure(IngredientMeasurement ingredientMeasurement) {
+                                if(getActivity() == null) return;
                                 requireActivity().runOnUiThread(() -> {
                                     if (ingredientMeasurement == null)
                                         mainActivity.makeToast(R.string.add_to_pantry_failed, Toast.LENGTH_LONG);

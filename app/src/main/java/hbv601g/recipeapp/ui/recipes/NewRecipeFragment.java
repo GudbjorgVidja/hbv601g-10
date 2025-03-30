@@ -93,6 +93,7 @@ public class NewRecipeFragment extends Fragment {
         mRecipeService.createRecipe(title, instructions, ingredientMeasurementList, isPrivate, new CustomCallback<>() {
             @Override
             public void onSuccess(Recipe recipe) {
+                if(getActivity() == null) return;
                 requireActivity().runOnUiThread(() -> {
                     Toast.makeText(getActivity(), R.string.create_recipe_success_toast, Toast.LENGTH_LONG).show();
                     navController.popBackStack();
@@ -101,6 +102,7 @@ public class NewRecipeFragment extends Fragment {
 
             @Override
             public void onFailure(Recipe recipe) {
+                if(getActivity() == null) return;
                 requireActivity().runOnUiThread(() -> {
                     if(recipe != null){
                         Log.d("Callback", "Recipe created but failed to add ingredient measurements");

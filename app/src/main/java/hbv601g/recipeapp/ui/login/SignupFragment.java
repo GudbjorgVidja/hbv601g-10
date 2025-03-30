@@ -48,6 +48,7 @@ public class SignupFragment extends Fragment {
                 mUserService.signup(username, password, new CustomCallback<>() {
                     @Override
                     public void onSuccess(User user) {
+                        if(getActivity() == null) return;
                         requireActivity().runOnUiThread(() -> {
                             mainActivity.updateCurrentUser(user);
                             navController.popBackStack();
@@ -58,6 +59,7 @@ public class SignupFragment extends Fragment {
 
                     @Override
                     public void onFailure(User user) {
+                        if(getActivity() == null) return;
                         requireActivity().runOnUiThread(() ->
                                 mainActivity.makeToast(R.string.signup_failed_toast, Toast.LENGTH_LONG));
                     }
