@@ -194,5 +194,6 @@
     <string name="filter_tpc">Filter by TPC</string>
     <string name="sort_price">Sort by price</string>
     <string name="sort_title">Sort by title</string>
+    <string name="sort_and_filter_hint">Sort and filter</string>
 
 </resources>

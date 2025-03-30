@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SearchView;
@@ -37,6 +38,7 @@ public class RecipesFragment extends Fragment {
     private RecipeService mRecipeService;
     private List<Recipe> mRecipeList;
     private ListView mRecipeListView;
+    private String mSelected;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -47,40 +49,6 @@ public class RecipesFragment extends Fragment {
         MainActivity mainActivity = (MainActivity) getActivity();
         assert mainActivity != null;
 
-        Spinner viewOptionSpinner = mBinding.viewOptionSpinner;
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-                mainActivity,
-                R.array.options_array,
-                android.R.layout.simple_spinner_item);
-
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        viewOptionSpinner.setAdapter(adapter);
-
-        viewOptionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selected = adapter.getItem(position).toString();
-                if(selected.equals(getString(R.string.filter_tic))) makeFilterTPCAlert(mainActivity);
-                else if(selected.equals(getString(R.string.filter_tpc))) makeFilterTPCAlert(mainActivity);
-                else if(selected.equals(getString(R.string.sort_price))) updateListView(mRecipeService.getAllOrderedRecipes());
-                else if(selected.equals(getString(R.string.sort_title))) updateListView(mRecipeService.getAllOrderedRecipesByTitle());
-                else if(selected.equals(getString(R.string.filter_clear))){
-                    try {
-                        mRecipeList = mRecipeService.getAllRecipes();
-                        updateListView(mRecipeList);
-                    } catch (NullPointerException e) {
-                        mRecipeList = new ArrayList<>();
-                        mainActivity.makeToast(R.string.get_recipes_failed_toast, Toast.LENGTH_LONG);
-                    }
-                }
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
 
 
         NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
@@ -142,6 +110,49 @@ public class RecipesFragment extends Fragment {
         });
 
         return  root;
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        MainActivity mainActivity = (MainActivity) getActivity();
+        assert mainActivity != null;
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                mainActivity,
+                R.array.options_array,
+                android.R.layout.simple_spinner_item);
+
+
+        // Make a dropdown of options
+        AutoCompleteTextView viewOptionDropdown = mBinding.viewOptionDropdown;
+        viewOptionDropdown.setText(null);
+        viewOptionDropdown.setAdapter(adapter);
+
+        viewOptionDropdown.setOnItemClickListener((parent, view, position, id) -> {
+            mSelected = adapter.getItem(position).toString();
+            doFiltering(mainActivity);
+        });
+        doFiltering(mainActivity);
+    }
+
+    private void doFiltering(MainActivity mainActivity){
+        if(mSelected==null) return;
+        if(mSelected.equals(getString(R.string.filter_tic))) makeFilterTICAlert(mainActivity);
+        else if(mSelected.equals(getString(R.string.filter_tpc))) makeFilterTPCAlert(mainActivity);
+        else if(mSelected.equals(getString(R.string.sort_price))) updateListView(mRecipeService.getAllOrderedRecipes());
+        else if(mSelected.equals(getString(R.string.sort_title))) updateListView(mRecipeService.getAllOrderedRecipesByTitle());
+        else if(mSelected.equals(getString(R.string.filter_clear))){
+            try {
+                mRecipeList = mRecipeService.getAllRecipes();
+                updateListView(mRecipeList);
+            } catch (NullPointerException e) {
+                mRecipeList = new ArrayList<>();
+                mainActivity.makeToast(R.string.get_recipes_failed_toast, Toast.LENGTH_LONG);
+            }
+        }
     }
 
     /**
