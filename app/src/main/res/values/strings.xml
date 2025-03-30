@@ -20,6 +20,7 @@
     <string name="title_change_password">Change password</string>
     <string name="title_edit_recipe">Edit recipe</string>
     <string name="title_recipe_list">Recipe list</string>
+    <string name="title_camera">Camera</string>
     <string name="title_rename_recipe_list">Change recipe list name</string>
     <string name="title_filter_tpc">Filter by TPC</string>
     <string name="title_filter_tic">Filter by TIC</string>
@@ -81,6 +82,9 @@
     <string name="edit_button_text">Edit</string>
     <string name="rename_ingredient_button_text">Rename</string>
     <string name="change_password_button">Change password</string>
+    <string name="camera_shutter_button">Take Photo</string>
+    <string name="home_camera_button_text">Camera</string>
+    <string name="home_information_text">Come cook with us!</string>
 
     <!-- Messages/toasts -->
     <string name="login_failed_toast">Login failed. Please ensure username and password are correct.</string>
@@ -116,6 +120,11 @@
     <string name="invalid_price_input_toast">Input is invalid</string>
     <string name="delete_user_failed_toast">Failed to delete the user account.</string>
     <string name="delete_user_success_toast">User account deleted successfully.</string>
+    <string name="home_photo_description">A photo stored on the device</string>
+    <string name="camera_photo_success_toast">Photo captured successfully!</string>
+    <string name="camera_photo_failure_toast">Photo captured failed</string>
+    <string name="camera_no_access_toast">Unable to take photo. Please make sure to allow access to the camera.</string>
+    <string name="camera_not_initialized_toast">Please wait for the camera to start before taking photos.</string>
     <string name="new_password_invalid_error">The passwords must be the same</string>
     <string name="new_password_empty_error">The password field can not be empty</string>
     <string name="recipe_missing_toast">Recipe is missing</string>
