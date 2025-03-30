@@ -6,7 +6,6 @@
     <string name="title_recipe_create">Create recipe</string>
     <string name="title_add_ingredient_measurement_recipes">Create ingredient measurement</string>
     <string name="title_user">User</string>
-    <string name="title_user_no_user">No user</string>
     <string name="title_ingredients">Ingredients</string>
     <string name="title_signup">Signup</string>
     <string name="title_login">Login</string>
