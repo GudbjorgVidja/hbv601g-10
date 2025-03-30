@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.Toast;
 
@@ -85,7 +86,16 @@ public class NewRecipeFragment extends Fragment {
     }
 
     private Recipe createRecipe(){
-        String title =  mBinding.recipeName.getText().toString();
+        EditText temp = mBinding.recipeName;
+        String title =  temp.getText().toString();
+
+        if(title.isEmpty()){
+            temp.setError(getString(R.string.recipe_name_is_empty_error));
+        }
+        else{
+            temp.setError(null);
+        }
+
         String instructions = mBinding.instructions.getText().toString();
         Boolean isPrivate = mBinding.isPrivate.isChecked();
         List<IngredientMeasurement> ingredientMeasurementList = new ArrayList<>();
