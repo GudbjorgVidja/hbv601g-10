@@ -2,6 +2,7 @@ package hbv601g.recipeapp.ui.user;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,11 +79,19 @@ public class ChangePasswordFragment extends Fragment {
         alert.setTitle(R.string.change_password_dialog_title);
         alert.setMessage(R.string.change_password_alert_message);
 
+        if(getArguments() == null ||
+                getArguments().getString(getString(R.string.selected_old_password)) == null
+        ){
+            Log.e("ChangePassword", "Missing old password");
+            mNavController.popBackStack();
+        }
+
         alert.setPositiveButton(android.R.string.yes, (dialog, which) -> {
             mUserService.changePassword
                     (
                             ((MainActivity) getActivity()).getUserId(),
-                            mBinding.newPasswordInput.getText().toString()
+                            mBinding.newPasswordInput.getText().toString(),
+                            getArguments().getString(getString(R.string.selected_old_password))
                     );
 
             mNavController.popBackStack();

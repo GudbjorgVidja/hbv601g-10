@@ -47,7 +47,7 @@ public class UserService extends Service {
      */
     public void deleteAccount(long uid, String password) {
         User user = getUser(uid, uid);
-        if (user == null || !user.getPassword().equals(password)) {
+        if (user == null || !user.isSameAsPassword(password)) {
             throw new DeleteFailedException();
         }
         String url = String.format("user/delete?uid=%s&password=%s", uid, password);
@@ -233,7 +233,7 @@ public class UserService extends Service {
      * @return true if the passwords are the same, otherwise false.
      */
     public boolean validatePassword(long uid, String pass) {
-        return pass.equals(getUser(uid, uid).getPassword());
+        return getUser(uid, uid).isSameAsPassword(pass);
     }
 
     /**
@@ -241,11 +241,12 @@ public class UserService extends Service {
      *
      * @param uid the id of the user who's password is being changed
      * @param newPass the new password
+     * @param oldPassword the old password
      */
-    public void changePassword(long uid, String newPass) {
+    public void changePassword(long uid, String newPass, String oldPassword) {
         String url = "user/changePassword?uid=" + uid
                 + "&newPassword=" + newPass
-                + "&oldPassword=" + getUser(uid, uid).getPassword();
+                + "&oldPassword=" + oldPassword;
 
         try {
             mNetworkingService.patchRequest(url, null);

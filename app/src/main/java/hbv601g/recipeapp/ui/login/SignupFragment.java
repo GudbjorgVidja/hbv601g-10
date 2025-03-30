@@ -49,7 +49,7 @@ public class SignupFragment extends Fragment {
                     mainActivity.makeToast(R.string.signup_failed_toast, Toast.LENGTH_LONG);
                 }
                 else{
-                    mainActivity.updateCurrentUser(user);
+                    mainActivity.updateCurrentUser(user, mBinding.passwordInput.getText().toString());
                     navController.popBackStack();
                     navController.popBackStack();
                     Bundle bundle = new Bundle();

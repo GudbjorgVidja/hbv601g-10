@@ -146,6 +146,7 @@
     <string name="selected_ingredient_measurement">Ingredient measurement</string>
     <string name="selected_user_id">User id</string>
     <string name="selected_user_name">User name</string>
+    <string name="selected_old_password">Old password</string>
     <string name="request_ingredient_measurement">Ingredient measurement result</string>
     <string name="request_new_recipe">New recipe result</string>
     <string name="request_edit_recipe">Edited recipe result</string>

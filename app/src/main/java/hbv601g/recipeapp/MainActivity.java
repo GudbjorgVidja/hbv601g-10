@@ -66,15 +66,16 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Setur upplýsingar í shared preferences sem gefinn user,
      * eða hreinsar ef user er null
+     * @param password is the password of the user
      * @param user innskráður notandi
      */
-    public void updateCurrentUser(User user){
+    public void updateCurrentUser(User user, String password){
         sharedpreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedpreferences.edit();
 
         if(user != null){
             editor.putString(USERNAME_KEY, user.getUsername());
-            editor.putString(PASSWORD_KEY, user.getPassword());
+            editor.putString(PASSWORD_KEY, password);
             editor.putLong(USER_ID_KEY, user.getId());
         }
         else editor.clear();

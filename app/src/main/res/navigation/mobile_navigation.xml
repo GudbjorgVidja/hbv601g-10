@@ -98,7 +98,11 @@
         android:id="@+id/nav_change_password"
         android:name="hbv601g.recipeapp.ui.user.ChangePasswordFragment"
         android:label="@string/title_change_password"
-        tools:layout="@layout/fragment_change_password"/>
+        tools:layout="@layout/fragment_change_password">
+        <argument
+            android:name="@string/selected_old_password"
+            app:argType="string"/>
+    </fragment>
 
     <fragment
         android:id="@+id/nav_pantry"

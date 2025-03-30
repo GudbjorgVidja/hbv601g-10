@@ -41,8 +41,8 @@ public class User {
         this.username = username;
     }
 
-    public String getPassword() {
-        return password;
+    public Boolean isSameAsPassword(String testPassword) {
+        return testPassword.equals(password);
     }
 
     public void setPassword(String password) {
