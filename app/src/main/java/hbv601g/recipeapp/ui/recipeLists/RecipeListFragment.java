@@ -186,7 +186,7 @@ public class RecipeListFragment extends Fragment {
                 recipe.getTitle())
         );
 
-        alert.setMessage(getString(R.string.recipe_choice_alert_massage));
+        alert.setMessage(getString(R.string.recipe_choice_alert_message));
 
         alert.setNeutralButton(R.string.look_at_recipe_button,
                 (dialog, which) -> {
