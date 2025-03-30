@@ -310,6 +310,67 @@ public class RecipeService extends Service {
         return recipes;
     }
 
+    /**
+     * Fetches all recipes ordered by Total Purchase Cost ascending.
+     * @return List of sorted recipes
+     */
+    public List<Recipe> getAllOrderedRecipes(){
+        String url = "recipe/all/ordered?uid=" + mUid;
+
+        try {
+            mJsonElement = mNetworkingService.getRequest(url);
+        } catch (IOException e) {
+            Log.d("Networking exception", "Failed to fetch sorted recipes");
+        }
+
+        List<Recipe> recipes = new ArrayList<>();
+
+        if(mJsonElement != null){
+            Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+            if(!mJsonElement.isJsonArray()){
+                return null;
+            }
+
+            JsonArray array = mJsonElement.getAsJsonArray();
+
+            Type collectionType = new TypeToken<Collection<Recipe>>(){}.getType();
+            recipes = gson.fromJson(array, collectionType);
+        } else {
+            throw new NullPointerException("Recipes are null");
+        }
+        return recipes;
+    }
+
+    /**
+     * Fetches all recipes sorted by title.
+     * @return List of sorted recipes
+     */
+    public List<Recipe> getAllOrderedRecipesByTitle(){
+        String url = "recipe/all/orderedByTitle?uid=" + mUid;
+
+        try {
+            mJsonElement = mNetworkingService.getRequest(url);
+        } catch (IOException e) {
+            Log.d("Networking exception", "Failed to fetch sorted recipes");
+        }
+
+        List<Recipe> recipes = new ArrayList<>();
+
+        if(mJsonElement != null){
+            Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+            if(!mJsonElement.isJsonArray()){
+                return null;
+            }
+
+            JsonArray array = mJsonElement.getAsJsonArray();
+
+            Type collectionType = new TypeToken<Collection<Recipe>>(){}.getType();
+            recipes = gson.fromJson(array, collectionType);
+        } else {
+            throw new NullPointerException("Recipes are null");
+        }
+        return recipes;
+    }
 
     @Nullable
     @Override

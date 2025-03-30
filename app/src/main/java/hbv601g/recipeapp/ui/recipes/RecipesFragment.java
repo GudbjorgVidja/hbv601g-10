@@ -48,6 +48,8 @@ public class RecipesFragment extends Fragment {
         Button filterTpcButton = mBinding.filterTpcButton;
         Button filterTicButton = mBinding.filterTicButton;
         Button clearFilterButton = mBinding.clearFilterButton;
+        Button sortByPriceButton = mBinding.sortByPriceButton;
+        Button sortByTitleButton = mBinding.sortByTitleButton;
 
         NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
 
@@ -78,6 +80,8 @@ public class RecipesFragment extends Fragment {
 
         filterTpcButton.setOnClickListener(v -> makeFilterTPCAlert(mainActivity));
         filterTicButton.setOnClickListener(v -> makeFilterTICAlert(mainActivity));
+        sortByPriceButton.setOnClickListener(v -> updateListView(mRecipeService.getAllOrderedRecipes()));
+        sortByTitleButton.setOnClickListener(v -> updateListView(mRecipeService.getAllOrderedRecipesByTitle()));
 
         clearFilterButton.setOnClickListener(v -> {
             try {

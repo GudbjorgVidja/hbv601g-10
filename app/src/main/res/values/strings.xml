@@ -86,6 +86,8 @@
     <string name="camera_shutter_button">Take Photo</string>
     <string name="home_camera_button_text">Camera</string>
     <string name="home_information_text">Come cook with us!</string>
+    <string name="sort_by_price_button">Sort by price</string>
+    <string name="sort_by_title_button">Sort by title</string>
 
     <!-- Messages/toasts -->
     <string name="login_failed_toast">Login failed. Please ensure username and password are correct.</string>
