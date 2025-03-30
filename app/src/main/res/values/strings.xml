@@ -76,6 +76,8 @@
     <string name="save_button">Save</string>
     <string name="edit_button_text">Edit</string>
     <string name="rename_ingredient_button_text">Rename</string>
+    <string name="sort_by_price_button">Sort by price</string>
+    <string name="sort_by_title_button">Sort by title</string>
 
     <!-- Messages/toasts -->
     <string name="login_failed_toast">Login failed. Please ensure username and password are correct.</string>
