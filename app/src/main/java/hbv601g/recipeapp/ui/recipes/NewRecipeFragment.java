@@ -27,6 +27,9 @@ import hbv601g.recipeapp.entities.Recipe;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.RecipeService;
 
+/**
+ * A fragment to create new recipes
+ */
 public class NewRecipeFragment extends Fragment {
     private RecipeService mRecipeService;
     private FragmentNewRecipeBinding mBinding;
@@ -96,6 +99,11 @@ public class NewRecipeFragment extends Fragment {
         return root;
     }
 
+    /**
+     * Uses information from the UI to create a new recipe
+     *
+     * @return the new recipe
+     */
     private Recipe createRecipe(){
         String title =  mBinding.recipeName.getText().toString();
         String instructions = mBinding.instructions.getText().toString();

@@ -25,7 +25,7 @@ import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.UserService;
 
 /**
- * Fragment þar sem ingredient er bætt við í pantry.
+ * A fragment for adding an ingredient to the pantry
  */
 public class AddToPantryFragment extends Fragment {
 
@@ -91,9 +91,13 @@ public class AddToPantryFragment extends Fragment {
         return root;
     }
 
+    /**
+     * Sets the title of the ingredient in the UI
+     */
     private void setIngredient(){
         mBinding.addToPantryItemTitle.setText(mIngredient.getTitle());
     }
+
     @Override
     public void onDestroyView(){
         super.onDestroyView();

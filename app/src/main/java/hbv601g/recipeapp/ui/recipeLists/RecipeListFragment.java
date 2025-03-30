@@ -117,7 +117,7 @@ public class RecipeListFragment extends Fragment {
      * Makes an alert dialog where the user can rename the recipe list. The dialog does not accept
      * an empty input when the user clicks save, if the user saves with a valid input the API is
      * called to rename the recipe list. If cancel is clicked, the dialog closes and nothing happens.
-     * @param mainActivity - The MainActivity of the app
+     * @param mainActivity The MainActivity of the app
      */
     private void makeRenameAlert(MainActivity mainActivity){
         AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
@@ -175,9 +175,9 @@ public class RecipeListFragment extends Fragment {
     /**
      * Make an alert for the choices that the User make for a recipe they picked
      *
-     * @param navController : the navController instance
-     * @param activity      : the current mainActivity
-     * @param recipe        : Recipe value, is the recipe that the user picked.
+     * @param navController the navController instance
+     * @param activity the current mainActivity
+     * @param recipe Recipe value, is the recipe that the user picked.
      */
     private void makeRecipeChoiceAlert(NavController navController, MainActivity activity,
                                        Recipe recipe){
@@ -209,9 +209,9 @@ public class RecipeListFragment extends Fragment {
     /**
      * Make a dialog to confirm if user wants to remove the recipe from the recipe list.
      *
-     * @param navController : the NavController being used for navigation.
-     * @param mainActivity  : the MainActivity of the app.
-     * @param recipe        : Recipe value, is the recipe that the user picked.
+     * @param navController the NavController being used for navigation.
+     * @param mainActivity the MainActivity of the app.
+     * @param recipe Recipe value, is the recipe that the user picked.
      */
     private void removeRecipeAlert(NavController navController, MainActivity mainActivity,
                                   Recipe recipe){
@@ -221,21 +221,12 @@ public class RecipeListFragment extends Fragment {
 
         alert.setPositiveButton(android.R.string.yes, (dialog, which) -> {
             if(mRecipeListService.removeRecipeFromList(mRecipeList, recipe)){
-                mainActivity.makeToast
-                        (
-                                R.string.recipe_removed_from_list_success_toast,
-                                Toast.LENGTH_LONG
-                        );
-
+                mainActivity.makeToast(R.string.recipe_removed_from_list_success_toast, Toast.LENGTH_LONG);
                 mRecipeList = mRecipeListService.getListById(mRecipeList.getId());
                 setRecipeList();
             }
             else {
-                mainActivity.makeToast
-                        (
-                                R.string.recipe_removed_from_list_failed_toast,
-                                Toast.LENGTH_LONG
-                        );
+                mainActivity.makeToast(R.string.recipe_removed_from_list_failed_toast, Toast.LENGTH_LONG);
             }
         });
 
@@ -248,8 +239,8 @@ public class RecipeListFragment extends Fragment {
 
     /**
      * Makes an alert to delete this recipe list. If confirmed, the list gets deleted.
-     * @param navController - the navController instance
-     * @param mainActivity - the current mainActivity
+     * @param navController the navController instance
+     * @param mainActivity the current mainActivity
      */
     private void makeDeleteListAlert(NavController navController, MainActivity mainActivity) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());
