@@ -263,8 +263,18 @@ public class UserService extends Service {
      *
      * @return     : if the password are the same then true else false.
      */
-    public boolean validatePassword(long uId, String pass){
-        return pass.equals(getUser(uId, uId).getPassword());
+    public void validatePassword(long uId, String pass, CustomCallback<Boolean> callback){
+        getUser(uId, uId, new CustomCallback<>() {
+            @Override
+            public void onSuccess(User user) {
+                callback.onSuccess(pass.equals(user.getPassword()));
+            }
+
+            @Override
+            public void onFailure(User user) {
+                callback.onFailure(null);
+            }
+        });
     }
 
     /**
@@ -273,19 +283,37 @@ public class UserService extends Service {
      * @param uId     : long value, is the id number of the user.
      * @param newPass : String value, is the new password for the user.
      */
-    public void changePassword(long uId, String newPass){
-        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+    public void changePassword(long uId, String newPass, CustomCallback<Boolean> callback){
+        // TODO: kannski senda gamla lykilorðið inn líka frekar en að sækja það oftar?
+        //Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 
-        String url = "user/changePassword?uid=" + uId + "&newPassword=" + newPass
-                + "&oldPassword=" + getUser(uId, uId).getPassword();
+        getUser(uId, uId, new CustomCallback<>() {
+            @Override
+            public void onSuccess(User user) {
+                String url = "user/changePassword?uid=" + uId + "&newPassword=" + newPass
+                        + "&oldPassword=" + user.getPassword();
+                mNetworkingService.patchRequest(url, null, new CustomCallback<>() {
+                    @Override
+                    public void onSuccess(JsonElement jsonElement) {
+                        // TODO: ath, breytir lykilorði ef rétt inntak en skilar engu
+                        callback.onSuccess(null);
+                    }
 
+                    @Override
+                    public void onFailure(JsonElement jsonElement) {
+                        callback.onFailure(null);
+                    }
+                });
+            }
 
-        try {
-            mNetworkingService.patchRequest(url, null);
-        }
-        catch (IOException e){
-            Log.d("Networking exception", "Failed to change password");
-        }
+            @Override
+            public void onFailure(User user) {
+                callback.onFailure(null);
+                Log.d("Networking failure", "Failed to get user");
+
+            }
+        });
+
     }
 
     @Nullable

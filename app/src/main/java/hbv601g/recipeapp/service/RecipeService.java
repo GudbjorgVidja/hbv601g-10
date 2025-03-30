@@ -270,22 +270,27 @@ public class RecipeService extends Service {
      *
      * @return a list of recipes having titles that contains the input string.
      */
-    public List<Recipe> SearchRecipe (String inPut){
+    public void SearchRecipe (String inPut, CustomCallback<List<Recipe>> callback){
         String url = "recipe/search/" + inPut + "?uid=" + mUid;
 
-        try {
-            mJsonElement = mNetworkingService.getRequest(url);
-        } catch (IOException e) {
-            Log.d("Networking exception", "Failed to get search results for recipe");
-        }
+        mNetworkingService.getRequest(url, new CustomCallback<>() {
+            @Override
+            public void onSuccess(JsonElement jsonElement) {
+                if(jsonElement != null){
+                    Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+                    Type collectionType = new TypeToken<Collection<Recipe>>(){}.getType();
+                    callback.onSuccess(gson.fromJson(jsonElement, collectionType));
+                }
+                else callback.onFailure(new ArrayList<>());
+            }
 
-        List<Recipe> repList = null;
-        if(mJsonElement != null){
-            Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-            Type collectionType = new TypeToken<Collection<Recipe>>(){}.getType();
-            repList = gson.fromJson(mJsonElement, collectionType);
-        }
-        return repList;
+            @Override
+            public void onFailure(JsonElement jsonElement) {
+                Log.d("Networking failure", "Failed to get search results for recipe");
+                callback.onFailure(new ArrayList<>());
+            }
+        });
+
     }
 
     /**
@@ -293,29 +298,28 @@ public class RecipeService extends Service {
      * @param tpc - Total Purchase Cost to filter by.
      * @return List of recipes under given TIC.
      */
-    public List<Recipe> getAllRecipesUnderTPC(int tpc) {
+    public void getAllRecipesUnderTPC(int tpc, CustomCallback<List<Recipe>> callback) {
         String url = String.format("recipe/underTPC/%s?uid=%s", tpc, mUid);
 
-        try {
-            mJsonElement = mNetworkingService.getRequest(url);
-        } catch (IOException e) {
-            Log.d("Networking exception", "Failed to fetch recipes");
-        }
+        mNetworkingService.getRequest(url, new CustomCallback<>() {
+            @Override
+            public void onSuccess(JsonElement jsonElement) {
+                if(jsonElement != null){
+                    Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 
-        List<Recipe> recipes = new ArrayList<>();
+                    Type collectionType = new TypeToken<Collection<Recipe>>(){}.getType();
+                    callback.onSuccess(gson.fromJson(jsonElement, collectionType));
+                }
+                else callback.onFailure(new ArrayList<>());
+            }
 
-        if(mJsonElement != null){
-            Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-            if(!mJsonElement.isJsonArray()) return null;
+            @Override
+            public void onFailure(JsonElement jsonElement) {
+                Log.d("Networking failure", "Failed to fetch recipes");
+                callback.onFailure(new ArrayList<>());
+            }
+        });
 
-            JsonArray array = mJsonElement.getAsJsonArray();
-
-            Type collectionType = new TypeToken<Collection<Recipe>>(){}.getType();
-            recipes = gson.fromJson(array, collectionType);
-        } else {
-            throw new NullPointerException("Recipes are null");
-        }
-        return recipes;
     }
 
     /**
@@ -323,29 +327,27 @@ public class RecipeService extends Service {
      * @param tic - Total Ingredient Cost to filter by
      * @return List of recipes under given TIC
      */
-    public List<Recipe> getAllRecipesUnderTIC(int tic) {
+    public void getAllRecipesUnderTIC(int tic, CustomCallback<List<Recipe>> callback) {
         String url = String.format("recipe/underTIC/%s?uid=%s", tic, mUid);
 
-        try {
-            mJsonElement = mNetworkingService.getRequest(url);
-        } catch (IOException e) {
-            Log.d("Networking exception", "Failed to fetch recipes");
-        }
+        mNetworkingService.getRequest(url, new CustomCallback<>() {
+            @Override
+            public void onSuccess(JsonElement jsonElement) {
+                if(jsonElement != null){
+                    Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+                    Type collectionType = new TypeToken<Collection<Recipe>>(){}.getType();
+                    callback.onSuccess(gson.fromJson(jsonElement, collectionType));
+                }
+                else callback.onFailure(new ArrayList<>());
+            }
 
-        List<Recipe> recipes = new ArrayList<>();
+            @Override
+            public void onFailure(JsonElement jsonElement) {
+                Log.d("Networking failure", "Failed to fetch recipes");
+                callback.onFailure(new ArrayList<>());
+            }
+        });
 
-        if(mJsonElement != null){
-            Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-            if(!mJsonElement.isJsonArray()) return null;
-
-            JsonArray array = mJsonElement.getAsJsonArray();
-
-            Type collectionType = new TypeToken<Collection<Recipe>>(){}.getType();
-            recipes = gson.fromJson(array, collectionType);
-        } else {
-            throw new NullPointerException("Recipes are null");
-        }
-        return recipes;
     }
 
 

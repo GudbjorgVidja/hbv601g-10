@@ -15,6 +15,7 @@ import androidx.navigation.Navigation;
 import hbv601g.recipeapp.MainActivity;
 import hbv601g.recipeapp.R;
 import hbv601g.recipeapp.databinding.FragmentChangePasswordBinding;
+import hbv601g.recipeapp.networking.CustomCallback;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.UserService;
 
@@ -78,14 +79,25 @@ public class ChangePasswordFragment extends Fragment {
         alert.setTitle(R.string.change_password_dialog_title);
         alert.setMessage(R.string.change_password_alert_message);
 
+        // TODO: nota mainActivity tilviksbreytu?
         alert.setPositiveButton(android.R.string.yes, (dialog, which) -> {
-            mUserService.changePassword
-                    (
-                            ((MainActivity) getActivity()).getUserId(),
-                            mBinding.newPasswordInput.getText().toString()
-                    );
+            mUserService.changePassword(((MainActivity) getActivity()).getUserId(),
+                    mBinding.newPasswordInput.getText().toString(),
+                    new CustomCallback<>() {
+                        @Override
+                        public void onSuccess(Boolean aBoolean) {
+                            // allt gekk vel
+                            requireActivity().runOnUiThread(() -> mNavController.popBackStack());
+                        }
 
-            mNavController.popBackStack();
+                        @Override
+                        public void onFailure(Boolean aBoolean) {
+                            // onFailure í networking
+                            requireActivity().runOnUiThread(() -> mNavController.popBackStack());
+                        }
+                    });
+
+
         });
 
         alert.setNegativeButton(android.R.string.no, (dialog, which) -> {

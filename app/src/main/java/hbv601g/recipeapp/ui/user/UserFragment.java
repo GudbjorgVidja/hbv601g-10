@@ -62,7 +62,7 @@ public class UserFragment extends Fragment{
                 public void onSuccess(List<RecipeList> recipeLists) {
                     if(getActivity() == null) return;
                     mRecipeLists = recipeLists;
-                    requireActivity().runOnUiThread(() -> makeView(mainActivity, navController));
+                    requireActivity().runOnUiThread(() -> makeView(mainActivity, mNavController));
                 }
 
                 @Override
@@ -70,7 +70,7 @@ public class UserFragment extends Fragment{
                     if(getActivity() == null) return;
                     mRecipeLists = recipeLists;
                     requireActivity().runOnUiThread(() -> {
-                        makeView(mainActivity, navController);
+                        makeView(mainActivity, mNavController);
                         mainActivity.makeToast(R.string.null_recipe_lists, Toast.LENGTH_LONG);
                     });
                 }
@@ -129,14 +129,31 @@ public class UserFragment extends Fragment{
                     oldPass.setError(getString(R.string.validate_current_password_alert_error));
                 }
                 else {
-                    if(mUserService.validatePassword(activity.getUserId(), password)){
-                        dialog.dismiss();
-                        mNavController.navigate(R.id.nav_change_password);
-                    }
-                    else {
-                        oldPass.setText("");
-                        activity.makeToast(R.string.password_invalid_toast,Toast.LENGTH_LONG);
-                    }
+
+                    mUserService.validatePassword(activity.getUserId(), password, new CustomCallback<>() {
+                        @Override
+                        public void onSuccess(Boolean isValid) {
+                            requireActivity().runOnUiThread(() -> {
+                                if(isValid){
+                                    dialog.dismiss();
+                                    mNavController.navigate(R.id.nav_change_password);
+                                }
+                                else {
+                                    oldPass.setText("");
+                                    activity.makeToast(R.string.password_invalid_toast,Toast.LENGTH_LONG);
+                                }
+                            });
+
+
+                        }
+
+                        @Override
+                        public void onFailure(Boolean aBoolean) {
+
+                        }
+                    });
+
+
 	        }
             });
         });
