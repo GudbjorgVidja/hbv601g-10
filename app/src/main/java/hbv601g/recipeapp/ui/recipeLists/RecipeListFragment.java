@@ -1,5 +1,6 @@
 package hbv601g.recipeapp.ui.recipeLists;
 
+import static android.view.View.GONE;
 import android.app.AlertDialog;
 import android.os.Bundle;
 
@@ -26,6 +27,7 @@ import hbv601g.recipeapp.adapters.RecipeAdapter;
 import hbv601g.recipeapp.databinding.FragmentRecipeListBinding;
 import hbv601g.recipeapp.entities.Recipe;
 import hbv601g.recipeapp.entities.RecipeList;
+import hbv601g.recipeapp.exceptions.DeleteFailedException;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.RecipeListService;
 
@@ -93,6 +95,16 @@ public class RecipeListFragment extends Fragment {
             mRenameListButton.setVisibility(View.GONE);
         }
 
+        if(mRecipeList != null && mRecipeList.getCreatedBy() != null && mainActivity.getUserId() != 0 &&
+                mRecipeList.getCreatedBy().getId() == mainActivity.getUserId() ){
+            mBinding.deleteListButton.setOnClickListener(
+                    v -> makeDeleteListAlert(navController, mainActivity));
+        }
+        else {
+            mBinding.deleteListButton.setVisibility(GONE);
+        }
+
+
         return root;
     }
 
@@ -155,4 +167,28 @@ public class RecipeListFragment extends Fragment {
         Log.d("RecipeListFragment", "List recipes are: " + mRecipeList.getRecipes());
         recipeListView.setAdapter(adapter);
     }
+
+    /**
+     * Makes an alert to delete this recipe list. If confirmed, the list gets deleted.
+     * @param navController - the navController instance
+     * @param mainActivity - the current mainActivity
+     */
+    private void makeDeleteListAlert(NavController navController, MainActivity mainActivity) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());
+        alert.setTitle(getString(R.string.delete_list_alert_title));
+        alert.setMessage(getString(R.string.delete_list_alert_message));
+        alert.setPositiveButton(android.R.string.yes, (dialog, which) -> {
+            try{
+                mRecipeListService.deleteRecipeList(mRecipeList.getId());
+                navController.popBackStack();
+                mainActivity.makeToast(R.string.delete_list_success_toast, Toast.LENGTH_LONG);
+            } catch (DeleteFailedException e) {
+                mainActivity.makeToast(R.string.delete_list_failed_toast, Toast.LENGTH_LONG);
+            }
+
+        });
+        alert.setNegativeButton(android.R.string.no, (dialog, which) -> {});
+        alert.show();
+    }
+
 }

@@ -197,6 +197,21 @@ public class RecipeListService extends Service {
     }
 
 
+    /**
+     * Deletes the given recipe list from database
+     * @param lid - id of the recipe list
+     */
+    public void deleteRecipeList(long lid){
+        String url = String.format("list/id/%s/delete?uid=%s", lid, mUid);
+        try {
+            mNetworkingService.deleteRequest(url);
+        } catch (IOException e) {
+            Log.d("Networking exception", "Delete recipe list failed");
+        }
+
+    }
+
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
