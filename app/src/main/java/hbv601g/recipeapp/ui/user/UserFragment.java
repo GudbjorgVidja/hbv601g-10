@@ -60,6 +60,21 @@ public class UserFragment extends Fragment{
 
         mRecipeListService = new RecipeListService(new NetworkingService(), mainActivity.getUserId());
 
+        getProfileInfo(mainActivity);
+
+        if (mainActivity.getUserId() == 0 && mUidOfProfile == 0){
+            setLoginView(navController);
+        }
+        else setWithUserView(mainActivity, navController);
+
+        return root;
+    }
+
+    /**
+     * gets information from arguments about which user's profile to display
+     * @param mainActivity the current activity
+     */
+    private void getProfileInfo(MainActivity mainActivity){
         if (getArguments() != null && !getArguments().isEmpty()) {
             mUidOfProfile = getArguments().getLong(getString(R.string.selected_user_id));
             mNameOfProfile = getArguments().getString(getString(R.string.selected_user_name));
@@ -68,13 +83,6 @@ public class UserFragment extends Fragment{
             mUidOfProfile = mainActivity.getUserId();
             mNameOfProfile = mainActivity.getUserName();
         }
-
-        if (mainActivity.getUserId() == 0 && mUidOfProfile == 0){
-            setLoginView(navController);
-        }
-        else setWithUserView(mainActivity, navController);
-
-        return root;
     }
 
 
