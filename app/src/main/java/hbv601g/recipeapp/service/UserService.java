@@ -253,6 +253,40 @@ public class UserService extends Service {
 
     }
 
+    /**
+     * This function check the password of a user with id value uid, is the same as the pass word
+     * string pass.
+     *
+     * @param uId  : long value, is the ID of the user.
+     * @param pass : String value, is the password that is being checked if it is the same as the
+     *               password that the user has.
+     *
+     * @return     : if the password are the same then true else false.
+     */
+    public boolean validatePassword(long uId, String pass){
+        return pass.equals(getUser(uId, uId).getPassword());
+    }
+
+    /**
+     * This function changes the Password for user with ID value uid to newPass.
+     *
+     * @param uId     : long value, is the id number of the user.
+     * @param newPass : String value, is the new password for the user.
+     */
+    public void changePassword(long uId, String newPass){
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+
+        String url = "user/changePassword?uid=" + uId + "&newPassword=" + newPass
+                + "&oldPassword=" + getUser(uId, uId).getPassword();
+
+
+        try {
+            mNetworkingService.patchRequest(url, null);
+        }
+        catch (IOException e){
+            Log.d("Networking exception", "Failed to change password");
+        }
+    }
 
     @Nullable
     @Override

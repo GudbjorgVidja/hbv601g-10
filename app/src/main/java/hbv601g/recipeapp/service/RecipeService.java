@@ -263,6 +263,93 @@ public class RecipeService extends Service {
     }
 
 
+    /**
+     * This function look for all recipe with the tile that is contains the in put string.
+     *
+     * @param inPut : String value, is the sting that is use in the search.
+     *
+     * @return a list of recipes having titles that contains the input string.
+     */
+    public List<Recipe> SearchRecipe (String inPut){
+        String url = "recipe/search/" + inPut + "?uid=" + mUid;
+
+        try {
+            mJsonElement = mNetworkingService.getRequest(url);
+        } catch (IOException e) {
+            Log.d("Networking exception", "Failed to get search results for recipe");
+        }
+
+        List<Recipe> repList = null;
+        if(mJsonElement != null){
+            Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+            Type collectionType = new TypeToken<Collection<Recipe>>(){}.getType();
+            repList = gson.fromJson(mJsonElement, collectionType);
+        }
+        return repList;
+    }
+
+    /**
+     * Fetches all recipes under a given TPC.
+     * @param tpc - Total Purchase Cost to filter by.
+     * @return List of recipes under given TIC.
+     */
+    public List<Recipe> getAllRecipesUnderTPC(int tpc) {
+        String url = String.format("recipe/underTPC/%s?uid=%s", tpc, mUid);
+
+        try {
+            mJsonElement = mNetworkingService.getRequest(url);
+        } catch (IOException e) {
+            Log.d("Networking exception", "Failed to fetch recipes");
+        }
+
+        List<Recipe> recipes = new ArrayList<>();
+
+        if(mJsonElement != null){
+            Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+            if(!mJsonElement.isJsonArray()) return null;
+
+            JsonArray array = mJsonElement.getAsJsonArray();
+
+            Type collectionType = new TypeToken<Collection<Recipe>>(){}.getType();
+            recipes = gson.fromJson(array, collectionType);
+        } else {
+            throw new NullPointerException("Recipes are null");
+        }
+        return recipes;
+    }
+
+    /**
+     * Fetches all recipes under a given TIC.
+     * @param tic - Total Ingredient Cost to filter by
+     * @return List of recipes under given TIC
+     */
+    public List<Recipe> getAllRecipesUnderTIC(int tic) {
+        String url = String.format("recipe/underTIC/%s?uid=%s", tic, mUid);
+
+        try {
+            mJsonElement = mNetworkingService.getRequest(url);
+        } catch (IOException e) {
+            Log.d("Networking exception", "Failed to fetch recipes");
+        }
+
+        List<Recipe> recipes = new ArrayList<>();
+
+        if(mJsonElement != null){
+            Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+            if(!mJsonElement.isJsonArray()) return null;
+
+            JsonArray array = mJsonElement.getAsJsonArray();
+
+            Type collectionType = new TypeToken<Collection<Recipe>>(){}.getType();
+            recipes = gson.fromJson(array, collectionType);
+        } else {
+            throw new NullPointerException("Recipes are null");
+        }
+        return recipes;
+    }
+
+
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
