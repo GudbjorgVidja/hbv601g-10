@@ -197,9 +197,11 @@ public class RecipeListFragment extends Fragment {
                     navController.navigate(R.id.nav_recipe, bundle);
         });
 
-        alert.setNegativeButton(R.string.remove_button, (dialog, which) -> {
-            removeRecipeAlert(navController, activity, recipe);
-        });
+        if(mRecipeList.getCreatedBy().getId() == activity.getUserId()) {
+            alert.setNegativeButton(R.string.remove_button, (dialog, which) -> {
+                removeRecipeAlert(navController, activity, recipe);
+            });
+        }
 
         alert.setPositiveButton(R.string.cancel_button_text, null);
 
