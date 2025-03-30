@@ -204,23 +204,39 @@ public class RecipeListService extends Service {
      * @param recipe The Recipe that should be removed from the list.
      * @return true if the recipe was removed, otherwise false
      */
-    public boolean removeRecipeFromList(RecipeList list, Recipe recipe) {
+    public void removeRecipeFromList(RecipeList list, Recipe recipe,
+                                     CustomCallback<Boolean> callback) {
+
         String url = String.format("list/id/%s/recipe/%s/remove?uid=%s",
                 list.getId(), recipe.getId(), mUid);
 
-        try {
-            mJsonElement = mNetworkingService.patchRequest(url, null);
-        } catch (IOException e) {
-            throw new NullPointerException("List recipes are null");
-        }
+        mNetworkingService.patchRequest(url, null, new CustomCallback<>() {
+            @Override
+            public void onSuccess(JsonElement jsonElement) {
+                // TODO: ath hvort það sé eins ef allt gekk og ef ekki. Skoða fyrri útfærslu
+                // held að jsonElement sé listinn, skila honum frekar!
+                Log.d("Callback", "recipe list returned on removal: " + jsonElement);
+                callback.onSuccess(null);
+            }
 
+            @Override
+            public void onFailure(JsonElement jsonElement) {
+                callback.onFailure(null);
+
+            }
+        });
+
+
+        /*
         boolean res = false;
         if (mJsonElement != null) {
             res = mJsonElement.isJsonObject();
             Log.d("API", "recipe removed: " + res);
         }
-
         return res;
+         */
+
+
     }
 
     /**

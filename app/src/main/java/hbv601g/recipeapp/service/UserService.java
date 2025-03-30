@@ -121,8 +121,7 @@ public class UserService extends Service {
                 if (jsonElement != null) {
                     Gson gson = new Gson();
                     callback.onSuccess(gson.fromJson(jsonElement, User.class));
-                }
-                else callback.onFailure(null);
+                } else callback.onFailure(null);
             }
 
             @Override

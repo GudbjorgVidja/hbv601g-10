@@ -61,19 +61,19 @@ public class UserFragment extends Fragment{
         mUserService = new UserService(new NetworkingService());
         mRecipeListService = new RecipeListService(new NetworkingService(), mainActivity.getUserId());
 
-        if(mainActivity.getUserId() != 0){
+        if(mainActivity.getUserId() != 0) {
 
             mRecipeListService.getUserRecipeLists(mainActivity.getUserId(), new CustomCallback<>() {
                 @Override
                 public void onSuccess(List<RecipeList> recipeLists) {
-                    if(getActivity() == null) return;
+                    if (getActivity() == null) return;
                     mRecipeLists = recipeLists;
                     requireActivity().runOnUiThread(() -> makeView(mainActivity, mNavController));
                 }
 
                 @Override
                 public void onFailure(List<RecipeList> recipeLists) {
-                    if(getActivity() == null) return;
+                    if (getActivity() == null) return;
                     mRecipeLists = recipeLists;
                     requireActivity().runOnUiThread(() -> {
                         makeView(mainActivity, mNavController);
@@ -82,8 +82,8 @@ public class UserFragment extends Fragment{
                 }
             });
 
-        getProfileInfo(mainActivity);
-
+            getProfileInfo(mainActivity);
+        }
         if (mainActivity.getUserId() == 0 && mUidOfProfile == 0){
             setLoginView();
         }
@@ -158,12 +158,31 @@ public class UserFragment extends Fragment{
      * @param mainActivity the current activity
      */
     private void populateRecipeListOverview(MainActivity mainActivity) {
+        mRecipeListService.getUserRecipeLists(mUidOfProfile, new CustomCallback<List<RecipeList>>() {
+            @Override
+            public void onSuccess(List<RecipeList> recipeLists) {
+
+            }
+
+            @Override
+            public void onFailure(List<RecipeList> recipeLists) {
+
+                if(getActivity() == null) return;
+                requireActivity().runOnUiThread(() -> {
+                    mRecipeLists = recipeLists;
+                    mainActivity.makeToast(R.string.null_recipe_lists, Toast.LENGTH_LONG);
+
+                });
+            }
+        });
+        /*
         try {
             mRecipeLists = mRecipeListService.getUserRecipeLists(mUidOfProfile);
         } catch(NullPointerException e) {
             mRecipeLists = new ArrayList<>();
             mainActivity.makeToast(R.string.null_recipe_lists, Toast.LENGTH_LONG);
         }
+         */
 
         mRecipeListListView = mBinding.userRecipeLists;
         RecipeListAdapter recipeListAdapter = new RecipeListAdapter(mainActivity.getApplicationContext(), mRecipeLists);
@@ -195,7 +214,7 @@ public class UserFragment extends Fragment{
         mBinding.deleteUserButton.setOnClickListener(v -> deleteUserAlert(mainActivity));
         mBinding.createRecipeListButton.setOnClickListener(
                 v -> mNavController.navigate(R.id.navigation_new_recipe_list));
-    }
+        //}
 
         mBinding.changePasswordButton.setOnClickListener(v -> {
             changePasswordAlert(mainActivity);
@@ -210,7 +229,7 @@ public class UserFragment extends Fragment{
 
         mBinding.deleteUserButton.setOnClickListener(v -> deleteUserAlert(mainActivity));
 
-        return root;
+        //return root;
     }
     /**
      * Sets the visibility of UI components specific to users viewing the profile of another
@@ -337,7 +356,7 @@ public class UserFragment extends Fragment{
      * @param navController - the navController instance
      */
     private void makeView(MainActivity mainActivity, NavController navController){
-        mRecipeListListView = mBinding.userRecipeLists;
+        ListView mRecipeListListView = mBinding.userRecipeLists;
 
         RecipeListAdapter recipeListAdapter = new RecipeListAdapter(mainActivity.getApplicationContext(), mRecipeLists);
         mRecipeListListView.setAdapter(recipeListAdapter);

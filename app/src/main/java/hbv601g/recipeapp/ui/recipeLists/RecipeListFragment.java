@@ -300,6 +300,43 @@ public class RecipeListFragment extends Fragment {
         alert.setMessage(R.string.remove_recipe_from_recipe_list_alert_message);
 
         alert.setPositiveButton(android.R.string.yes, (dialog, which) -> {
+            mRecipeListService.removeRecipeFromList(mRecipeList, recipe, new CustomCallback<>() {
+                @Override
+                public void onSuccess(Boolean aBoolean) {
+                    if(getActivity() == null) return;
+                    requireActivity().runOnUiThread(() -> {
+                        mainActivity.makeToast(R.string.recipe_removed_from_list_success_toast,Toast.LENGTH_LONG);
+                    });
+                }
+
+                @Override
+                public void onFailure(Boolean aBoolean) {
+                    mainActivity.makeToast
+                            (
+                                    R.string.recipe_removed_from_list_failed_toast,
+                                    Toast.LENGTH_LONG
+                            );
+                }
+            });
+
+
+            //mRecipeList = mRecipeListService.getListById(mRecipeList.getId());
+            mRecipeListService.getListById(mRecipeList.getId(), new CustomCallback<>() {
+                @Override
+                public void onSuccess(RecipeList recipeList) {
+                    if(getActivity() == null) return;
+                    requireActivity().runOnUiThread(() -> setRecipeList(mainActivity, navController));
+
+                }
+
+                @Override
+                public void onFailure(RecipeList recipeList) {
+
+                }
+            });
+
+
+            /*
             if(mRecipeListService.removeRecipeFromList(mRecipeList, recipe)){
                 mainActivity.makeToast
                         (
@@ -307,6 +344,7 @@ public class RecipeListFragment extends Fragment {
                                 Toast.LENGTH_LONG
                         );
 
+                // TODO: Remove recipe from list endapunkturinn skilar recipe list! Líka ef eitthvað klikkar?
                 mRecipeList = mRecipeListService.getListById(mRecipeList.getId());
                 setRecipeList();
             }
@@ -317,6 +355,8 @@ public class RecipeListFragment extends Fragment {
                                 Toast.LENGTH_LONG
                         );
             }
+
+             */
         });
 
         alert.setNegativeButton(android.R.string.no, (dialog, which) -> {

@@ -7,7 +7,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SearchView;
@@ -36,6 +38,7 @@ public class RecipesFragment extends Fragment {
     private RecipeService mRecipeService;
     private List<Recipe> mRecipeList;
     private ListView mRecipeListView;
+    private String mSelected;
 
     private RecipeAdapter mRecipeAdapter;
     private MainActivity mMainActivity;
@@ -46,14 +49,11 @@ public class RecipesFragment extends Fragment {
         mBinding = FragmentRecipesBinding.inflate(inflater, container, false);
         View root = mBinding.getRoot();
 
+        MainActivity mainActivity = (MainActivity) getActivity();
+        assert mainActivity != null;
+
         mMainActivity = (MainActivity) getActivity();
         assert mMainActivity != null;
-
-        Button filterTpcButton = mBinding.filterTpcButton;
-        Button filterTicButton = mBinding.filterTicButton;
-        Button clearFilterButton = mBinding.clearFilterButton;
-        Button sortByPriceButton = mBinding.sortByPriceButton;
-        Button sortByTitleButton = mBinding.sortByTitleButton;
 
         NavController navController = Navigation.findNavController(mMainActivity, R.id.nav_host_fragment_activity_main);
 
@@ -78,6 +78,17 @@ public class RecipesFragment extends Fragment {
         });
 
 
+
+        // var eytt frá mér niður að search bar
+        if(mainActivity.getUserId() != 0) {
+            mBinding.addRecipe.setOnClickListener(view -> {
+                navController.navigate(R.id.nav_new_recipe);
+            });
+        }
+        else{
+            mBinding.addRecipe.hide();
+        }
+
         mBinding.recipeSearchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -100,18 +111,42 @@ public class RecipesFragment extends Fragment {
             }
         });
 
+        return  root;
+    }
 
-        filterTpcButton.setOnClickListener(v -> makeFilterTPCAlert(mMainActivity));
-        filterTicButton.setOnClickListener(v -> makeFilterTICAlert(mMainActivity));
-        filterTpcButton.setOnClickListener(v -> makeFilterTPCAlert(mainActivity));
-        filterTicButton.setOnClickListener(v -> makeFilterTICAlert(mainActivity));
-        sortByPriceButton.setOnClickListener(v -> updateListView(mRecipeService.getAllOrderedRecipes()));
-        sortByTitleButton.setOnClickListener(v -> updateListView(mRecipeService.getAllOrderedRecipesByTitle()));
 
-        clearFilterButton.setOnClickListener(v -> {
-            // uppfærist í aðferðinni
-            getAllRecipes();
-            /*
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        MainActivity mainActivity = (MainActivity) getActivity();
+        assert mainActivity != null;
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                mainActivity,
+                R.array.options_array,
+                android.R.layout.simple_spinner_item);
+
+
+        // Make a dropdown of options
+        AutoCompleteTextView viewOptionDropdown = mBinding.viewOptionDropdown;
+        viewOptionDropdown.setText(null);
+        viewOptionDropdown.setAdapter(adapter);
+
+        viewOptionDropdown.setOnItemClickListener((parent, view, position, id) -> {
+            mSelected = adapter.getItem(position).toString();
+            doFiltering(mainActivity);
+        });
+        doFiltering(mainActivity);
+    }
+
+    private void doFiltering(MainActivity mainActivity){
+        if(mSelected==null) return;
+        if(mSelected.equals(getString(R.string.filter_tic))) makeFilterTICAlert(mainActivity);
+        else if(mSelected.equals(getString(R.string.filter_tpc))) makeFilterTPCAlert(mainActivity);
+        else if(mSelected.equals(getString(R.string.sort_price))) updateListView(mRecipeService.getAllOrderedRecipes());
+        else if(mSelected.equals(getString(R.string.sort_title))) updateListView(mRecipeService.getAllOrderedRecipesByTitle());
+        else if(mSelected.equals(getString(R.string.filter_clear))){
             try {
                 mRecipeList = mRecipeService.getAllRecipes();
                 updateListView(mRecipeList);
@@ -119,19 +154,7 @@ public class RecipesFragment extends Fragment {
                 mRecipeList = new ArrayList<>();
                 mainActivity.makeToast(R.string.get_recipes_failed_toast, Toast.LENGTH_LONG);
             }
-             */
-        });
-
-
-        if(mMainActivity.getUserId() != 0) {
-            mBinding.addRecipe.setOnClickListener(view ->
-                navController.navigate(R.id.nav_new_recipe));
         }
-        else{
-            mBinding.addRecipe.hide();
-        }
-
-        return  root;
     }
 
 
