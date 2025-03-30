@@ -62,8 +62,11 @@ public class ChangePasswordFragment extends Fragment {
             mBinding.validatePasswordInputLayout.setError(null);
         }
         else {
-            mBinding.newPasswordInputLayout.setError(getString(R.string.new_password_invalid_error));
-            mBinding.validatePasswordInputLayout.setError(null);
+            mBinding.newPasswordInputLayout.setError(null);
+            mBinding.validatePasswordInputLayout.setError
+                    (
+                            getString(R.string.new_password_invalid_error)
+                    );
         }
     }
 
