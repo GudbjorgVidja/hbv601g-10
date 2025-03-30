@@ -5,11 +5,13 @@ import static android.view.View.VISIBLE;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.text.method.PasswordTransformationMethod;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.ListView;
 
@@ -47,17 +49,20 @@ public class UserFragment extends Fragment{
     private ListView mRecipeListListView;
     private long mUidOfProfile;
     private String mNameOfProfile;
+    private NavController mNavController;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         MainActivity mainActivity = (MainActivity) getActivity();
         assert mainActivity != null;
-        NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
-        mUserService = new UserService(new NetworkingService());
+
+        mNavController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
+
         mBinding = FragmentUserBinding.inflate(inflater, container, false);
         View root = mBinding.getRoot();
 
+        mUserService = new UserService(new NetworkingService());
         mRecipeListService = new RecipeListService(new NetworkingService(), mainActivity.getUserId());
 
         getProfileInfo(mainActivity);
@@ -108,7 +113,7 @@ public class UserFragment extends Fragment{
 
     /**
      * Sets the visibility of UI components to display a user profile (as opposed to displaying
-     * the login/signup page). Displays the username connected to the displayed profile, 
+     * the login/signup page). Displays the username connected to the displayed profile,
      * populates the list of recipe lists and displays them. Adds relevant listeners
      * @param mainActivity the current activity
      * @param navController the NavController used to navigate between fragments
@@ -124,7 +129,7 @@ public class UserFragment extends Fragment{
         mBinding.usernameDisplay.setText(mNameOfProfile);
 
         populateRecipeListOverview(mainActivity,navController);
-        
+
         if(mUidOfProfile == mainActivity.getUserId() || mUidOfProfile==0){
             displayOwnProfile(mainActivity,navController);
         }
@@ -132,7 +137,7 @@ public class UserFragment extends Fragment{
     }
 
     /**
-     * Populates the list of recipe lists and displays them. Adds a listener to react to 
+     * Populates the list of recipe lists and displays them. Adds a listener to react to
      * list items being selected
      * @param mainActivity the current activity
      * @param navController the NavController used to navigate between fragments
@@ -144,7 +149,7 @@ public class UserFragment extends Fragment{
             mRecipeLists = new ArrayList<>();
             mainActivity.makeToast(R.string.null_recipe_lists, Toast.LENGTH_LONG);
         }
-        
+
         mRecipeListListView = mBinding.userRecipeLists;
         RecipeListAdapter recipeListAdapter = new RecipeListAdapter(mainActivity.getApplicationContext(), mRecipeLists);
         mRecipeListListView.setAdapter(recipeListAdapter);
@@ -158,7 +163,7 @@ public class UserFragment extends Fragment{
     }
 
     /**
-     * Sets the visibility of UI components specific to users viewing their own profiles 
+     * Sets the visibility of UI components specific to users viewing their own profiles
      * (but not when users are viewing profiles of other users). Sets listeners specific
      * to the same situation.
      *
@@ -170,7 +175,24 @@ public class UserFragment extends Fragment{
         mBinding.logoutButton.setVisibility(VISIBLE);
         mBinding.deleteUserButton.setVisibility(VISIBLE);
 
+            mRecipeListListView.setOnItemClickListener((parent, view, position, id) -> {
+                RecipeList recipeList = (RecipeList) parent.getItemAtPosition(position);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(getString(R.string.selected_recipe_list), recipeList);
+                mNavController.navigate(R.id.nav_recipe_list, bundle);
+            });
+        }
+
         mBinding.logoutButton.setOnClickListener(v -> mainActivity.removeCurrentUser());
+
+        if(mainActivity.getUserName() == null){
+            mNavController.popBackStack();
+            mNavController.navigate(R.id.nav_user_no_user);
+        }
+
+        mBinding.changePasswordButton.setOnClickListener(v -> {
+            changePasswordAlert(mainActivity);
+        });
         mBinding.deleteUserButton.setOnClickListener(v -> deleteUserAlert(mainActivity));
         mBinding.createRecipeListButton.setOnClickListener(
                 v -> navController.navigate(R.id.navigation_new_recipe_list));
@@ -186,7 +208,51 @@ public class UserFragment extends Fragment{
         mBinding.deleteUserButton.setVisibility(GONE);
     }
 
+        mBinding.createRecipeListButton.setOnClickListener(v -> {
+            mNavController.navigate(R.id.navigation_new_recipe_list);
+        });
+        mBinding.usernameDisplay.setText(mainActivity.getUserName());
 
+
+    /**
+     * Create a dialog that validate the password of the user svo that only they can change there
+     * password.
+     *
+     * @param activity : MainActivity value, is the activity of the Fragment
+     */
+    public void changePasswordAlert(MainActivity activity){
+        EditText oldPass = new EditText(activity.getApplicationContext());
+        oldPass.setTransformationMethod(PasswordTransformationMethod.getInstance());
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());
+        alert.setTitle(R.string.validate_current_password_title);
+        alert.setMessage(R.string.validate_current_password_alert_message);
+        alert.setView(oldPass);
+        alert.setPositiveButton(R.string.confirm_button, null);
+        alert.setNegativeButton(R.string.cancel_button_text, null);
+
+        AlertDialog dialog = alert.create();
+        dialog.setOnShowListener(d -> {
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+                String password = oldPass.getText().toString();
+                if(password.isEmpty()) {
+                    oldPass.setError(getString(R.string.validate_current_password_alert_error));
+                }
+                else {
+                    if(mUserService.validatePassword(activity.getUserId(), password)){
+                        dialog.dismiss();
+                        mNavController.navigate(R.id.nav_change_password);
+                    }
+                    else {
+                        oldPass.setText("");
+                        activity.makeToast(R.string.password_invalid_toast,Toast.LENGTH_LONG);
+                    }
+	        }
+            });
+        });
+
+        dialog.show();
+    }
 
     /**
      * Creates and shows an alert dialog to confirm the deletion of a user account.
@@ -198,8 +264,8 @@ public class UserFragment extends Fragment{
         EditText editText = new EditText(mainActivity.getApplicationContext());
         editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());
-        alert.setTitle(getString(R.string.delete_user_title));
-        alert.setMessage(getString(R.string.delete_user_message));
+        alert.setTitle(getString(R.string.delete_user_alert_title));
+        alert.setMessage(getString(R.string.delete_user_alert_message));
         alert.setView(editText);
         alert.setPositiveButton(getString(R.string.confirm_button), null);
         alert.setNegativeButton(getString(R.string.cancel_button_text), null);

@@ -17,6 +17,7 @@
     <string name="title_new_ingredient">New ingredient</string>
     <string name="title_recipe">Recipe</string>
     <string name="title_new_recipe_list">New recipe list</string>
+    <string name="title_change_password">Change password</string>
     <string name="title_edit_recipe">Edit recipe</string>
     <string name="title_recipe_list">Recipe list</string>
     <string name="title_rename_recipe_list">Change recipe list name</string>
@@ -31,30 +32,33 @@
     <string name="recipe_hint">Name of recipe</string>
     <string name="instructions_hint">Instructions steps</string>
     <string name="ingredient_value_hint">Quantity needed</string>
+    <string name="new_ingredient_title_hint">Title</string>
+    <string name="new_ingredient_quantity_hint">Qty.</string>
+    <string name="new_ingredient_price_hint">Price</string>
+    <string name="new_ingredient_store_hint">Store</string>
+    <string name="new_ingredient_brand_hint">Brand</string>
+    <string name="new_password_hint">New password</string>
+    <string name="validate_new_password_hint">Retype password</string>
     <string name="recipe_search_bar_hint">Search for recipe</string>
     <string name="add_to_pantry">Add to pantry</string>
     <string name="remove_from_pantry">Remove</string>
     <string name="ingredient_price_store">%1$dkr at %2$s</string>
     <string name="ingredient_quantity_brand">%1$s%2$s, %3$s brand</string>
     <string name="pantry_ingredient_quantity_brand">%1$s%2$s, %3$s brand</string>
-    <string name="new_ingredient_title_hint">Title</string>
-    <string name="new_ingredient_quantity_hint">Qty.</string>
-    <string name="new_ingredient_price_hint">Price</string>
-    <string name="new_ingredient_store_hint">Store</string>
-    <string name="confirm_new_ingredient_button">Create ingredient</string>
-    <string name="new_ingredient_brand_hint">Brand</string>
     <string name="privacy_selection_label">Make private</string>
+    <string name="confirm_new_ingredient_button">Create ingredient</string>
+    <string name="check_password_button">Check if password is valid</string>
     <string name="recipe_tpc">Total purchase cost: %1$s kr</string>
     <string name="recipe_tic">Total ingredient cost: %1$s kr</string>
     <string name="recipe_ppc">Personalized purchase cost: %1$s kr</string>
     <string name="recipe_instructions">Instructions</string>
     <string name="recipe_ingredients">Ingredients</string>
-    <string name="create_new_recipe_list_button">New Recipe List</string>
-    <string name="new_recipe_list_title_hint">Title</string>
-    <string name="new_recipe_list_description_hint">Description</string>
     <string name="recipe_list_description">Description</string>
     <string name="recipe_list_recipes">Recipes</string>
     <string name="recipe_list_text">Recipe Lists</string>
+    <string name="create_new_recipe_list_button">New Recipe List</string>
+    <string name="new_recipe_list_title_hint">Title</string>
+    <string name="new_recipe_list_description_hint">Description</string>
     <string name="login_button_text">Login</string>
     <string name="signup_button_text">Signup</string>
     <string name="logout_button_text">Log out</string>
@@ -70,6 +74,7 @@
     <string name="save_button">Save</string>
     <string name="edit_button_text">Edit</string>
     <string name="rename_ingredient_button_text">Rename</string>
+    <string name="change_password_button">Change password</string>
 
     <!-- Messages/toasts -->
     <string name="login_failed_toast">Login failed. Please ensure username and password are correct.</string>
@@ -98,10 +103,14 @@
     <string name="add_recipe_to_list_failed_toast">Failed to add recipe to list.</string>
     <string name="add_recipe_to_list_success_toast">The recipe has been added to the list</string>
     <string name="get_recipe_lists_failed_toast">Something went wrong fetching the lists.</string>
+    <string name="password_invalid_toast">Invalid password</string>
+    <string name="password_has_no_input_toast">The password field can not be empty</string>
     <string name="recipe_list_rename_blank">Input cannot be blank</string>
     <string name="recipe_list_rename_not_authorized">You must be the creator of this list to change the title</string>
     <string name="delete_user_failed_toast">Failed to delete the user account.</string>
     <string name="delete_user_success_toast">User account deleted successfully.</string>
+    <string name="new_password_invalid_error">The passwords must be the same</string>
+    <string name="new_password_empty_error">The password field can not be empty</string>
     <string name="recipe_missing_toast">Recipe is missing</string>
     <string name="delete_list_failed_toast">Something went wrong when trying to delete the recipe list.</string>
     <string name="delete_list_success_toast">Recipe list deleted successfully.</string>
@@ -122,6 +131,8 @@
     <string name="tpc_string">tpc:</string>
 
     <!-- Alert strings -->
+    <string name="delete_user_alert_title">Delete account</string>
+    <string name="delete_user_alert_message">Please enter your password</string>
     <string name="delete_recipe_alert_title">Delete recipe</string>
     <string name="delete_recipe_alert_message">Are you sure you want to delete this recipe?</string>
     <string name="delete_ingredient_alert_title">Delete ingredient</string>
@@ -129,6 +140,11 @@
     <string name="rename_ingredient_alert_title">Rename Ingredient</string>
     <string name="rename_ingredient_alert_message">Please enter the new name of the ingredient:</string>
     <string name="add_recipe_to_list_dialog_title">Select a list to add the recipe to</string>
+    <string name="change_password_dialog_title">Change password</string>
+    <string name="change_password_alert_message">Are you sure you want to change your password</string>
+    <string name="validate_current_password_title">Validating password</string>
+    <string name="validate_current_password_alert_message">Current Password</string>
+    <string name="validate_current_password_alert_error">Need to type in your password</string>
     <string name="delete_user_title">Delete account</string>
     <string name="delete_user_message">Please enter your password</string>
     <string name="delete_list_alert_title">Delete List</string>

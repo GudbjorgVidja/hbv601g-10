@@ -87,6 +87,13 @@
         android:name="hbv601g.recipeapp.ui.login.LoginFragment"
         android:label="@string/title_login"
         tools:layout="@layout/fragment_login"/>
+
+    <fragment
+        android:id="@+id/nav_change_password"
+        android:name="hbv601g.recipeapp.ui.user.ChangePasswordFragment"
+        android:label="@string/title_change_password"
+        tools:layout="@layout/fragment_change_password"/>
+
     <fragment
         android:id="@+id/nav_pantry"
         android:name="hbv601g.recipeapp.ui.pantry.PantryFragment"
