@@ -30,7 +30,6 @@ import hbv601g.recipeapp.networking.NetworkingService;
  */
 public class RecipeListService extends Service {
     private NetworkingService mNetworkingService;
-    private JsonElement mJsonElement;
     private long mUid;
 
     public RecipeListService(NetworkingService networkingService, long uid) {

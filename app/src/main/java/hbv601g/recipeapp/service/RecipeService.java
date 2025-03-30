@@ -26,7 +26,7 @@ public class RecipeService extends Service {
     private NetworkingService mNetworkingService;
     private long mUid;
 
-    public RecipeService(NetworkingService networkingService, long uid){
+    public RecipeService(NetworkingService networkingService, long uid) {
         this.mNetworkingService = networkingService;
         this.mUid = uid;
     }
@@ -158,6 +158,55 @@ public class RecipeService extends Service {
                     }
                 });
 
+            }
+
+            @Override
+            public void onFailure(JsonElement jsonElement) {
+                callback.onFailure(null);
+            }
+        });
+
+    }
+
+
+    /**
+     * This function update the recipe that has the ID value of id.
+     *
+     * @param recipe         : Recipe value, is a recipe that has all of the updates for the recipe.
+     * @param id          : long value, is the id of recipe that is being updated
+     * @param upIngredList: arrayList value, is a list that contains all of the now ingredients in
+     *                      the recipe.
+     *
+     * @param callback : callback returning the updated recipe on success, or null on failure
+     */
+    public void updateRecipe(Recipe recipe, long id, List<IngredientMeasurement> upIngredList, CustomCallback<Recipe> callback){
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+
+        String url = "recipe/" + id + "/update?uid=" + mUid;
+        String data = gson.toJson(recipe);
+
+        mNetworkingService.putRequest(url, data, new CustomCallback<>() {
+            @Override
+            public void onSuccess(JsonElement jsonElement) {
+                if (jsonElement == null) {
+                    callback.onFailure(null);
+                    return;
+                }
+
+                Recipe recipe = gson.fromJson(jsonElement, Recipe.class);
+                Log.d("API", "recipe object, title:" + recipe.getTitle());
+
+                addIngredientsToRecipe(recipe, upIngredList, new CustomCallback<>() {
+                    @Override
+                    public void onSuccess(Recipe recipe) {
+                        callback.onSuccess(recipe);
+                    }
+
+                    @Override
+                    public void onFailure(Recipe recipe) {
+                        callback.onFailure(recipe);
+                    }
+                });
             }
 
             @Override

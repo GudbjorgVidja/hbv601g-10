@@ -28,7 +28,6 @@ import hbv601g.recipeapp.databinding.FragmentRecipeListBinding;
 import hbv601g.recipeapp.entities.Recipe;
 import hbv601g.recipeapp.entities.RecipeList;
 import hbv601g.recipeapp.networking.CustomCallback;
-import hbv601g.recipeapp.exceptions.DeleteFailedException;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.RecipeListService;
 
@@ -75,46 +74,12 @@ public class RecipeListFragment extends Fragment {
             @Override
             public void onFailure(RecipeList recipeList) {
                 requireActivity().runOnUiThread(() -> {
-                    mRecipeList = recipeList;
-                    Toast.makeText(mainActivity, "Whoops, something went wrong!", Toast.LENGTH_LONG).show();
+                    // if fetching the list fails, use mClickedList
+                    mRecipeList = mClickedList;
+                    Toast.makeText(mainActivity, getText(R.string.get_recipe_list_failed_toast), Toast.LENGTH_SHORT).show();
                 });
             }
         });
-        ListView mRecipeListListView = mBinding.recipeListRecipes;
-
-        // On click listener so the user can click and view recipes from the list
-        mRecipeListListView.setOnItemClickListener((parent, view, position, id) -> {
-            Recipe recipe = (Recipe) parent.getItemAtPosition(position);
-            Log.d("Selected", recipe.toString());
-
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(getString(R.string.selected_recipe), recipe);
-            navController.navigate(R.id.nav_recipe, bundle);
-        });
-
-        mRecipeListTitle = mBinding.recipeListTitle;
-        Button mRenameListButton = mBinding.recipeListRenameButton;
-
-        if(mainActivity.getUserId() == mRecipeList.getCreatedBy().getId()){
-            // On click listener for renaming the recipe list
-            mRenameListButton.setOnClickListener(
-                    v -> makeRenameAlert(mainActivity)
-            );
-
-        } else {
-            mainActivity.makeToast(R.string.recipe_list_rename_not_authorized, Toast.LENGTH_LONG);
-            mRenameListButton.setVisibility(View.GONE);
-        }
-
-        if(mRecipeList != null && mRecipeList.getCreatedBy() != null && mainActivity.getUserId() != 0 &&
-                mRecipeList.getCreatedBy().getId() == mainActivity.getUserId() ){
-            mBinding.deleteListButton.setOnClickListener(
-                    v -> makeDeleteListAlert(navController, mainActivity));
-        }
-        else {
-            mBinding.deleteListButton.setVisibility(GONE);
-        }
-
 
         return root;
     }
@@ -145,11 +110,27 @@ public class RecipeListFragment extends Fragment {
             String newTitle = input.getText().toString().trim();
 
             if (!newTitle.isEmpty()) {
-                mRecipeListTitle.setText(newTitle);
-                mRecipeListService.updateRecipeListTitle(mRecipeList.getId(), newTitle);
+
+                mRecipeListService.updateRecipeListTitle(mRecipeList.getId(), newTitle, new CustomCallback<>() {
+                    @Override
+                    public void onSuccess(Boolean aBoolean) {
+                        // Successfully updated
+                        requireActivity().runOnUiThread(() -> mRecipeListTitle.setText(newTitle));
+                    }
+
+                    @Override
+                    public void onFailure(Boolean aBoolean) {
+                        requireActivity().runOnUiThread(() ->
+                                mainActivity.makeToast(R.string.rename_list_failed_toast, Toast.LENGTH_SHORT));
+                    }
+                });
+
                 dialog.dismiss();
-            } else {
+            }
+            else {
+
                 mainActivity.makeToast(R.string.recipe_list_rename_blank, Toast.LENGTH_LONG);
+                input.setError(getString(R.string.field_required_error));
             }
         });
     }
@@ -158,6 +139,7 @@ public class RecipeListFragment extends Fragment {
      * Function to set recipe list information in the UI.
      */
     private void setRecipeList(MainActivity mainActivity, NavController navController){
+        mRecipeListTitle = mBinding.recipeListTitle;
         mBinding.recipeListTitle.setText(mRecipeList.getTitle());
 
         String tmp = mRecipeList.getCreatedBy() == null ? "Unknown" : mRecipeList.getCreatedBy().getUsername();
@@ -227,15 +209,24 @@ public class RecipeListFragment extends Fragment {
         alert.setTitle(getString(R.string.delete_list_alert_title));
         alert.setMessage(getString(R.string.delete_list_alert_message));
         alert.setPositiveButton(android.R.string.yes, (dialog, which) -> {
-            try{
-                mRecipeListService.deleteRecipeList(mRecipeList.getId());
-                navController.popBackStack();
-                mainActivity.makeToast(R.string.delete_list_success_toast, Toast.LENGTH_LONG);
-            } catch (DeleteFailedException e) {
-                mainActivity.makeToast(R.string.delete_list_failed_toast, Toast.LENGTH_LONG);
-            }
+            mRecipeListService.deleteRecipeList(mRecipeList.getId(), new CustomCallback<>() {
+                @Override
+                public void onSuccess(Boolean aBoolean) {
+                    requireActivity().runOnUiThread(() -> {
+                        navController.popBackStack();
+                        mainActivity.makeToast(R.string.delete_list_success_toast, Toast.LENGTH_LONG);
+                    });
+                }
+
+                @Override
+                public void onFailure(Boolean aBoolean) {
+                    requireActivity().runOnUiThread(() ->
+                            mainActivity.makeToast(R.string.delete_list_failed_toast, Toast.LENGTH_LONG));
+                }
+            });
 
         });
+
         alert.setNegativeButton(android.R.string.no, (dialog, which) -> {});
         alert.show();
     }

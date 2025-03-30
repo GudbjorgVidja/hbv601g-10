@@ -82,7 +82,7 @@ public class AddIngredientMeasurementFragment extends Fragment {
                 navController.popBackStack();
             }
             else {
-                Toast.makeText(getContext(), "Missing information", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), getString(R.string.missing_information_toast), Toast.LENGTH_SHORT).show();
             }
 
         });

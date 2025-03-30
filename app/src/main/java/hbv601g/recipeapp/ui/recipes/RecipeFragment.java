@@ -81,12 +81,14 @@ public class RecipeFragment extends Fragment {
                 navController.navigate(R.id.nav_edit_recipe, bundle);
             });
         }
-        else mBinding.deleteRecipeButton.setVisibility(GONE);
+        else{
+            mBinding.deleteRecipeButton.setVisibility(GONE);
+            mBinding.editRecipeButton.setVisibility(GONE);
+        }
 
         getParentFragmentManager().setFragmentResultListener(getString(R.string.request_edit_recipe),
                 this, (requestKey, result) -> {
-                    Recipe temp
-                            = result.getParcelable(getString(R.string.selected_recipe));
+                    Recipe temp = result.getParcelable(getString(R.string.selected_recipe));
                     if (temp != null){
                         mRecipe = temp;
                         setRecipe();
@@ -191,8 +193,6 @@ public class RecipeFragment extends Fragment {
      * @param mainActivity - the MainActivity of the app
      */
     private void makeAddToListAlert(MainActivity mainActivity) {
-        // hmm??
-        if(mRecipe == null) return;
 
         long rid = mRecipe.getId();
 
@@ -209,7 +209,6 @@ public class RecipeFragment extends Fragment {
                     return;
                 }
                 alert.setTitle(getString(R.string.add_recipe_to_list_dialog_title));
-
 
                 RecipeListAdapter adapter = new RecipeListAdapter(getActivity(), recipeLists);
 
