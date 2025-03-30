@@ -6,7 +6,6 @@
     <string name="title_recipe_create">Create recipe</string>
     <string name="title_add_ingredient_measurement_recipes">Create ingredient measurement</string>
     <string name="title_user">User</string>
-    <string name="title_user_no_user">No user</string>
     <string name="title_ingredients">Ingredients</string>
     <string name="title_signup">Signup</string>
     <string name="title_login">Login</string>
@@ -138,6 +137,8 @@
     <string name="selected_recipe">Recipe</string>
     <string name="selected_unit">Unit</string>
     <string name="selected_ingredient_measurement">Ingredient measurement</string>
+    <string name="selected_user_id">User id</string>
+    <string name="selected_user_name">User name</string>
     <string name="request_ingredient_measurement">Ingredient measurement result</string>
     <string name="request_new_recipe">New recipe result</string>
     <string name="request_edit_recipe">Edited recipe result</string>
@@ -166,5 +167,6 @@
 
     <!-- misc -->
     <string name="currency">kr.</string>
+    <string name="created_by_unknown_text">Unknown</string>
 
 </resources>
