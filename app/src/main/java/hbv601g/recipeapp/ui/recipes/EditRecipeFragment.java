@@ -147,6 +147,7 @@ public class EditRecipeFragment extends Fragment {
 
         if(title.isEmpty()){
             temp.setError(getString(R.string.recipe_name_is_empty_error));
+            return null;
         }
         else{
             temp.setError(null);
