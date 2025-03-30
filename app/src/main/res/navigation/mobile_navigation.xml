@@ -147,6 +147,7 @@
         android:name="hbv601g.recipeapp.ui.recipeLists.NewRecipeListFragment"
         android:label="@string/title_new_recipe_list"
         tools:layout="@layout/fragment_new_recipe_list"/>
+
     <fragment
         android:id="@+id/nav_recipe_list"
         android:name="hbv601g.recipeapp.ui.recipeLists.RecipeListFragment"

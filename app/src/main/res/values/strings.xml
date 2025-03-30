@@ -78,8 +78,10 @@
     <string name="confirm_filter_button">Confirm</string>
     <string name="clear_filter_button">Clear filter</string>
     <string name="save_button">Save</string>
+    <string name="remove_button">Remove</string>
     <string name="edit_button_text">Edit</string>
     <string name="rename_ingredient_button_text">Rename</string>
+    <string name="look_at_recipe_button">View recipe</string>
     <string name="change_password_button">Change password</string>
     <string name="camera_shutter_button">Take Photo</string>
     <string name="home_camera_button_text">Camera</string>
@@ -108,6 +110,8 @@
     <string name="recipe_edit_unknown_error">Recipe could not be edited, unknown error</string>
     <string name="create_recipe_list_failed_toast">Failed to create recipe list.</string>
     <string name="create_recipe_list_success_toast">Successfully created recipe list.</string>
+    <string name="recipe_removed_from_list_success_toast"> Recipe was successfully removed from the list</string>
+    <string name="recipe_removed_from_list_failed_toast">Recipe was not removed from the list</string>
     <string name="null_recipe_lists">Something went wrong displaying the recipe lists</string>
     <string name="add_recipe_to_list_failed_toast">Failed to add recipe to list.</string>
     <string name="add_recipe_to_list_success_toast">The recipe has been added to the list</string>
@@ -164,6 +168,10 @@
     <string name="delete_user_message">Please enter your password</string>
     <string name="delete_list_alert_title">Delete List</string>
     <string name="delete_list_alert_message">Are you sure you want to delete this Recipe list?</string>
+    <string name="recipe_choice_alert_title">%s</string>
+    <string name="recipe_choice_alert_message">What do you want to do with the recipe?</string>
+    <string name="remove_recipe_from_recipe_list_alert_message">Are you sure you want to remove the recipe?</string>
+    <string name="remove_recipe_from_recipe_list_alert_title">Remove Recipe</string>
 
     <!-- misc -->
     <string name="currency">kr.</string>

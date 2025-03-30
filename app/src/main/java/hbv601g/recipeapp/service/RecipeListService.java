@@ -173,6 +173,35 @@ public class RecipeListService extends Service {
     }
 
     /**
+     * This function removes the recipe from the recipe list if and only if recipe is in the
+     * list
+     *
+     * @param list   : RecipeList value, is the list that is being removed from.
+     * @param recipe : Is the recipe that is being removed from list.
+     *
+     * @return if recipe was removed from the list then true else false
+     */
+    public boolean removeRecipeFromList(RecipeList list, Recipe recipe){
+        String url = "list/id/" + list.getId() + "/recipe/" + recipe.getId() +
+                "/remove?uid=" + mUid;
+
+        try {
+            mJsonElement = mNetworkingService.patchRequest(url, null);
+        }
+        catch (IOException e){
+            throw new NullPointerException("List recipes are null");
+        }
+
+        boolean res = false;
+        if(mJsonElement != null){
+            res = mJsonElement.isJsonObject();
+            Log.d("API", "recipe removed: " + res);
+        }
+
+        return res;
+    }
+
+    /**
      * Sends a patch request to the API with a new title for the recipe list.
      * @param id - Id of the recipe list being renamed
      * @param newTitle - New title of the recipe list
@@ -196,7 +225,6 @@ public class RecipeListService extends Service {
         }
     }
 
-
     /**
      * Deletes the given recipe list from database
      * @param lid - id of the recipe list
@@ -210,7 +238,6 @@ public class RecipeListService extends Service {
         }
 
     }
-
 
     @Nullable
     @Override

@@ -123,6 +123,7 @@ public class RecipeFragment extends Fragment {
         alert.setNegativeButton(android.R.string.no, (dialog, which) -> {});
         alert.show();
     }
+
     /**
      * Puts information from a selected recipe into the user interface
      */
