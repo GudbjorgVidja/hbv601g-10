@@ -136,5 +136,6 @@
 
     <!-- misc -->
     <string name="currency">kr.</string>
+    <string name="created_by_unknown_text">Unknown</string>
 
 </resources>
