@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
-import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 
@@ -56,21 +55,18 @@ public class UserFragment extends Fragment{
 
         MainActivity mainActivity = (MainActivity) getActivity();
         assert mainActivity != null;
-
         mNavController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
-
         mBinding = FragmentUserBinding.inflate(inflater, container, false);
         View root = mBinding.getRoot();
-
         mUserService = new UserService(new NetworkingService());
         mRecipeListService = new RecipeListService(new NetworkingService(), mainActivity.getUserId());
 
         getProfileInfo(mainActivity);
 
         if (mainActivity.getUserId() == 0 && mUidOfProfile == 0){
-            setLoginView(navController);
+            setLoginView();
         }
-        else setWithUserView(mainActivity, navController);
+        else setWithUserView(mainActivity);
 
         return root;
     }
@@ -94,21 +90,21 @@ public class UserFragment extends Fragment{
     /**
      * sets the visibility of UI components to display the login and signup page,
      * and adds listeners to buttons.
-     * @param navController the NavController used to navigate between fragments
      */
-    private void setLoginView(NavController navController){
+    private void setLoginView(){
         mBinding.usernameDisplay.setVisibility(GONE);
         mBinding.createRecipeListButton.setVisibility(GONE);
         mBinding.logoutButton.setVisibility(GONE);
         mBinding.userRecipeListSection.setVisibility(GONE);
         mBinding.userRecipeLists.setVisibility(GONE);
         mBinding.deleteUserButton.setVisibility(GONE);
+        mBinding.changePasswordButton.setVisibility(GONE);
         mBinding.noUserButtonLayout.setVisibility(VISIBLE);
         mBinding.loginButton.setVisibility(VISIBLE);
         mBinding.signupButton.setVisibility(VISIBLE);
 
-        mBinding.loginButton.setOnClickListener(v -> navController.navigate(R.id.nav_login));
-        mBinding.signupButton.setOnClickListener(v -> navController.navigate(R.id.nav_signup));
+        mBinding.loginButton.setOnClickListener(v -> mNavController.navigate(R.id.nav_login));
+        mBinding.signupButton.setOnClickListener(v -> mNavController.navigate(R.id.nav_signup));
     }
 
     /**
@@ -116,9 +112,8 @@ public class UserFragment extends Fragment{
      * the login/signup page). Displays the username connected to the displayed profile,
      * populates the list of recipe lists and displays them. Adds relevant listeners
      * @param mainActivity the current activity
-     * @param navController the NavController used to navigate between fragments
      */
-    private void setWithUserView(MainActivity mainActivity, NavController navController){
+    private void setWithUserView(MainActivity mainActivity){
         mBinding.usernameDisplay.setVisibility(VISIBLE);
         mBinding.userRecipeListSection.setVisibility(VISIBLE);
         mBinding.userRecipeLists.setVisibility(VISIBLE);
@@ -128,10 +123,10 @@ public class UserFragment extends Fragment{
 
         mBinding.usernameDisplay.setText(mNameOfProfile);
 
-        populateRecipeListOverview(mainActivity,navController);
+        populateRecipeListOverview(mainActivity);
 
         if(mUidOfProfile == mainActivity.getUserId() || mUidOfProfile==0){
-            displayOwnProfile(mainActivity,navController);
+            displayOwnProfile(mainActivity);
         }
         else displayOtherUserProfile();
     }
@@ -140,9 +135,8 @@ public class UserFragment extends Fragment{
      * Populates the list of recipe lists and displays them. Adds a listener to react to
      * list items being selected
      * @param mainActivity the current activity
-     * @param navController the NavController used to navigate between fragments
      */
-    private void populateRecipeListOverview(MainActivity mainActivity, NavController navController) {
+    private void populateRecipeListOverview(MainActivity mainActivity) {
         try {
             mRecipeLists = mRecipeListService.getUserRecipeLists(mUidOfProfile);
         } catch(NullPointerException e) {
@@ -158,7 +152,7 @@ public class UserFragment extends Fragment{
             RecipeList recipeList = (RecipeList) parent.getItemAtPosition(position);
             Bundle bundle = new Bundle();
             bundle.putParcelable(getString(R.string.selected_recipe_list), recipeList);
-            navController.navigate(R.id.nav_recipe_list, bundle);
+            mNavController.navigate(R.id.nav_recipe_list, bundle);
         });
     }
 
@@ -168,34 +162,18 @@ public class UserFragment extends Fragment{
      * to the same situation.
      *
      * @param mainActivity the current activity
-     * @param navController the NavController used to navigate between fragments
      */
-    private void displayOwnProfile(MainActivity mainActivity, NavController navController){
+    private void displayOwnProfile(MainActivity mainActivity){
         mBinding.createRecipeListButton.setVisibility(VISIBLE);
         mBinding.logoutButton.setVisibility(VISIBLE);
         mBinding.deleteUserButton.setVisibility(VISIBLE);
-
-            mRecipeListListView.setOnItemClickListener((parent, view, position, id) -> {
-                RecipeList recipeList = (RecipeList) parent.getItemAtPosition(position);
-                Bundle bundle = new Bundle();
-                bundle.putParcelable(getString(R.string.selected_recipe_list), recipeList);
-                mNavController.navigate(R.id.nav_recipe_list, bundle);
-            });
-        }
+        mBinding.changePasswordButton.setVisibility(VISIBLE);
 
         mBinding.logoutButton.setOnClickListener(v -> mainActivity.removeCurrentUser());
-
-        if(mainActivity.getUserName() == null){
-            mNavController.popBackStack();
-            mNavController.navigate(R.id.nav_user_no_user);
-        }
-
-        mBinding.changePasswordButton.setOnClickListener(v -> {
-            changePasswordAlert(mainActivity);
-        });
+        mBinding.changePasswordButton.setOnClickListener(v -> changePasswordAlert(mainActivity));
         mBinding.deleteUserButton.setOnClickListener(v -> deleteUserAlert(mainActivity));
         mBinding.createRecipeListButton.setOnClickListener(
-                v -> navController.navigate(R.id.navigation_new_recipe_list));
+                v -> mNavController.navigate(R.id.navigation_new_recipe_list));
     }
 
     /**
@@ -206,12 +184,8 @@ public class UserFragment extends Fragment{
         mBinding.createRecipeListButton.setVisibility(GONE);
         mBinding.logoutButton.setVisibility(GONE);
         mBinding.deleteUserButton.setVisibility(GONE);
+        mBinding.changePasswordButton.setVisibility(GONE);
     }
-
-        mBinding.createRecipeListButton.setOnClickListener(v -> {
-            mNavController.navigate(R.id.navigation_new_recipe_list);
-        });
-        mBinding.usernameDisplay.setText(mainActivity.getUserName());
 
 
     /**
