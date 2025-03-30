@@ -315,8 +315,12 @@ public class RecipeService extends Service {
         return recipes;
     }
 
+    /**
+     * Fetches all recipes ordered by Total Purchase Cost ascending.
+     * @return List of sorted recipes
+     */
     public List<Recipe> getAllOrderedRecipes(){
-        String url = String.format("recipe/all/ordered?uid=", mUid);
+        String url = "recipe/all/ordered?uid=" + mUid;
 
         try {
             mJsonElement = mNetworkingService.getRequest(url);
@@ -342,8 +346,12 @@ public class RecipeService extends Service {
         return recipes;
     }
 
+    /**
+     * Fetches all recipes sorted by title.
+     * @return List of sorted recipes
+     */
     public List<Recipe> getAllOrderedRecipesByTitle(){
-        String url = String.format("recipe/all/orderedByTitle?uid=", mUid);
+        String url = "recipe/all/orderedByTitle?uid=" + mUid;
 
         try {
             mJsonElement = mNetworkingService.getRequest(url);
