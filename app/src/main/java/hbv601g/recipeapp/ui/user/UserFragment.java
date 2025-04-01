@@ -7,6 +7,7 @@ import android.app.AlertDialog;
 import android.os.Bundle;
 import android.text.method.PasswordTransformationMethod;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import hbv601g.recipeapp.MainActivity;
@@ -46,10 +48,12 @@ public class UserFragment extends Fragment{
     private List<RecipeList> mRecipeLists;
     private RecipeListService mRecipeListService;
     private ListView mRecipeListListView;
+    private RecipeListAdapter mRecipeListAdapter;
     private long mUidOfProfile;
     private String mNameOfProfile;
     private NavController mNavController;
 
+    // TODO: ef navigate-að frá recipe þá ekki hægt að fara til baka í recipes :(
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
@@ -61,29 +65,11 @@ public class UserFragment extends Fragment{
         mUserService = new UserService(new NetworkingService());
         mRecipeListService = new RecipeListService(new NetworkingService(), mainActivity.getUserId());
 
-        if(mainActivity.getUserId() != 0) {
+        //if(mRecipeLists == null) mRecipeLists = new ArrayList<>();
 
-            mRecipeListService.getUserRecipeLists(mainActivity.getUserId(), new CustomCallback<>() {
-                @Override
-                public void onSuccess(List<RecipeList> recipeLists) {
-                    if (getActivity() == null) return;
-                    mRecipeLists = recipeLists;
-                    requireActivity().runOnUiThread(() -> makeView(mainActivity, mNavController));
-                }
 
-                @Override
-                public void onFailure(List<RecipeList> recipeLists) {
-                    if (getActivity() == null) return;
-                    mRecipeLists = recipeLists;
-                    requireActivity().runOnUiThread(() -> {
-                        makeView(mainActivity, mNavController);
-                        mainActivity.makeToast(R.string.null_recipe_lists, Toast.LENGTH_LONG);
-                    });
-                }
-            });
+        getProfileInfo(mainActivity);
 
-            getProfileInfo(mainActivity);
-        }
         if (mainActivity.getUserId() == 0 && mUidOfProfile == 0){
             setLoginView();
         }
@@ -158,21 +144,32 @@ public class UserFragment extends Fragment{
      * @param mainActivity the current activity
      */
     private void populateRecipeListOverview(MainActivity mainActivity) {
-        mRecipeListService.getUserRecipeLists(mUidOfProfile, new CustomCallback<List<RecipeList>>() {
+        if(mRecipeLists == null) mRecipeLists = new ArrayList<>();
+
+        mRecipeListListView = mBinding.userRecipeLists;
+        mRecipeListAdapter = new RecipeListAdapter(mainActivity.getApplicationContext(), mRecipeLists);
+        mRecipeListListView.setAdapter(mRecipeListAdapter);
+
+        mRecipeListService.getUserRecipeLists(mUidOfProfile, new CustomCallback<>() {
             @Override
             public void onSuccess(List<RecipeList> recipeLists) {
+                Log.d("Callback", "onSuccess getting user lists");
+                if(getActivity() == null) return;
+                mRecipeLists = recipeLists;
+                requireActivity().runOnUiThread(() -> updateListView());
 
             }
 
             @Override
             public void onFailure(List<RecipeList> recipeLists) {
-
+                Log.d("Callback", "onSuccess getting user lists");
                 if(getActivity() == null) return;
+                mRecipeLists = recipeLists;
                 requireActivity().runOnUiThread(() -> {
-                    mRecipeLists = recipeLists;
                     mainActivity.makeToast(R.string.null_recipe_lists, Toast.LENGTH_LONG);
-
+                    updateListView();
                 });
+                // TODO: notify hér líka?
             }
         });
         /*
@@ -184,11 +181,10 @@ public class UserFragment extends Fragment{
         }
          */
 
-        mRecipeListListView = mBinding.userRecipeLists;
-        RecipeListAdapter recipeListAdapter = new RecipeListAdapter(mainActivity.getApplicationContext(), mRecipeLists);
-        mRecipeListListView.setAdapter(recipeListAdapter);
+
 
         mRecipeListListView.setOnItemClickListener((parent, view, position, id) -> {
+            Log.d("Callback", "Clicked list from list");
             RecipeList recipeList = (RecipeList) parent.getItemAtPosition(position);
             Bundle bundle = new Bundle();
             bundle.putParcelable(getString(R.string.selected_recipe_list), recipeList);
@@ -196,6 +192,10 @@ public class UserFragment extends Fragment{
         });
     }
 
+    private void updateListView(){
+        mRecipeListAdapter.setRecipeLists(mRecipeLists);
+        mRecipeListAdapter.notifyDataSetChanged();
+    }
     /**
      * Sets the visibility of UI components specific to users viewing their own profiles
      * (but not when users are viewing profiles of other users). Sets listeners specific
@@ -229,8 +229,8 @@ public class UserFragment extends Fragment{
 
         mBinding.deleteUserButton.setOnClickListener(v -> deleteUserAlert(mainActivity));
 
-        //return root;
     }
+
     /**
      * Sets the visibility of UI components specific to users viewing the profile of another
      * user (but not when users are viewing their own profiles)
@@ -352,9 +352,10 @@ public class UserFragment extends Fragment{
 
     /**
      * Updates the recipe lists in the ui
-     * @param mainActivity - the MainActivity instance
-     * @param navController - the navController instance
+     * //@param mainActivity - the MainActivity instance
+     * //@param navController - the navController instance
      */
+    /*
     private void makeView(MainActivity mainActivity, NavController navController){
         ListView mRecipeListListView = mBinding.userRecipeLists;
 
@@ -368,6 +369,8 @@ public class UserFragment extends Fragment{
             navController.navigate(R.id.nav_recipe_list, bundle);
         });
     }
+
+     */
 
     @Override
     public void onDestroyView() {

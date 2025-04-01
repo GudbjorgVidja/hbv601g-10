@@ -97,28 +97,8 @@ public class RecipeListFragment extends Fragment {
 
 
         mRecipeListTitle = mBinding.recipeListTitle;
-        Button mRenameListButton = mBinding.recipeListRenameButton;
 
-        if(mainActivity.getUserId() == mRecipeList.getCreatedBy().getId()){
-            // On click listener for renaming the recipe list
-            mRenameListButton.setOnClickListener(
-                    v -> makeRenameAlert(mainActivity)
-            );
-
-        } else {
-            mainActivity.makeToast(R.string.recipe_list_rename_not_authorized, Toast.LENGTH_LONG);
-            mRenameListButton.setVisibility(View.GONE);
-        }
-
-        if(mRecipeList != null && mRecipeList.getCreatedBy() != null && mainActivity.getUserId() != 0 &&
-                mRecipeList.getCreatedBy().getId() == mainActivity.getUserId() ){
-            mBinding.deleteListButton.setOnClickListener(
-                    v -> makeDeleteListAlert(navController, mainActivity));
-        }
-        else {
-            mBinding.deleteListButton.setVisibility(GONE);
-        }
-
+        // TODO: passa að geta komið til baka líka
         mBinding.recipeListCreatedBy.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
             bundle.putLong(getString(R.string.selected_user_id), mRecipeList.getCreatedBy().getId());

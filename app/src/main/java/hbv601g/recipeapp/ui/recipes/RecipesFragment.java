@@ -144,9 +144,47 @@ public class RecipesFragment extends Fragment {
         if(mSelected==null) return;
         if(mSelected.equals(getString(R.string.filter_tic))) makeFilterTICAlert(mainActivity);
         else if(mSelected.equals(getString(R.string.filter_tpc))) makeFilterTPCAlert(mainActivity);
-        else if(mSelected.equals(getString(R.string.sort_price))) updateListView(mRecipeService.getAllOrderedRecipes());
-        else if(mSelected.equals(getString(R.string.sort_title))) updateListView(mRecipeService.getAllOrderedRecipesByTitle());
+        else if(mSelected.equals(getString(R.string.sort_price))) {
+            mRecipeService.getAllOrderedRecipes(new CustomCallback<>() {
+                @Override
+                public void onSuccess(List<Recipe> recipes) {
+                    if(getActivity()==null) return;
+                    mRecipeList = recipes;
+                    requireActivity().runOnUiThread(() -> {
+                        updateListView();
+                    });
+
+                }
+
+                @Override
+                public void onFailure(List<Recipe> recipes) {
+                    Log.d("Callback", "Failed to get all ordered recipes");
+                }
+            });
+            //updateListView(mRecipeService.getAllOrderedRecipes())
+        }
+        else if(mSelected.equals(getString(R.string.sort_title))) {
+            mRecipeService.getAllOrderedRecipesByTitle(new CustomCallback<>() {
+                @Override
+                public void onSuccess(List<Recipe> recipes) {
+                    if(getActivity()==null) return;
+                    mRecipeList = recipes;
+                    requireActivity().runOnUiThread(() -> {
+                        updateListView();
+                    });
+
+                }
+
+                @Override
+                public void onFailure(List<Recipe> recipes) {
+                    Log.d("Callback", "Failed to get all recipes ordered by title");
+                }
+            });
+            //updateListView(mRecipeService.getAllOrderedRecipesByTitle())
+        }
         else if(mSelected.equals(getString(R.string.filter_clear))){
+            getAllRecipes();
+            /*
             try {
                 mRecipeList = mRecipeService.getAllRecipes();
                 updateListView(mRecipeList);
@@ -154,6 +192,7 @@ public class RecipesFragment extends Fragment {
                 mRecipeList = new ArrayList<>();
                 mainActivity.makeToast(R.string.get_recipes_failed_toast, Toast.LENGTH_LONG);
             }
+             */
         }
     }
 
