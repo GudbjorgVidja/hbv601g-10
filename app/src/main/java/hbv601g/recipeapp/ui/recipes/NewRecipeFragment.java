@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -33,6 +34,7 @@ public class NewRecipeFragment extends Fragment {
     private FragmentNewRecipeBinding mBinding;
 
     private List<IngredientMeasurement> mIngredientList = new ArrayList<>();
+    private  int mTotalHeight = 0;
 
     @Nullable
     @Override
@@ -64,11 +66,23 @@ public class NewRecipeFragment extends Fragment {
 
         mBinding.cancelRecipe.setOnClickListener(view -> navController.popBackStack());
 
+        ListView ingredientsList = mBinding.ingredients;
         getParentFragmentManager().setFragmentResultListener(getString(R.string.request_ingredient_measurement),
                 this, (requestKey, result) -> {
             IngredientMeasurement ingredientMeasurement
                     = result.getParcelable(getString(R.string.selected_ingredient_measurement));
+
             mIngredientList.add(ingredientMeasurement);
+            //mList.add(ingredientMeasurement);
+            View listItem = adapter.getView(adapter.getCount()-1, null, mBinding.ingredients);
+            listItem.measure(0, 0);
+            mTotalHeight += listItem.getMeasuredHeight();
+
+            ViewGroup.LayoutParams params = ingredientsList.getLayoutParams();
+            params.height = mTotalHeight + (ingredientsList.getDividerHeight() * (adapter.getCount() - 1));
+            ingredientsList.setLayoutParams(params);
+            ingredientsList.requestLayout();
+
         });
 
         return root;

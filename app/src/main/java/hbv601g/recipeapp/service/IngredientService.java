@@ -25,10 +25,10 @@ import hbv601g.recipeapp.networking.CustomCallback;
 import hbv601g.recipeapp.networking.NetworkingService;
 
 /**
- * Service class for ingredients
+ * A service class for interacting with the networking service in order to make requests related to
+ * the Ingredient entity to the external API
  */
 public class IngredientService extends Service {
-
     private NetworkingService mNetworkingService;
     private long mUid;
 
@@ -40,8 +40,8 @@ public class IngredientService extends Service {
     /**
      * makes a delete request to send to the external API, to try to delete an ingredient
      *
-     * @param iid      - the id of the ingredient to delete
-     * @param callback - a callback to the fragment
+     * @param iid the id of the ingredient to delete
+     * @param callback a callback to the fragment
      */
     public void deleteIngredient(long iid, CustomCallback<Ingredient> callback) {
         String url = String.format("ingredient/delete/%s?uid=%s", iid, mUid);
@@ -63,8 +63,8 @@ public class IngredientService extends Service {
     /**
      * Makes a patch request to change the title of an ingredient
      *
-     * @param iid      - the id of the ingredient to be renamed
-     * @param newTitle - the new title of the ingredient
+     * @param iid the id of the ingredient to be renamed
+     * @param newTitle the new title of the ingredient
      * @param callback - returns the ingredient with the updated title on success,
      *                   or null on failure
      */
@@ -93,9 +93,8 @@ public class IngredientService extends Service {
 
     }
 
-
     /**
-     * Makes a get request to get all ingredients visible to the user.
+     * Makes a request to get all ingredients accessible to the current user from the external API
      *
      * @param callback - a callback returning a list of the ingredients on success,
      *                   or an empty list on failure
@@ -123,22 +122,24 @@ public class IngredientService extends Service {
 
     }
 
-
     /**
      * makes a post request which is sent to the API, to create an ingredient with the specified
      * attributes.
      *
-     * @param title     - title of the new ingredient
-     * @param quantity  - quantity in a package of the ingredient
-     * @param unit      - the unit of measure for the ingredient
-     * @param price     - the price of this ingredient
-     * @param store     - store name, can be empty or null
-     * @param brand     - brand name, can be empty or null
-     * @param isPrivate - if the ingredient should be visible to only the creator
-     * @param callback  - a callback returning the ingredient object on success,
+     * @param title title of the new ingredient
+     * @param quantity quantity in a package of the ingredient
+     * @param unit the unit of measure for the ingredient
+     * @param price the price of this ingredient
+     * @param store store name, can be empty or null
+     * @param brand brand name, can be empty or null
+     * @param isPrivate if the ingredient should be visible to only the creator
+     * @param callback - a callback returning the ingredient object on success,
      *                    or null on failure
      */
-    public void createIngredient(String title, double quantity, Unit unit, double price, String store, String brand, boolean isPrivate, CustomCallback<Ingredient> callback) {
+    public void createIngredient(String title, double quantity, Unit unit, double price,
+                                 String store, String brand, boolean isPrivate,
+                                 CustomCallback<Ingredient> callback) {
+
         String url = "ingredient/created?uid=" + mUid;
 
         if (store.trim().isEmpty()) store = null;

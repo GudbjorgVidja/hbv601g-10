@@ -50,8 +50,7 @@
         tools:layout="@layout/fragment_edit_recipe">
         <argument
             android:name="@string/selected_ingredient_measurement"
-            app:argType="hbv601g.recipeapp.entities.IngredientMeasurement"
-            />
+            app:argType="hbv601g.recipeapp.entities.IngredientMeasurement" />
     </fragment>
 
 
@@ -73,15 +72,16 @@
         android:id="@+id/nav_user"
         android:name="hbv601g.recipeapp.ui.user.UserFragment"
         android:label="@string/title_user"
-        tools:layout="@layout/fragment_user"/>
+        tools:layout="@layout/fragment_user">
+        <argument
+            android:name="@string/selected_user_name"
+            app:argType="string" />
+        <argument
+            android:name="@string/selected_user_id"
+            app:argType="long" />
+    </fragment>
 
     <!-- fragments  -->
-    <fragment
-        android:id="@+id/nav_user_no_user"
-        android:name="hbv601g.recipeapp.ui.user.UserNoUserFragment"
-        android:label="@string/title_user_no_user"
-        tools:layout="@layout/fragment_user_no_user"/>
-
     <fragment
         android:id="@+id/nav_signup"
         android:name="hbv601g.recipeapp.ui.login.SignupFragment"
@@ -147,6 +147,7 @@
         android:name="hbv601g.recipeapp.ui.recipeLists.NewRecipeListFragment"
         android:label="@string/title_new_recipe_list"
         tools:layout="@layout/fragment_new_recipe_list"/>
+
     <fragment
         android:id="@+id/nav_recipe_list"
         android:name="hbv601g.recipeapp.ui.recipeLists.RecipeListFragment"

@@ -71,6 +71,12 @@ public class IngredientFragment extends Fragment{
             mBinding.renameIngredientButton.setVisibility(GONE);
         }
 
+        mBinding.ingredientCreator.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putLong(getString(R.string.selected_user_id), mIngredient.getCreatedBy().getId());
+            bundle.putString(getString(R.string.selected_user_name), mIngredient.getCreatedBy().getUsername());
+            navController.navigate(R.id.nav_user, bundle);
+        });
         return root;
     }
 

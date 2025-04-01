@@ -24,6 +24,10 @@ import hbv601g.recipeapp.entities.User;
 import hbv601g.recipeapp.networking.CustomCallback;
 import hbv601g.recipeapp.networking.NetworkingService;
 
+/**
+ * A service class for interacting with the networking service in order to make requests related to
+ * the User entity to the external API
+ */
 public class UserService extends Service {
     private NetworkingService mNetworkingService;
 
@@ -33,10 +37,9 @@ public class UserService extends Service {
 
 
     /**
-     * makes a delete request to send to the external API, to try to delete a user. Starts by
-     * getting the user to confirm the information given
+     * makes a delete request to send to the external API, to try to delete a user
      *
-     * @param uid      the id of the user to delete
+     * @param uid the id of the user to delete
      * @param password the password to use for confirmation
      * @param callback - a callback to the fragment
      */
@@ -76,8 +79,8 @@ public class UserService extends Service {
      * for a user with the usedId reqUid. If uid an reqUid are the same, a user is requesting
      * information about themselves
      *
-     * @param uid      the usedId of the user to get
-     * @param reqUid   the userId of the user making the request
+     * @param uid the usedId of the user to get
+     * @param reqUid the userId of the user making the request
      * @param callback returning the user with the given id on success, or null on failure
      */
     public void getUser(long uid, long reqUid, CustomCallback<User> callback) {
@@ -101,16 +104,16 @@ public class UserService extends Service {
     }
 
     /**
-     * Athugar hvort notandi með gefið notandanafn og lykilorð sé í gagnagrunninum, skilar honum ef
-     * hann er til en annars null
+     * Checks whether a user with the given username and password exists in the external API.
+     * Returns that user if he exists, or null if the does not
      *
-     * @param username notandanafn til að skrá inn
-     * @param password lykilorð notanda
+     * @param username the username to look by
+     * @param password the password to look by
      * @param callback skilar User object með onSuccess ef innskráning tókst, annars failure
+     * @return the user if he exists, or null if he does not
      */
     public void logIn(String username, String password, CustomCallback<User> callback) {
-        String url = "user/login";
-        url += String.format("?username=%s&password=%s", username, password);
+        String url = String.format("user/login?username=%s&password=%s", username, password);
 
         mNetworkingService.getRequest(url, new CustomCallback<>() {
             @Override
@@ -131,15 +134,15 @@ public class UserService extends Service {
     }
 
     /**
-     * Makes a new account with the given information, if possible.
+     * Creates a user with the given username and password
      *
-     * @param username - the username for the account
-     * @param password - the password for the account
+     * @param username the username of the new user
+     * @param password the password of the new user
      * @param callback - a callback returning the new user on success, or null on failure
+     * @return the new user if the signup was successful, otherwise null
      */
     public void signup(String username, String password, CustomCallback<User> callback) {
-        String url = "user/signup";
-        url += String.format("?username=%s&password=%s", username, password);
+        String url = String.format("user/signup?username=%s&password=%s", username, password);
 
         mNetworkingService.postRequest(url, null, new CustomCallback<>() {
             @Override
@@ -160,11 +163,12 @@ public class UserService extends Service {
     }
 
     /**
-     * Skilar pantry hjá notanda með gefið user id
+     * Gets the pantry of the user with the given id
      *
-     * @param uid      user id
+     * @param uid the id of the pantry owner
      * @param callback callback returning the pantry of the user on success,
      *                 or an empty list on failure
+     * @return A list of IngredientMeasurements in the user's pantry
      */
     public void getUserPantry(long uid, CustomCallback<List<IngredientMeasurement>> callback) {
         String url = "user/pantry?uid=" + uid;
@@ -190,13 +194,13 @@ public class UserService extends Service {
     /**
      * API call to remove an ingredient from the users pantry.
      *
-     * @param uid      - User ID
-     * @param iid      - Ingredient ID
+     * @param uid the id if the user who's pantry it is
+     * @param iid the id of the ingredient which should be removed
      * @param callback - always returns null, but onSuccess called if the ingredient is removed.
+     * @return true if the removal was successful, otherwise false
      */
     public void removeIngredientFromPantry(long uid, long iid, CustomCallback<Boolean> callback) {
-        String url = "user/pantry/delete";
-        url += String.format("?iid=%s&uid=%s", iid, uid);
+        String url = String.format("user/pantry/delete?iid=%s&uid=%s", iid, uid);
 
         mNetworkingService.putRequest(url, null, new CustomCallback<>() {
             @Override
@@ -215,24 +219,30 @@ public class UserService extends Service {
     }
 
     /**
-     * adds an ingredient to the user's pantry
+     * Adds some quantity of an ingredient to a user's pantry
      *
-     * @param uid      - User ID
-     * @param iid      - Ingredient ID
-     * @param unit     - Unit
-     * @param qty      - Quantity
+     * @param uid the id of the user who's pantry it is
+     * @param iid the id of the ingredient to add to the pantry
+     * @param unit the unit of the quantity to add to the pantry
+     * @param qty the quantity to add to the pantry
      * @param callback - returns the IngredientMeasurement added on success. If the ingredient is in
      *                   the pantry already, that item is returned on failure, otherwise null
+     * @return IngredientMeasurement that was added to the pantry
      */
-    public void addIngredientToPantry(long uid, long iid, Unit unit, double qty, CustomCallback<IngredientMeasurement> callback) {
-        String url = "user/pantry/add";
-        String params = String.format("?iid=%s&unit=%s&qty=%s&uid=%s", iid, unit.name(), qty, uid);
+    public void addIngredientToPantry(long uid, long iid, Unit unit, double qty,
+                                      CustomCallback<IngredientMeasurement> callback) {
 
-        mNetworkingService.putRequest(url + params, null, new CustomCallback<>() {
+        String url = String.format("user/pantry/add?iid=%s&unit=%s&qty=%s&uid=%s", iid,
+                unit.name(), qty, uid);
+
+        IngredientMeasurement ingredient = null;
+
+        mNetworkingService.putRequest(url, null, new CustomCallback<>() {
             @Override
             public void onSuccess(JsonElement jsonElement) {
                 if (jsonElement == null) callback.onFailure(null);
                 else {
+                    Log.d("API", "Ingredient added: " + jsonElement);
                     Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
                     IngredientMeasurement pantryItem = gson.fromJson(jsonElement, IngredientMeasurement.class);
 
@@ -254,17 +264,15 @@ public class UserService extends Service {
     }
 
     /**
-     * This function check the password of a user with id value uid, is the same as the pass word
-     * string pass.
+     * Checks whether the given password is the same as the password of the user with the given
+     * userID
      *
-     * @param uId  : long value, is the ID of the user.
-     * @param pass : String value, is the password that is being checked if it is the same as the
-     *               password that the user has.
-     *
-     * @return     : if the password are the same then true else false.
+     * @param uid the id of the user who's password should be validated
+     * @param pass the password that should be used for the validation
+     * @return true if the passwords are the same, otherwise false.
      */
-    public void validatePassword(long uId, String pass, CustomCallback<Boolean> callback){
-        getUser(uId, uId, new CustomCallback<>() {
+    public void validatePassword(long uid, String pass, CustomCallback<Boolean> callback){
+        getUser(uid, uid, new CustomCallback<>() {
             @Override
             public void onSuccess(User user) {
                 callback.onSuccess(pass.equals(user.getPassword()));
@@ -278,19 +286,20 @@ public class UserService extends Service {
     }
 
     /**
-     * This function changes the Password for user with ID value uid to newPass.
+     * Changes the password for a user
      *
-     * @param uId     : long value, is the id number of the user.
-     * @param newPass : String value, is the new password for the user.
+     * @param uid the id of the user who's password is being changed
+     * @param newPass the new password
      */
-    public void changePassword(long uId, String newPass, CustomCallback<Boolean> callback){
+    public void changePassword(long uid, String newPass, CustomCallback<Boolean> callback){
         // TODO: kannski senda gamla lykilorðið inn líka frekar en að sækja það oftar?
         //Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 
-        getUser(uId, uId, new CustomCallback<>() {
+        getUser(uid, uid, new CustomCallback<>() {
             @Override
             public void onSuccess(User user) {
-                String url = "user/changePassword?uid=" + uId + "&newPassword=" + newPass
+                String url = "user/changePassword?uid=" + uid
+                        + "&newPassword=" + newPass
                         + "&oldPassword=" + user.getPassword();
                 mNetworkingService.patchRequest(url, null, new CustomCallback<>() {
                     @Override

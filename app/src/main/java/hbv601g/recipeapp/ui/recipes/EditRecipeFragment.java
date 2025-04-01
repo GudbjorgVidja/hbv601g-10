@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -79,11 +80,11 @@ public class EditRecipeFragment extends Fragment {
         mBinding.editRecipe.setOnClickListener(view -> editRecipe(mainActivity, navController));
 
         getParentFragmentManager().setFragmentResultListener(getString(R.string.request_ingredient_measurement),
-                this, (requestKey, result) -> {
-                    IngredientMeasurement ingredientMeasurement
-                            = result.getParcelable(getString(R.string.selected_ingredient_measurement));
-                    mList.add(ingredientMeasurement);
-                });
+        this, (requestKey, result) -> {
+            IngredientMeasurement ingredientMeasurement
+                    = result.getParcelable(getString(R.string.selected_ingredient_measurement));
+            mList.add(ingredientMeasurement);
+        });
 
         return root;
     }
@@ -102,14 +103,32 @@ public class EditRecipeFragment extends Fragment {
             mList = new ArrayList<>();
         }
 
+        ListView ingredientsList = mBinding.ingredients;
         IngredientMeasurementAdapter adapter = new IngredientMeasurementAdapter
                 (
                         activity.getApplicationContext(),
                         mList
                 );
-        mBinding.ingredients.setAdapter(adapter);
+        ingredientsList.setAdapter(adapter);
 
         mBinding.isPrivate.setChecked(mRecipe.isPrivate());
+
+
+        // setting the listview height to fit the contents
+
+        int totalHeight = 0;
+
+        for (int i = 0; i < adapter.getCount(); i++) {
+            View listItem = adapter.getView(i, null, ingredientsList);
+            listItem.measure(0, 0);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams params = ingredientsList.getLayoutParams();
+        params.height = totalHeight + (ingredientsList.getDividerHeight() * (adapter.getCount() - 1));
+        ingredientsList.setLayoutParams(params);
+        ingredientsList.requestLayout();
+
     }
 
     /**

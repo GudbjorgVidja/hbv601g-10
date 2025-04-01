@@ -60,7 +60,10 @@ public class NewRecipeListFragment extends Fragment {
                                 if(getActivity() == null) return;
                                 requireActivity().runOnUiThread(() -> {
                                     mainActivity.makeToast(R.string.create_recipe_list_success_toast, Toast.LENGTH_LONG);
-                                    navController.navigate(R.id.nav_user);
+                                    Bundle bundle = new Bundle();
+                                    bundle.putLong(getString(R.string.selected_user_id), mainActivity.getUserId());
+                                    bundle.putString(getString(R.string.selected_user_name), mainActivity.getUserName());
+                                    navController.navigate(R.id.nav_user, bundle);
                                 });
                             }
 

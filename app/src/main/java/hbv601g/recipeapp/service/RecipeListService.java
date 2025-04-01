@@ -25,7 +25,8 @@ import hbv601g.recipeapp.networking.CustomCallback;
 import hbv601g.recipeapp.networking.NetworkingService;
 
 /**
- * Service class for recipe list API calls
+ * A service class for interacting with the networking service in order to make requests related to
+ * the RecipeList entity to the external API
  */
 public class RecipeListService extends Service {
     private NetworkingService mNetworkingService;
@@ -37,16 +38,18 @@ public class RecipeListService extends Service {
     }
 
     /**
-     *  TODO: Breyta útfærslu í bakenda, líklega ekki gott að nota requestParams fyrir allt. //
-     *        nota frekar requestBody?
      * Creates a recipe list and adds it to the database
-     * @param title       - title of the list, max 50 characters
-     * @param description - description of the list, max 250 chars, may be null
-     * @param isPrivate   - true if the list is private, otherwise false
+     *
+     * @param title title of the list, max 50 characters
+     * @param description description of the list, max 250 chars, may be null
+     * @param isPrivate true if the list is private, otherwise false
      * @return RecipeList object added to the db, or null
      */
-    public void createRecipeList(String title, String description, boolean isPrivate, CustomCallback<RecipeList> callback) {
-        String url = String.format("list/new?uid=%s&title=%s&description=%s&isPrivate=%b", mUid, title, description, isPrivate);
+    public void createRecipeList(String title, String description, boolean isPrivate,
+                                 CustomCallback<RecipeList> callback) {
+
+        String url = String.format("list/new?uid=%s&title=%s&description=%s&isPrivate=%b",
+                mUid, title, description, isPrivate);
 
         mNetworkingService.postRequest(url, null, new CustomCallback<>() {
             @Override
@@ -72,6 +75,7 @@ public class RecipeListService extends Service {
      * Makes a request to get all recipe lists for the current user, public and private
      * @param uid - user id
      * @param callback - returns all of the user's recipe lists on success, or an empty list on failure
+     * @return all of the user's recipe lists
      */
     public void getUserRecipeLists(long uid, CustomCallback<List<RecipeList>> callback) {
         String url = "list/user/" + uid + "?uid=" + mUid;
@@ -101,12 +105,14 @@ public class RecipeListService extends Service {
     // TODO: á þessi að skila listanum???
     /**
      * Adds the given recipe to the given recipe list.
-     * @param recipeId - id of the recipe to add
-     * @param listId - id of the list to be added to
+     *
+     * @param recipeId id of the recipe to add
+     * @param listId id of the list to be added to
      * @param callback - callback returning the new list size on success, or null on failure
      */
     public void addRecipeToList(long recipeId, long listId, CustomCallback<Integer> callback) {
-        String url = String.format("list/addRecipe?recipeID=%s&listID=%s&uid=%s", recipeId, listId, mUid);
+        String url = String.format("list/addRecipe?recipeID=%s&listID=%s&uid=%s",
+                recipeId, listId, mUid);
 
         mNetworkingService.putRequest(url, null, new CustomCallback<>() {
             @Override
@@ -129,9 +135,11 @@ public class RecipeListService extends Service {
     }
 
     /**
-     * Fetches a recipe list by its id
-     * @param lid - id of the recipe list.
+     * Fetches a recipe list by its id.
+     *
+     * @param lid id of the recipe list.
      * @param callback - callback returning the recipeList on success, or null on failure.
+     * @return Recipe list with the id 'lid'.
      */
     public void getListById(long lid, CustomCallback<RecipeList> callback){
         String url = String.format("list/id/%s?uid=%s", lid, mUid);
@@ -155,10 +163,10 @@ public class RecipeListService extends Service {
 
     }
 
-
     /**
-     * Fetches all recipes from the recipe list with the Id 'lid'.
-     * @param lid - id of the recipe list.
+     * Fetches all recipes from the recipe list with the id 'lid'.
+     *
+     * @param lid id of the recipe list.
      * @return All recipes from the corresponding recipe list.
      */
     public void getRecipesFromList(long lid, CustomCallback<List<Recipe>> callback){
@@ -190,15 +198,42 @@ public class RecipeListService extends Service {
     }
 
     /**
-     * Sends a patch request to the API with a new title for the recipe list.
-     * @param id - Id of the recipe list being renamed
-     * @param newTitle - New title of the recipe list
+     * Removes the given recipe from the given recipe list, if the recipe is in it
+     *
+     * @param list The RecipeList the recipe should be removed from.
+     * @param recipe The Recipe that should be removed from the list.
+     * @return true if the recipe was removed, otherwise false
      */
-    public void updateRecipeListTitle(long id, String newTitle, CustomCallback<Boolean> callback){
+    public boolean removeRecipeFromList(RecipeList list, Recipe recipe) {
+        String url = String.format("list/id/%s/recipe/%s/remove?uid=%s",
+                list.getId(), recipe.getId(), mUid);
+
+        try {
+            mJsonElement = mNetworkingService.patchRequest(url, null);
+        } catch (IOException e) {
+            throw new NullPointerException("List recipes are null");
+        }
+
+        boolean res = false;
+        if (mJsonElement != null) {
+            res = mJsonElement.isJsonObject();
+            Log.d("API", "recipe removed: " + res);
+        }
+
+        return res;
+    }
+
+    /**
+     * Sends a patch request to the API with a new title for the recipe list.
+     *
+     * @param id the id of the recipe list being renamed
+     * @param newTitle New title of the recipe list
+     */
+    public void updateRecipeListTitle(long id, String newTitle, CustomCallback<Boolean> callback) {
         String url = String.format("list/updateTitle/%s?uid=%s", id, mUid);
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
         Map<String, String> requestBody = new HashMap<>();
-        requestBody.put("title",newTitle);
+        requestBody.put("title", newTitle);
         String data = gson.toJson(requestBody);
 
         mNetworkingService.patchRequest(url, data, new CustomCallback<>() {
@@ -219,12 +254,12 @@ public class RecipeListService extends Service {
 
     }
 
-
     /**
-     * Deletes the given recipe list from database
-     * @param lid - id of the recipe list
+     * Deletes the given recipe list
+     *
+     * @param lid id of the recipe list
      */
-    public void deleteRecipeList(long lid, CustomCallback<Boolean> callback){
+    public void deleteRecipeList(long lid, CustomCallback<Boolean> callback) {
         String url = String.format("list/id/%s/delete?uid=%s", lid, mUid);
 
         mNetworkingService.deleteRequest(url, new CustomCallback<>() {
@@ -241,7 +276,6 @@ public class RecipeListService extends Service {
         });
 
     }
-
 
     @Nullable
     @Override

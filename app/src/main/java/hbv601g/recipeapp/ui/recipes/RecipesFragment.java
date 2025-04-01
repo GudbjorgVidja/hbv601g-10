@@ -52,6 +52,8 @@ public class RecipesFragment extends Fragment {
         Button filterTpcButton = mBinding.filterTpcButton;
         Button filterTicButton = mBinding.filterTicButton;
         Button clearFilterButton = mBinding.clearFilterButton;
+        Button sortByPriceButton = mBinding.sortByPriceButton;
+        Button sortByTitleButton = mBinding.sortByTitleButton;
 
         NavController navController = Navigation.findNavController(mMainActivity, R.id.nav_host_fragment_activity_main);
 
@@ -101,6 +103,10 @@ public class RecipesFragment extends Fragment {
 
         filterTpcButton.setOnClickListener(v -> makeFilterTPCAlert(mMainActivity));
         filterTicButton.setOnClickListener(v -> makeFilterTICAlert(mMainActivity));
+        filterTpcButton.setOnClickListener(v -> makeFilterTPCAlert(mainActivity));
+        filterTicButton.setOnClickListener(v -> makeFilterTICAlert(mainActivity));
+        sortByPriceButton.setOnClickListener(v -> updateListView(mRecipeService.getAllOrderedRecipes()));
+        sortByTitleButton.setOnClickListener(v -> updateListView(mRecipeService.getAllOrderedRecipesByTitle()));
 
         clearFilterButton.setOnClickListener(v -> {
             // uppfærist í aðferðinni
@@ -154,7 +160,6 @@ public class RecipesFragment extends Fragment {
             }
         });
     }
-
 
     /**
      * Alert dialog that allows the user to input a maximum TPC to filter the recipe list by.
