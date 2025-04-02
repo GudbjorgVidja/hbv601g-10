@@ -41,7 +41,12 @@ public class User {
         this.username = username;
     }
 
-    public Boolean isSameAsPassword(String testPassword) {
+    /**
+     * Will validate if the password that is being send is the same as the password for the user.
+     * @param testPassword String value, is the password that is being tested to the user password.
+     * @return if there are the same true else false.
+     */
+    public Boolean passwordValidation(String testPassword) {
         return testPassword.equals(password);
     }
 

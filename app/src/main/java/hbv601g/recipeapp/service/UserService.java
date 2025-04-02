@@ -47,7 +47,7 @@ public class UserService extends Service {
      */
     public void deleteAccount(long uid, String password) {
         User user = getUser(uid, uid);
-        if (user == null || !user.isSameAsPassword(password)) {
+        if (user == null || !user.passwordValidation(password)) {
             throw new DeleteFailedException();
         }
         String url = String.format("user/delete?uid=%s&password=%s", uid, password);
@@ -233,7 +233,7 @@ public class UserService extends Service {
      * @return true if the passwords are the same, otherwise false.
      */
     public boolean validatePassword(long uid, String pass) {
-        return getUser(uid, uid).isSameAsPassword(pass);
+        return getUser(uid, uid).passwordValidation(pass);
     }
 
     /**
