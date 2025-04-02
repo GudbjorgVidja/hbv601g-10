@@ -64,11 +64,6 @@ public class NewRecipeFragment extends Fragment {
                 if (recipe != null) {
                     navController.popBackStack();
                 }
-                else{
-                    Toast.makeText(
-                            getActivity(), R.string.recipe_unknown_error, Toast.LENGTH_LONG
-                    ).show();
-                }
         });
 
         mBinding.cancelRecipe.setOnClickListener(view -> {
