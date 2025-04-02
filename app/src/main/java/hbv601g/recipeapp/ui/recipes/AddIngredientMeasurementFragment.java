@@ -26,6 +26,9 @@ import hbv601g.recipeapp.entities.Unit;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.IngredientService;
 
+/**
+ * A fragment for adding an ingredient measurement to a recipe
+ */
 public class AddIngredientMeasurementFragment extends Fragment {
     private FragmentAddIngredientMeasurementBinding mBinding;
 
@@ -45,21 +48,15 @@ public class AddIngredientMeasurementFragment extends Fragment {
                 mainActivity, R.id.nav_host_fragment_activity_main
         );
 
-        IngredientService tempServ = new IngredientService
-                                            (
-                                                new NetworkingService(),
-                                                mainActivity.getUserId()
-                                            );
+        IngredientService tempServ =
+                new IngredientService(new NetworkingService(), mainActivity.getUserId());
         List<Ingredient> ingredientList= tempServ.getAllIngredients();
         if(ingredientList == null){
             ingredientList = new ArrayList<>();
         }
 
-        IngredientAdapter inadApter = new IngredientAdapter
-                                                (
-                                                    mainActivity.getApplicationContext(),
-                                                    ingredientList
-                                                );
+        IngredientAdapter inadApter =
+                new IngredientAdapter(mainActivity.getApplicationContext(), ingredientList);
         mBinding.spinnerIngredient.setAdapter(inadApter);
 
         mBinding.spinnerUnit.setAdapter(new ArrayAdapter<Unit>(
@@ -89,6 +86,12 @@ public class AddIngredientMeasurementFragment extends Fragment {
         return root;
     }
 
+    /**
+     * Gets information from the UI and uses it to create an ingredient measurement to add to a
+     * recipe
+     *
+     * @return the new ingredient measurement
+     */
     private IngredientMeasurement addIngredientMeasurement(){
         double value;
         Unit unit = (Unit) mBinding.spinnerUnit.getSelectedItem();

@@ -19,6 +19,9 @@ import hbv601g.recipeapp.databinding.FragmentChangePasswordBinding;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.UserService;
 
+/**
+ * A fragment for changing a user's password
+ */
 public class ChangePasswordFragment extends Fragment {
     private FragmentChangePasswordBinding mBinding;
     private UserService mUserService;
@@ -53,9 +56,9 @@ public class ChangePasswordFragment extends Fragment {
     }
 
     /**
-     * This function set the color for the new Password and validate New Password fields as red
+     * Sets errors on the input fields depending on their contents
      *
-     * @param empty : Boolean value, if one or both password filed are empty, else ture.
+     * @param empty a boolean value indicating whether either input fields are empty
      */
     private void newPassInvalid(boolean empty){
         if(empty){
@@ -72,7 +75,7 @@ public class ChangePasswordFragment extends Fragment {
     }
 
     /**
-     * Creates a dialog let ask if the user if sure if they want to change there password.
+     * Creates and displays a dialog to ask the user to confirm their intention to change their password
      * @param activity The MainActivity of the application.
      */
     private void confirmAlert(MainActivity activity){
@@ -111,8 +114,7 @@ public class ChangePasswordFragment extends Fragment {
 
 
     /**
-     * The function checks if the new password is valid if it is the password for the user is
-     * change.
+     * Checks if the new password is valid. If it is, the password for the user is changed.
      * @param activity The MainActivity of the application.
      */
     private void confirmPass(MainActivity activity){

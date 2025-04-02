@@ -26,9 +26,8 @@ import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.UserService;
 
 /**
- * Fragment fyrir pantry hjá user
+ * A fragment for displaying a user's pantry
  */
-
 public class PantryFragment extends Fragment {
 
     private FragmentPantryBinding mBinding;
@@ -51,7 +50,7 @@ public class PantryFragment extends Fragment {
 
         mUserService = new UserService(new NetworkingService());
 
-        // Athuga hvort einhver sé skráður inn áður en pantry er sótt
+        // Check whether someone is logged in before getting the pantry
         if(mainActivity.getUserName() != null){
             mUid = mainActivity.getUserId();
             try{
@@ -64,13 +63,11 @@ public class PantryFragment extends Fragment {
             mainActivity.makeToast(R.string.pantry_no_user, Toast.LENGTH_LONG);
         }
 
-
         mPantryListView = mBinding.pantryListView;
 
-
-        // Adapter til að tengja listann við ListView
-        PantryAdapter pantryAdapter = new PantryAdapter(mainActivity.getApplicationContext(), Objects.requireNonNullElseGet(mPantryIngredients, ArrayList::new));
-        //PantryAdapter pantryAdapter = new PantryAdapter(mainActivity.getApplicationContext(), mPantryIngredients);
+        // An adapter to connect the list to the list view
+        PantryAdapter pantryAdapter = new PantryAdapter(mainActivity.getApplicationContext(),
+                Objects.requireNonNullElseGet(mPantryIngredients, ArrayList::new));
         mPantryListView.setAdapter(pantryAdapter);
 
 

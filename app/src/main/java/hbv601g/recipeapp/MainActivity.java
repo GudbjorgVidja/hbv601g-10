@@ -19,15 +19,17 @@ import androidx.navigation.ui.NavigationUI;
 import hbv601g.recipeapp.databinding.ActivityMainBinding;
 import hbv601g.recipeapp.entities.User;
 
+/**
+ * The main activity of the App. This is the only activity used
+ */
 public class MainActivity extends AppCompatActivity {
 
-    // Lyklar fyrir shared preferences (basically session)
+    // Keys for shared preferences (used for session management)
     public static final String SHARED_PREFS = "shared_prefs";
     public static final String USERNAME_KEY = "username_key";
     public static final String PASSWORD_KEY = "password_key";
     public static final String USER_ID_KEY = "uid_key";
 
-    // breyta fyrir shared preferences.
     SharedPreferences sharedpreferences;
 
     private ActivityMainBinding binding;
@@ -39,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot()); // setur contentið eftir bottom nav bar vali
 
-        // findViewById(${id}) finnur bottom navigation bar hér
+        // findViewById(${id}) finds the bottom navigation bar
         BottomNavigationView navView = findViewById(R.id.nav_view);
 
         // Passing each menu ID as a set of Ids because each
@@ -48,26 +50,26 @@ public class MainActivity extends AppCompatActivity {
                 R.id.nav_home, R.id.nav_recipes, R.id.nav_ingredients, R.id.nav_user)
                 .build();
 
-        // setur navController sem view-ið fyrir fragmentið í activity_main
+        // sets navController as the view for the fragment in activity_main
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
 
-        // Setur breytingar á actionBar (banner uppi, t.d. titill) þegar destination breytist
+        // Sets changes for the action bar (the top banner, i.e. title) when the destination changes
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
-        // Sýnir á bottomNavigationBar hvað er valið
+        // Shows on the bottomNavigationBar what has been selected
         NavigationUI.setupWithNavController(binding.navView, navController);
 
 
-        // Sækir sharedPreferences upplýsingar, basically session
+        // Gets sharedPreferences information
         sharedpreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
 
     }
 
     /**
-     * Setur upplýsingar í shared preferences sem gefinn user,
-     * eða hreinsar ef user er null
+     * Sets information in shared preferences as the given user, or empties it if the user is null
+     *
+     * @param user the current user
      * @param password is the password of the user
-     * @param user innskráður notandi
      */
     public void updateCurrentUser(User user, String password){
         sharedpreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
@@ -85,7 +87,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     /**
-     * Fjarlægir user upplýsingar úr shared preferences til að logga út
+     * Removes user information from shared preferences to log out, and makes a new
+     * intent to start the activity again
      */
     public void removeCurrentUser(){
         sharedpreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
@@ -100,17 +103,37 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Makes a toast using the current activity as well as the given message and length
+     * @param message The resource id of the string resource to use. Can be formatted text.
+     * @param length How long to display the message. Either LENGTH_SHORT or LENGTH_LONG
+     */
     public void makeToast(int message, int length){
         Toast.makeText(MainActivity.this, message, length).show();
     }
 
+    /**
+     * Gets the username of the user who is currently logged in, from the shared preferences
+     * @return the username of the current user, or null if no user is logged in
+     */
     public String getUserName(){
         return sharedpreferences.getString(USERNAME_KEY, null);
     }
+
+    /**
+     * Gets the userID of the user who is currently logged in, from the shared preferences
+     * @return the id of the current user, or 0 if no user is logged in
+     */
     public long getUserId(){
         return sharedpreferences.getLong(USER_ID_KEY, 0);
     }
 
+    /**
+     * handles the selection of an item from the options menu
+     * @param item The menu item that was selected.
+     *
+     * @return  false to allow normal menu processing to proceed, true to consume it here
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {

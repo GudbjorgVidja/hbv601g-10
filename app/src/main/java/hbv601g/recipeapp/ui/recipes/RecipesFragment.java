@@ -7,10 +7,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -29,12 +32,16 @@ import hbv601g.recipeapp.entities.Recipe;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.RecipeService;
 
+/**
+ * A fragment displaying an overview of recipes
+ */
 public class RecipesFragment extends Fragment {
 
     private FragmentRecipesBinding mBinding;
     private RecipeService mRecipeService;
     private List<Recipe> mRecipeList;
     private ListView mRecipeListView;
+    private String mSelected;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -45,11 +52,7 @@ public class RecipesFragment extends Fragment {
         MainActivity mainActivity = (MainActivity) getActivity();
         assert mainActivity != null;
 
-        Button filterTpcButton = mBinding.filterTpcButton;
-        Button filterTicButton = mBinding.filterTicButton;
-        Button clearFilterButton = mBinding.clearFilterButton;
-        Button sortByPriceButton = mBinding.sortByPriceButton;
-        Button sortByTitleButton = mBinding.sortByTitleButton;
+
 
         NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
 
@@ -76,21 +79,6 @@ public class RecipesFragment extends Fragment {
             Bundle bundle = new Bundle();
             bundle.putParcelable(getString(R.string.selected_recipe), recipe);
             navController.navigate(R.id.nav_recipe, bundle);
-        });
-
-        filterTpcButton.setOnClickListener(v -> makeFilterTPCAlert(mainActivity));
-        filterTicButton.setOnClickListener(v -> makeFilterTICAlert(mainActivity));
-        sortByPriceButton.setOnClickListener(v -> updateListView(mRecipeService.getAllOrderedRecipes()));
-        sortByTitleButton.setOnClickListener(v -> updateListView(mRecipeService.getAllOrderedRecipesByTitle()));
-
-        clearFilterButton.setOnClickListener(v -> {
-            try {
-                mRecipeList = mRecipeService.getAllRecipes();
-                updateListView(mRecipeList);
-            } catch (NullPointerException e) {
-                mRecipeList = new ArrayList<>();
-                mainActivity.makeToast(R.string.get_recipes_failed_toast, Toast.LENGTH_LONG);
-            }
         });
 
 
@@ -127,10 +115,53 @@ public class RecipesFragment extends Fragment {
         return  root;
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        MainActivity mainActivity = (MainActivity) getActivity();
+        assert mainActivity != null;
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                mainActivity,
+                R.array.options_array,
+                android.R.layout.simple_spinner_item);
+
+
+        // Make a dropdown of options
+        AutoCompleteTextView viewOptionDropdown = mBinding.viewOptionDropdown;
+        viewOptionDropdown.setText(null);
+        viewOptionDropdown.setAdapter(adapter);
+
+        viewOptionDropdown.setOnItemClickListener((parent, view, position, id) -> {
+            mSelected = adapter.getItem(position).toString();
+            doFiltering(mainActivity);
+        });
+        doFiltering(mainActivity);
+    }
+
+    private void doFiltering(MainActivity mainActivity){
+        if(mSelected==null) return;
+        if(mSelected.equals(getString(R.string.filter_tic))) makeFilterTICAlert(mainActivity);
+        else if(mSelected.equals(getString(R.string.filter_tpc))) makeFilterTPCAlert(mainActivity);
+        else if(mSelected.equals(getString(R.string.sort_price))) updateListView(mRecipeService.getAllOrderedRecipes());
+        else if(mSelected.equals(getString(R.string.sort_title))) updateListView(mRecipeService.getAllOrderedRecipesByTitle());
+        else if(mSelected.equals(getString(R.string.filter_clear))){
+            try {
+                mRecipeList = mRecipeService.getAllRecipes();
+                updateListView(mRecipeList);
+            } catch (NullPointerException e) {
+                mRecipeList = new ArrayList<>();
+                mainActivity.makeToast(R.string.get_recipes_failed_toast, Toast.LENGTH_LONG);
+            }
+        }
+    }
+
     /**
      * Alert dialog that allows the user to input a maximum TPC to filter the recipe list by.
      * The filtered list is then sent to the UI. The user can only input numbers.
-     * @param mainActivity - The MainActivity of the application.
+     * @param mainActivity The MainActivity of the application.
      */
     private void makeFilterTPCAlert(MainActivity mainActivity) {
         AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
@@ -161,9 +192,9 @@ public class RecipesFragment extends Fragment {
 
 
     /**
-     * Alerti dialog that allows the user to input a maximum TIC to tilfet the recipe list by.
+     * Makes an Alert dialog that allows the user to input a maximum TIC to filter the recipes by.
      * The filtered list is then sent to the UI. The user can only input numbers.
-     * @param mainActivity - The MainActivity of the application
+     * @param mainActivity The MainActivity of the application
      */
     private void makeFilterTICAlert(MainActivity mainActivity) {
         AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
@@ -194,8 +225,8 @@ public class RecipesFragment extends Fragment {
 
 
     /**
-     * Method that sets the recipe list displayed in the Recipe ListView.
-     * @param newList - New list to send to the ListView
+     * Sets the recipe list displayed in the Recipe ListView.
+     * @param newList New list to send to the ListView
      */
     private void updateListView(List<Recipe> newList) {
         RecipeAdapter adapter = new RecipeAdapter(requireContext(), newList);
@@ -204,10 +235,9 @@ public class RecipesFragment extends Fragment {
 
 
     /**
-     * This function Search for the recipe with the title that the user input in the Search bar.
+     * Gets a search term from the UI and searches for recipes which contain it in the title
      *
-     * @return a list of recipe that have the title of the recipe in the Search bar or if the
-     *         Search bar is empty then it returns all of the recipes that the user can see.
+     * @return a list of recipes containing the search term in the title
      */
     private List<Recipe> searchForRec() {
         String input = mBinding.recipeSearchBar.getQuery().toString();

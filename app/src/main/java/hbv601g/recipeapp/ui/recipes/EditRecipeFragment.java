@@ -27,6 +27,9 @@ import hbv601g.recipeapp.entities.Recipe;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.RecipeService;
 
+/**
+ * A fragment to edit recipes
+ */
 public class EditRecipeFragment extends Fragment {
     private RecipeService mRecipeService;
     private FragmentEditRecipeBinding mBinding;
@@ -109,10 +112,9 @@ public class EditRecipeFragment extends Fragment {
     }
 
     /**
-     * Set all of the information so that the user/owner
-     * can edit there recipe
+     * Displays the information about the recipe that should be edited in the UI
      *
-     * @param activity: MainActivity value, is the activity that is now it progress.
+     * @param activity the current activity.
      */
     private void setEdit(MainActivity activity){
         mBinding.recipeName.setText(mRecipe.getTitle());
@@ -150,10 +152,9 @@ public class EditRecipeFragment extends Fragment {
     }
 
     /**
-     * update the recipe
+     * Gets information from the UI and uses it to update the recipe
      *
-     * @param activity : MainActivity value, is the activity of the fragment
-     *
+     * @param activity the current activity
      * @return the updated recipe if possible else return null
      */
     private Recipe editRecipe(MainActivity activity){
