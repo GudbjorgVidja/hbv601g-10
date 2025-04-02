@@ -110,6 +110,7 @@
     <string name="rename_ingredient_failed_toast">Failed to rename ingredient.</string>
     <string name="recipe_unknown_error">Recipe could not be crated, unknown error</string>
     <string name="recipe_edit_unknown_error">Recipe could not be edited, unknown error</string>
+    <string name="recipe_name_is_empty_error">Recipe Must have a name</string>
     <string name="create_recipe_list_failed_toast">Failed to create recipe list.</string>
     <string name="create_recipe_list_success_toast">Successfully created recipe list.</string>
     <string name="recipe_removed_from_list_success_toast"> Recipe was successfully removed from the list</string>
@@ -174,6 +175,8 @@
     <string name="recipe_choice_alert_message">What do you want to do with the recipe?</string>
     <string name="remove_recipe_from_recipe_list_alert_message">Are you sure you want to remove the recipe?</string>
     <string name="remove_recipe_from_recipe_list_alert_title">Remove Recipe</string>
+    <string name="remove_ingredient_measurement_alert_title">%s</string>
+    <string name="remove_ingredient_measurement_alert_message">Are you sure you want to remove the ingredient?</string>
 
     <!-- misc -->
     <string name="currency">kr.</string>
