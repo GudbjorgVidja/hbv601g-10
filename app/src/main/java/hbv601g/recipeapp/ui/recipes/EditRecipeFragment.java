@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -161,8 +162,19 @@ public class EditRecipeFragment extends Fragment {
             return null;
         }
 
+        EditText temp = mBinding.recipeName;
+        String title =  temp.getText().toString();
+
+        if(title.isEmpty()){
+            temp.setError(getString(R.string.recipe_name_is_empty_error));
+            return null;
+        }
+        else{
+            temp.setError(null);
+        }
+        
         Recipe upRes = new Recipe();
-        upRes.setTitle(mBinding.recipeName.getText().toString());
+        upRes.setTitle(title);
         upRes.setInstructions(mBinding.instructions.getText().toString());
         upRes.setPrivate(mBinding.isPrivate.isChecked());
 

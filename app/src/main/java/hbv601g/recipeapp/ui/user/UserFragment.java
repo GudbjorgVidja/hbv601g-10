@@ -215,7 +215,9 @@ public class UserFragment extends Fragment{
                 else {
                     if(mUserService.validatePassword(activity.getUserId(), password)){
                         dialog.dismiss();
-                        mNavController.navigate(R.id.nav_change_password);
+                        Bundle bundle = new Bundle();
+                        bundle.putString(getString(R.string.selected_old_password), password);
+                        mNavController.navigate(R.id.nav_change_password, bundle);
                     }
                     else {
                         oldPass.setText("");

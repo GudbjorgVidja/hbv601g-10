@@ -55,7 +55,7 @@ public class LoginFragment extends Fragment{
                     mainActivity.makeToast(R.string.login_failed_toast, Toast.LENGTH_LONG);
                 }
                 else{
-                    mainActivity.updateCurrentUser(user);
+                    mainActivity.updateCurrentUser(user, passwordInput.getText().toString());
                     navController.popBackStack();
                     navController.popBackStack();
                     Bundle bundle = new Bundle();

@@ -2,6 +2,7 @@ package hbv601g.recipeapp.ui.user;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,7 +45,7 @@ public class ChangePasswordFragment extends Fragment {
         );
 
         mBinding.confirmNewPassword.setOnClickListener(v ->{
-            confirmPass();
+            confirmPass(mainActivity);
         });
 
         mBinding.cancelNewPassword.setOnClickListener(v -> {
@@ -75,24 +76,37 @@ public class ChangePasswordFragment extends Fragment {
 
     /**
      * Creates and displays a dialog to ask the user to confirm their intention to change their password
+     * @param activity The MainActivity of the application.
      */
-    private void confirmAlert(){
+    private void confirmAlert(MainActivity activity){
         AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());
         alert.setTitle(R.string.change_password_dialog_title);
         alert.setMessage(R.string.change_password_alert_message);
 
+        if(getArguments() == null ||
+                getArguments().getString(getString(R.string.selected_old_password)) == null
+        ){
+            Log.e("ChangePassword", "Missing old password");
+            activity.makeToast(R.string.password_change_fail_toast, Toast.LENGTH_LONG);
+            mNavController.popBackStack();
+            return;
+        }
+
         alert.setPositiveButton(android.R.string.yes, (dialog, which) -> {
             mUserService.changePassword
                     (
-                            ((MainActivity) getActivity()).getUserId(),
-                            mBinding.newPasswordInput.getText().toString()
+                            activity.getUserId(),
+                            mBinding.newPasswordInput.getText().toString(),
+                            getArguments().getString(getString(R.string.selected_old_password))
                     );
 
+            activity.makeToast(R.string.password_change_success_toast, Toast.LENGTH_LONG);
             mNavController.popBackStack();
         });
 
         alert.setNegativeButton(android.R.string.no, (dialog, which) -> {
             mBinding.validateNewPasswordInput.setText("");
+            activity.makeToast(R.string.password_change_fail_toast, Toast.LENGTH_LONG);
         });
 
         alert.show();
@@ -101,8 +115,9 @@ public class ChangePasswordFragment extends Fragment {
 
     /**
      * Checks if the new password is valid. If it is, the password for the user is changed.
+     * @param activity The MainActivity of the application.
      */
-    private void confirmPass(){
+    private void confirmPass(MainActivity activity){
         try {
             String nPass = mBinding.newPasswordInput.getText().toString();
             if(nPass.isEmpty()){
@@ -111,7 +126,7 @@ public class ChangePasswordFragment extends Fragment {
             }
 
             if(nPass.equals(mBinding.validateNewPasswordInput.getText().toString())){
-                confirmAlert();
+                confirmAlert(activity);
             }
             else {
                 newPassInvalid(false);
@@ -120,5 +135,11 @@ public class ChangePasswordFragment extends Fragment {
         catch (NullPointerException e){
             newPassInvalid(false);
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mBinding = null;
     }
 }
