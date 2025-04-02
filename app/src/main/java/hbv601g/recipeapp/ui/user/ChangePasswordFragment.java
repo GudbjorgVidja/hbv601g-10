@@ -73,6 +73,7 @@ public class ChangePasswordFragment extends Fragment {
 
     /**
      * Creates a dialog let ask if the user if sure if they want to change there password.
+     * @param activity The MainActivity of the application.
      */
     private void confirmAlert(MainActivity activity){
         AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());
@@ -112,6 +113,7 @@ public class ChangePasswordFragment extends Fragment {
     /**
      * The function checks if the new password is valid if it is the password for the user is
      * change.
+     * @param activity The MainActivity of the application.
      */
     private void confirmPass(MainActivity activity){
         try {
