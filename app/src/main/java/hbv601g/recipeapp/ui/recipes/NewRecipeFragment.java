@@ -140,7 +140,13 @@ public class NewRecipeFragment extends Fragment {
             MainActivity activity , IngredientMeasurementAdapter adapter, IngredientMeasurement ingerd
     ) {
         AlertDialog.Builder alert = new AlertDialog.Builder(activity);
-        alert.setTitle(R.string.remove_ingredient_measurement_alert_title);
+        alert.setTitle(
+                String.format(
+                        getString(R.string.remove_ingredient_measurement_alert_title),
+                        ingerd.getIngredient().getTitle()
+                )
+        );
+
         alert.setMessage(R.string.remove_ingredient_measurement_alert_message);
 
         alert.setPositiveButton(R.string.remove_button, (dialog, which) -> {

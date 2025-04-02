@@ -1,5 +1,6 @@
 package hbv601g.recipeapp.ui.recipes;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -167,5 +168,36 @@ public class EditRecipeFragment extends Fragment {
         upRes.setPrivate(mBinding.isPrivate.isChecked());
 
         return mRecipeService.updateRecipe(upRes, mRecipe.getId(), mList);
+    }
+
+    /**
+     * Make a Dialog, that asks the user if they want to remove the ingredient
+     * @param activity The MainActivity of the app
+     * @param adapter Is the adapter for IngredientMeasurement list,
+     * @param ingerd Is the IngredientMeasurement that is being removed
+     */
+    private void removeIngredientAlert
+    (
+            MainActivity activity , IngredientMeasurementAdapter adapter, IngredientMeasurement ingerd
+    ) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(activity);
+        alert.setTitle(
+                String.format(
+                        getString(R.string.remove_ingredient_measurement_alert_title),
+                        ingerd.getIngredient().getTitle()
+                )
+        );
+
+        alert.setMessage(R.string.remove_ingredient_measurement_alert_message);
+
+        alert.setPositiveButton(R.string.remove_button, (dialog, which) -> {
+            mList.remove(ingerd);
+
+            adapter.setList(mList);
+            adapter.notifyDataSetChanged();
+        });
+
+        alert.setNegativeButton(R.string.cancel_button_text, null);
+        alert.show();
     }
 }
