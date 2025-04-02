@@ -136,4 +136,10 @@ public class ChangePasswordFragment extends Fragment {
             newPassInvalid(false);
         }
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mBinding = null;
+    }
 }
