@@ -34,6 +34,7 @@ import hbv601g.recipeapp.service.RecipeService;
 public class EditRecipeFragment extends Fragment {
     private RecipeService mRecipeService;
     private FragmentEditRecipeBinding mBinding;
+    private IngredientMeasurementAdapter mAdapter;
     private List<IngredientMeasurement> mList;
     private Recipe mRecipe;
 
@@ -74,16 +75,27 @@ public class EditRecipeFragment extends Fragment {
 
         setEdit(mainActivity);
         List<IngredientMeasurement> newIngredients = new ArrayList<>();
+        List<IngredientMeasurement> removedIngredients = new ArrayList<>();
 
         mBinding.addIngredient.setOnClickListener(view -> {
             navController.navigate(R.id.nav_add_ingredient_measurement_to_recipe);
         });
 
+        mBinding.ingredients.setOnItemClickListener((parent, view, position, id) -> {
+            removeIngredientAlert(
+                    mainActivity,
+                    removedIngredients,
+                    (IngredientMeasurement) parent.getItemAtPosition(position)
+            );
+        });
+
         mBinding.cancelEditRecipe.setOnClickListener(view -> {
+            if(!removedIngredients.isEmpty()){
+                mList.addAll(removedIngredients);
+            }
+
             if(!newIngredients.isEmpty()){
-                for (IngredientMeasurement x : newIngredients){
-                    mList.remove(x);
-                }
+                mList.removeAll(newIngredients);
             }
             navController.popBackStack();
         });
@@ -132,28 +144,27 @@ public class EditRecipeFragment extends Fragment {
         if(mList == null){mList = new ArrayList<>();}
 
         ListView ingredientsList = mBinding.ingredients;
-        IngredientMeasurementAdapter adapter = new IngredientMeasurementAdapter
+        mAdapter = new IngredientMeasurementAdapter
                 (
                         activity.getApplicationContext(),
                         mList
                 );
-        ingredientsList.setAdapter(adapter);
+        ingredientsList.setAdapter(mAdapter);
 
         mBinding.isPrivate.setChecked(mRecipe.isPrivate());
-
 
         // setting the listview height to fit the contents
 
         int totalHeight = 0;
 
-        for (int i = 0; i < adapter.getCount(); i++) {
-            View listItem = adapter.getView(i, null, ingredientsList);
+        for (int i = 0; i < mAdapter.getCount(); i++) {
+            View listItem = mAdapter.getView(i, null, ingredientsList);
             listItem.measure(0, 0);
             totalHeight += listItem.getMeasuredHeight();
         }
 
         ViewGroup.LayoutParams params = ingredientsList.getLayoutParams();
-        params.height = totalHeight + (ingredientsList.getDividerHeight() * (adapter.getCount() - 1));
+        params.height = totalHeight + (ingredientsList.getDividerHeight() * (mAdapter.getCount() - 1));
         ingredientsList.setLayoutParams(params);
         ingredientsList.requestLayout();
 
@@ -192,12 +203,15 @@ public class EditRecipeFragment extends Fragment {
     /**
      * Make a Dialog, that asks the user if they want to remove the ingredient
      * @param activity The MainActivity of the app
-     * @param adapter Is the adapter for IngredientMeasurement list,
+     * @param removeList Is a list that contains all IngredientMeasurement that have been removed
+     *                   in the edit so far.
      * @param ingerd Is the IngredientMeasurement that is being removed
      */
     private void removeIngredientAlert
     (
-            MainActivity activity , IngredientMeasurementAdapter adapter, IngredientMeasurement ingerd
+            MainActivity activity ,
+            List<IngredientMeasurement> removeList,
+            IngredientMeasurement ingerd
     ) {
         AlertDialog.Builder alert = new AlertDialog.Builder(activity);
         alert.setTitle(
@@ -211,9 +225,10 @@ public class EditRecipeFragment extends Fragment {
 
         alert.setPositiveButton(R.string.remove_button, (dialog, which) -> {
             mList.remove(ingerd);
+            removeList.add(ingerd);
 
-            adapter.setList(mList);
-            adapter.notifyDataSetChanged();
+            mAdapter.setList(mList);
+            mAdapter.notifyDataSetChanged();
         });
 
         alert.setNegativeButton(R.string.cancel_button_text, null);
