@@ -1,5 +1,6 @@
 package hbv601g.recipeapp.ui.recipes;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -80,6 +81,13 @@ public class NewRecipeFragment extends Fragment {
         });
 
         ListView ingredientsList = mBinding.ingredients;
+
+        ingredientsList.setOnItemClickListener((parent, view, position, id) -> {
+            removeIngredientAlert(
+                    mainActivity, adapter, (IngredientMeasurement) parent.getItemAtPosition(position)
+            );
+        });
+
         getParentFragmentManager().setFragmentResultListener(getString(R.string.request_ingredient_measurement),
                 this, (requestKey, result) -> {
             IngredientMeasurement ingredientMeasurement
@@ -119,6 +127,31 @@ public class NewRecipeFragment extends Fragment {
         return  mRecipeService.createRecipe(
                 title,instructions, ingredientMeasurementList, isPrivate
         );
+    }
+
+    /**
+     * Make a Dialog, that asks the user if they want to remove the ingredient
+     * @param activity The MainActivity of the app
+     * @param adapter Is the adapter for IngredientMeasurement list,
+     * @param ingerd Is the IngredientMeasurement that is being removed
+     */
+    private void removeIngredientAlert
+    (
+            MainActivity activity , IngredientMeasurementAdapter adapter, IngredientMeasurement ingerd
+    ) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(activity);
+        alert.setTitle(R.string.remove_ingredient_measurement_alert_title);
+        alert.setMessage(R.string.remove_ingredient_measurement_alert_message);
+
+        alert.setPositiveButton(R.string.remove_button, (dialog, which) -> {
+            mList.remove(ingerd);
+
+            adapter.setList(mList);
+            adapter.notifyDataSetChanged();
+        });
+
+        alert.setNegativeButton(R.string.cancel_button_text, null);
+        alert.show();
     }
 
     @Override
