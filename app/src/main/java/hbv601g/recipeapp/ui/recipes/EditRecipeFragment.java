@@ -97,11 +97,6 @@ public class EditRecipeFragment extends Fragment {
 
                 navController.popBackStack();
             }
-            else{
-                Toast.makeText(
-                        getActivity(), R.string.recipe_edit_unknown_error, Toast.LENGTH_LONG
-                ).show();
-            }
         });
 
         getParentFragmentManager().setFragmentResultListener(getString(R.string.request_ingredient_measurement),
