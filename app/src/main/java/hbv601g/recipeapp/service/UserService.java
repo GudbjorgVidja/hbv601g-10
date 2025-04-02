@@ -44,7 +44,9 @@ public class UserService extends Service {
      * @param callback - a callback to the fragment
      */
     public void deleteAccount(long uid, String password, CustomCallback<User> callback) {
-        // TODO: ath hvort það þurfi að sækja userinn. Held ekki.
+        // TODO: User bara eytt ef rétt lykilorð, en bakendi sýnir ekki hvort það gekk.
+        //  Bæta því við? þá má sleppa því að sækja user
+
         getUser(uid, uid, new CustomCallback<>() {
             @Override
             public void onSuccess(User user) {
@@ -234,7 +236,6 @@ public class UserService extends Service {
         String url = String.format("user/pantry/add?iid=%s&unit=%s&qty=%s&uid=%s", iid,
                 unit.name(), qty, uid);
 
-        IngredientMeasurement ingredient = null;
 
         mNetworkingService.putRequest(url, null, new CustomCallback<>() {
             @Override
@@ -291,19 +292,16 @@ public class UserService extends Service {
      * @param newPass the new password
      */
     public void changePassword(long uid, String newPass, CustomCallback<Boolean> callback){
-        // TODO: kannski senda gamla lykilorðið inn líka frekar en að sækja það oftar?
-        //Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-
         getUser(uid, uid, new CustomCallback<>() {
             @Override
             public void onSuccess(User user) {
                 String url = "user/changePassword?uid=" + uid
                         + "&newPassword=" + newPass
                         + "&oldPassword=" + user.getPassword();
+
                 mNetworkingService.patchRequest(url, null, new CustomCallback<>() {
                     @Override
                     public void onSuccess(JsonElement jsonElement) {
-                        // TODO: ath, breytir lykilorði ef rétt inntak en skilar engu
                         callback.onSuccess(null);
                     }
 

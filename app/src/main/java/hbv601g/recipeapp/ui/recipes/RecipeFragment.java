@@ -60,8 +60,7 @@ public class RecipeFragment extends Fragment {
         mRecipeService = new RecipeService(new NetworkingService(), mainActivity.getUserId());
         mRecipeListService = new RecipeListService(new NetworkingService(), mainActivity.getUserId());
 
-        if (getArguments() == null ||
-                getArguments().getParcelable(getString(R.string.selected_recipe)) == null){
+        if (getArguments() == null || getArguments().getParcelable(getString(R.string.selected_recipe)) == null){
             Log.e("RecipeFragment", "No recipe to view");
             return root;
         }
@@ -150,6 +149,7 @@ public class RecipeFragment extends Fragment {
         String tmp = mRecipe.getCreatedBy()==null ? "Unknown" : mRecipe.getCreatedBy().getUsername();
         mBinding.recipeCreator.setText(tmp);
 
+        // TODO: harðkóðaðir strengir
         tmp = mRecipe.getInstructions() == null ? "No instructions" : mRecipe.getInstructions();
         mBinding.recipeInstructions.setText(tmp);
 
@@ -176,6 +176,7 @@ public class RecipeFragment extends Fragment {
 
                 @Override
                 public void onFailure(Double ppc) {
+                    // TODO: á að gera visibility á viðmótshlutnum gone, nú er eyða?
                     Log.d("Callback", "Failed to get personalized purchase cost");
                 }
             });
@@ -231,6 +232,7 @@ public class RecipeFragment extends Fragment {
                 if(getActivity() == null) return;
                 if(recipeLists.isEmpty()){
                     Log.d("Callback", "No lists found");
+                    // TODO: harðkóðaður texti
                     requireActivity().runOnUiThread(() ->
                             Toast.makeText(mainActivity, "No lists found", Toast.LENGTH_LONG).show());
 
@@ -272,7 +274,9 @@ public class RecipeFragment extends Fragment {
             @Override
             public void onFailure(List<RecipeList> recipeLists) {
                 if(getActivity() == null) return;
-                requireActivity().runOnUiThread(() -> Toast.makeText(mainActivity, "Something went wrong, No lists found", Toast.LENGTH_LONG).show());
+                // TODO: harðkóðaður texti
+                requireActivity().runOnUiThread(() ->
+                        Toast.makeText(mainActivity, "Something went wrong, No lists found", Toast.LENGTH_LONG).show());
             }
         });
 

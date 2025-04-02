@@ -79,7 +79,6 @@ public class ChangePasswordFragment extends Fragment {
         alert.setTitle(R.string.change_password_dialog_title);
         alert.setMessage(R.string.change_password_alert_message);
 
-        // TODO: nota mainActivity tilviksbreytu?
         alert.setPositiveButton(android.R.string.yes, (dialog, which) -> {
             mUserService.changePassword(((MainActivity) getActivity()).getUserId(),
                     mBinding.newPasswordInput.getText().toString(),
@@ -87,12 +86,14 @@ public class ChangePasswordFragment extends Fragment {
                         @Override
                         public void onSuccess(Boolean aBoolean) {
                             // allt gekk vel
+                            if(getActivity()==null) return;
                             requireActivity().runOnUiThread(() -> mNavController.popBackStack());
                         }
 
                         @Override
                         public void onFailure(Boolean aBoolean) {
                             // onFailure í networking
+                            if(getActivity() == null) return;;
                             requireActivity().runOnUiThread(() -> mNavController.popBackStack());
                         }
                     });
@@ -109,8 +110,8 @@ public class ChangePasswordFragment extends Fragment {
 
 
     /**
-     * The function checks if the new password is valid if it is the password for the user is
-     * change.
+     * Checks if the new password is valid, if it is the password for the user is
+     * changed.
      */
     private void confirmPass(){
         try {

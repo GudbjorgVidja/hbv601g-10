@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
@@ -93,9 +92,6 @@ public class RecipesFragment extends Fragment {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 searchForRec();
-                //mRecipeList = searchForRec();
-                //recipeAdapter.setList(mRecipeList);
-                //recipeAdapter.notifyDataSetChanged();
                 return true;
             }
 
@@ -103,9 +99,6 @@ public class RecipesFragment extends Fragment {
             public boolean onQueryTextChange(String newText) {
                 if (newText.isEmpty()) {
                     searchForRec();
-                    //mRecipeList = searchForRec();
-                    //recipeAdapter.setList(mRecipeList);
-                    //recipeAdapter.notifyDataSetChanged();
                 }
                 return true;
             }
@@ -161,7 +154,7 @@ public class RecipesFragment extends Fragment {
                     Log.d("Callback", "Failed to get all ordered recipes");
                 }
             });
-            //updateListView(mRecipeService.getAllOrderedRecipes())
+
         }
         else if(mSelected.equals(getString(R.string.sort_title))) {
             mRecipeService.getAllOrderedRecipesByTitle(new CustomCallback<>() {
@@ -177,26 +170,20 @@ public class RecipesFragment extends Fragment {
 
                 @Override
                 public void onFailure(List<Recipe> recipes) {
+                    // TODO: Gera toast?
                     Log.d("Callback", "Failed to get all recipes ordered by title");
                 }
             });
-            //updateListView(mRecipeService.getAllOrderedRecipesByTitle())
         }
         else if(mSelected.equals(getString(R.string.filter_clear))){
             getAllRecipes();
-            /*
-            try {
-                mRecipeList = mRecipeService.getAllRecipes();
-                updateListView(mRecipeList);
-            } catch (NullPointerException e) {
-                mRecipeList = new ArrayList<>();
-                mainActivity.makeToast(R.string.get_recipes_failed_toast, Toast.LENGTH_LONG);
-            }
-             */
         }
     }
 
 
+    /**
+     * Gets all recipes available to the user, and displays them in the user interface
+     */
     private void getAllRecipes(){
         mRecipeService.getAllRecipes(new CustomCallback<>() {
             @Override
@@ -205,9 +192,6 @@ public class RecipesFragment extends Fragment {
                 requireActivity().runOnUiThread(() -> {
                     mRecipeList = recipes;
                     updateListView();
-                    //mRecipeAdapter.notifyDataSetChanged();
-                    //makeRecipesView(mainActivity, navController);
-                    // eða updateListView????
                 });
             }
 
@@ -215,8 +199,8 @@ public class RecipesFragment extends Fragment {
             public void onFailure(List<Recipe> recipes) {
                 if(getActivity() == null) return;
                 requireActivity().runOnUiThread(() -> {
-                    mRecipeList = recipes; // Getum líka sleppt uppfærslu
-                    updateListView(); // Viljum við þetta?
+                    mRecipeList = recipes;
+                    updateListView();
                     mMainActivity.makeToast(R.string.get_recipes_failed_toast, Toast.LENGTH_LONG);
                 });
             }
@@ -249,13 +233,16 @@ public class RecipesFragment extends Fragment {
             mRecipeService.getAllRecipesUnderTPC(maxTPC + 1, new CustomCallback<>() {
                 @Override
                 public void onSuccess(List<Recipe> recipes) {
+                    if(getActivity() == null) return;
                     requireActivity().runOnUiThread(() -> {
-                        updateListView(recipes);
+                        mRecipeList = recipes;
+                        updateListView();
                     });
                 }
 
                 @Override
                 public void onFailure(List<Recipe> recipes) {
+                    if(getActivity() == null) return;
                     requireActivity().runOnUiThread(() ->
                             mainActivity.makeToast(R.string.get_recipes_failed_toast, Toast.LENGTH_SHORT));
                 }
@@ -269,7 +256,7 @@ public class RecipesFragment extends Fragment {
 
 
     /**
-     * Alerti dialog that allows the user to input a maximum TIC to tilfet the recipe list by.
+     * Alert dialog that allows the user to input a maximum TIC to filter the recipe list by.
      * The filtered list is then sent to the UI. The user can only input numbers.
      * @param mainActivity - The MainActivity of the application
      */
@@ -278,7 +265,7 @@ public class RecipesFragment extends Fragment {
         alert.setTitle(getString(R.string.title_filter_tic));
 
         final EditText input = new EditText(mainActivity);
-        input.setHint("Enter max TIC");
+        input.setHint("Enter max TIC"); // TODO: harðkóðaður texti
         input.setInputType(InputType.TYPE_CLASS_NUMBER);
         alert.setView(input);
 
@@ -293,13 +280,17 @@ public class RecipesFragment extends Fragment {
             mRecipeService.getAllRecipesUnderTIC(maxTIC + 1, new CustomCallback<>() {
                 @Override
                 public void onSuccess(List<Recipe> recipes) {
+                    // TODO: skipta þessari if-setningu út fyrir try-catch? (á öllum stöðum)
+                    if(getActivity() == null) return;
                     requireActivity().runOnUiThread(() -> {
-                        updateListView(recipes);
+                        mRecipeList = recipes;
+                        updateListView();
                     });
                 }
 
                 @Override
                 public void onFailure(List<Recipe> recipes) {
+                    if(getActivity() == null) return;
                     requireActivity().runOnUiThread(() ->
                             mainActivity.makeToast(R.string.get_recipes_failed_toast, Toast.LENGTH_SHORT));
                 }
@@ -313,14 +304,8 @@ public class RecipesFragment extends Fragment {
 
 
     /**
-     * Method that sets the recipe list displayed in the Recipe ListView.
-     * @param newList - New list to send to the ListView
+     * Updates the list of recipes shown in the user interface. Called after the list itself changes.
      */
-    private void updateListView(List<Recipe> newList) {
-        RecipeAdapter adapter = new RecipeAdapter(requireContext(), newList);
-        mRecipeListView.setAdapter(adapter);
-    }
-
     private void updateListView(){
         mRecipeAdapter.setList(mRecipeList);
         mRecipeAdapter.notifyDataSetChanged();
@@ -328,10 +313,8 @@ public class RecipesFragment extends Fragment {
 
 
     /**
-     * This function Search for the recipe with the title that the user input in the Search bar.
-     *
-     * @return a list of recipe that have the title of the recipe in the Search bar or if the
-     *         Search bar is empty then it returns all of the recipes that the user can see.
+     * Searches for recipes with titles matching the input in the search bar, and displays them in
+     * the user interface. If the searchbar is empty, all recipes available to the user are shown.
      */
     private void searchForRec() {
         String input = mBinding.recipeSearchBar.getQuery().toString();
@@ -350,9 +333,9 @@ public class RecipesFragment extends Fragment {
                 public void onFailure(List<Recipe> recipes) {
                     if(getActivity() == null) return;
                     requireActivity().runOnUiThread(() -> {
-                        mRecipeList = recipes; // Getum líka sleppt uppfærslu
-                        updateListView(); // Viljum við þetta?
-                        // TODO: eða getAll hér?
+                        // tómur listi sýndur, eitthvað klikkaði
+                        mRecipeList = recipes;
+                        updateListView();
                         mMainActivity.makeToast(R.string.get_recipes_failed_toast, Toast.LENGTH_LONG);
                     });
                 }
@@ -362,16 +345,6 @@ public class RecipesFragment extends Fragment {
 
         else getAllRecipes();
 
-
-        // TODO: Viljum við byrja að setja alltaf all recipes, og svo leita?
-        /*
-        List<Recipe> searchResult = mRecipeService.getAllRecipes();
-
-        if (!input.isEmpty()) searchResult = mRecipeService.SearchRecipe(input);
-
-        if (searchResult == null) searchResult = new ArrayList<>();
-        return searchResult;
-         */
     }
 
     @Override

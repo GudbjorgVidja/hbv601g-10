@@ -82,14 +82,13 @@ public class RecipeListService extends Service {
         mNetworkingService.getRequest(url, new CustomCallback<>() {
             @Override
             public void onSuccess(JsonElement jsonElement) {
-                // TODO: getur jsonElement verið null onSuccess?
                 if(jsonElement != null){
                     Log.d("Callback", "onSuccess í service");
                     Gson gson = new GsonBuilder().create();
                     Type collectionType = new TypeToken<Collection<RecipeList>>() {}.getType();
                     callback.onSuccess(gson.fromJson(jsonElement, collectionType));
                 }
-                else callback.onSuccess(new ArrayList<>());
+                else callback.onFailure(new ArrayList<>());
             }
 
             @Override
@@ -102,7 +101,6 @@ public class RecipeListService extends Service {
     }
 
 
-    // TODO: á þessi að skila listanum???
     /**
      * Adds the given recipe to the given recipe list.
      *
@@ -202,40 +200,38 @@ public class RecipeListService extends Service {
      *
      * @param list The RecipeList the recipe should be removed from.
      * @param recipe The Recipe that should be removed from the list.
+     * @param callback A callback to the fragment, returning the updated list on success
+     *                 or the original list on failure
      * @return true if the recipe was removed, otherwise false
      */
     public void removeRecipeFromList(RecipeList list, Recipe recipe,
-                                     CustomCallback<Boolean> callback) {
+                                     CustomCallback<RecipeList> callback) {
 
         String url = String.format("list/id/%s/recipe/%s/remove?uid=%s",
                 list.getId(), recipe.getId(), mUid);
 
+        int originalSize = list.getRecipes().size();
         mNetworkingService.patchRequest(url, null, new CustomCallback<>() {
             @Override
             public void onSuccess(JsonElement jsonElement) {
-                // TODO: ath hvort það sé eins ef allt gekk og ef ekki. Skoða fyrri útfærslu
-                // held að jsonElement sé listinn, skila honum frekar!
-                Log.d("Callback", "recipe list returned on removal: " + jsonElement);
-                callback.onSuccess(null);
+                if (jsonElement != null) {
+                    Gson gson = new GsonBuilder().create();
+                    RecipeList returnedList = gson.fromJson(jsonElement, RecipeList.class);
+                    Log.d("Recipe list", "removeRecipeFromList: " + jsonElement);
+
+                    if(returnedList.getRecipes().size() != originalSize)
+                        callback.onSuccess(returnedList);
+                    else onFailure(null);
+                }
+                else onFailure(null);
             }
 
             @Override
             public void onFailure(JsonElement jsonElement) {
-                callback.onFailure(null);
-
+                Log.d("Networking exception", "Failed to remove recipe from list");
+                callback.onFailure(list);
             }
         });
-
-
-        /*
-        boolean res = false;
-        if (mJsonElement != null) {
-            res = mJsonElement.isJsonObject();
-            Log.d("API", "recipe removed: " + res);
-        }
-        return res;
-         */
-
 
     }
 
@@ -244,6 +240,7 @@ public class RecipeListService extends Service {
      *
      * @param id the id of the recipe list being renamed
      * @param newTitle New title of the recipe list
+     * @param callback onSuccess if the title was changed, otherwise onFailure
      */
     public void updateRecipeListTitle(long id, String newTitle, CustomCallback<Boolean> callback) {
         String url = String.format("list/updateTitle/%s?uid=%s", id, mUid);

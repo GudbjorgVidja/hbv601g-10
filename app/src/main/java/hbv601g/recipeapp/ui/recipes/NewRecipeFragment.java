@@ -73,8 +73,7 @@ public class NewRecipeFragment extends Fragment {
                     = result.getParcelable(getString(R.string.selected_ingredient_measurement));
 
             mIngredientList.add(ingredientMeasurement);
-            //mList.add(ingredientMeasurement);
-            View listItem = adapter.getView(adapter.getCount()-1, null, mBinding.ingredients);
+            View listItem = adapter.getView(adapter.getCount() - 1, null, mBinding.ingredients);
             listItem.measure(0, 0);
             mTotalHeight += listItem.getMeasuredHeight();
 
@@ -100,6 +99,7 @@ public class NewRecipeFragment extends Fragment {
 
         ListAdapter ingredients= mBinding.ingredients.getAdapter();
         int size = ingredients.getCount();
+        // TODO: nota IngredientMeasurementAdapter tilviksbreytu og hafa getList aðferð?
         for(int i = 0; i < size; i++){
             ingredientMeasurementList.add((IngredientMeasurement) ingredients.getItem(i));
         }
@@ -118,6 +118,7 @@ public class NewRecipeFragment extends Fragment {
             public void onFailure(Recipe recipe) {
                 if(getActivity() == null) return;
                 requireActivity().runOnUiThread(() -> {
+                    // TODO: Á að skoða hvar villan var eða hafa bara else gaurinn?
                     if(recipe != null){
                         Log.d("Callback", "Recipe created but failed to add ingredient measurements");
                         Toast.makeText(getActivity(), R.string.create_recipe_ingredients_failed_toast, Toast.LENGTH_LONG).show();

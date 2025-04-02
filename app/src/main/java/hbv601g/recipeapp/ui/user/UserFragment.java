@@ -65,8 +65,6 @@ public class UserFragment extends Fragment{
         mUserService = new UserService(new NetworkingService());
         mRecipeListService = new RecipeListService(new NetworkingService(), mainActivity.getUserId());
 
-        //if(mRecipeLists == null) mRecipeLists = new ArrayList<>();
-
 
         getProfileInfo(mainActivity);
 
@@ -153,7 +151,6 @@ public class UserFragment extends Fragment{
         mRecipeListService.getUserRecipeLists(mUidOfProfile, new CustomCallback<>() {
             @Override
             public void onSuccess(List<RecipeList> recipeLists) {
-                Log.d("Callback", "onSuccess getting user lists");
                 if(getActivity() == null) return;
                 mRecipeLists = recipeLists;
                 requireActivity().runOnUiThread(() -> updateListView());
@@ -162,25 +159,15 @@ public class UserFragment extends Fragment{
 
             @Override
             public void onFailure(List<RecipeList> recipeLists) {
-                Log.d("Callback", "onSuccess getting user lists");
                 if(getActivity() == null) return;
                 mRecipeLists = recipeLists;
                 requireActivity().runOnUiThread(() -> {
                     mainActivity.makeToast(R.string.null_recipe_lists, Toast.LENGTH_LONG);
                     updateListView();
                 });
-                // TODO: notify hér líka?
+
             }
         });
-        /*
-        try {
-            mRecipeLists = mRecipeListService.getUserRecipeLists(mUidOfProfile);
-        } catch(NullPointerException e) {
-            mRecipeLists = new ArrayList<>();
-            mainActivity.makeToast(R.string.null_recipe_lists, Toast.LENGTH_LONG);
-        }
-         */
-
 
 
         mRecipeListListView.setOnItemClickListener((parent, view, position, id) -> {
@@ -196,6 +183,7 @@ public class UserFragment extends Fragment{
         mRecipeListAdapter.setRecipeLists(mRecipeLists);
         mRecipeListAdapter.notifyDataSetChanged();
     }
+
     /**
      * Sets the visibility of UI components specific to users viewing their own profiles
      * (but not when users are viewing profiles of other users). Sets listeners specific
@@ -214,11 +202,8 @@ public class UserFragment extends Fragment{
         mBinding.deleteUserButton.setOnClickListener(v -> deleteUserAlert(mainActivity));
         mBinding.createRecipeListButton.setOnClickListener(
                 v -> mNavController.navigate(R.id.navigation_new_recipe_list));
-        //}
 
-        mBinding.changePasswordButton.setOnClickListener(v -> {
-            changePasswordAlert(mainActivity);
-        });
+        mBinding.changePasswordButton.setOnClickListener(v -> changePasswordAlert(mainActivity));
 
         mBinding.usernameDisplay.setText(mainActivity.getUserName());
 
@@ -271,6 +256,7 @@ public class UserFragment extends Fragment{
                     mUserService.validatePassword(activity.getUserId(), password, new CustomCallback<>() {
                         @Override
                         public void onSuccess(Boolean isValid) {
+                            if(getActivity() == null) return;
                             requireActivity().runOnUiThread(() -> {
                                 if(isValid){
                                     dialog.dismiss();
@@ -287,7 +273,8 @@ public class UserFragment extends Fragment{
 
                         @Override
                         public void onFailure(Boolean aBoolean) {
-
+                            // TODO: gera toast?
+                            Log.d("Callback", "failed to validate password");
                         }
                     });
 
@@ -321,7 +308,6 @@ public class UserFragment extends Fragment{
                 String password = editText.getText().toString().trim();
                 if (password.isEmpty()) editText.setError(getString(R.string.field_required_error));
                 else{
-
                     mUserService.deleteAccount(mainActivity.getUserId(), password, new CustomCallback<>() {
                         @Override
                         public void onSuccess(User user) {
@@ -349,28 +335,6 @@ public class UserFragment extends Fragment{
         alertDialog.show();
     }
 
-
-    /**
-     * Updates the recipe lists in the ui
-     * //@param mainActivity - the MainActivity instance
-     * //@param navController - the navController instance
-     */
-    /*
-    private void makeView(MainActivity mainActivity, NavController navController){
-        ListView mRecipeListListView = mBinding.userRecipeLists;
-
-        RecipeListAdapter recipeListAdapter = new RecipeListAdapter(mainActivity.getApplicationContext(), mRecipeLists);
-        mRecipeListListView.setAdapter(recipeListAdapter);
-
-        mRecipeListListView.setOnItemClickListener((parent, view, position, id) -> {
-            RecipeList recipeList = (RecipeList) parent.getItemAtPosition(position);
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(getString(R.string.selected_recipe_list), recipeList);
-            navController.navigate(R.id.nav_recipe_list, bundle);
-        });
-    }
-
-     */
 
     @Override
     public void onDestroyView() {

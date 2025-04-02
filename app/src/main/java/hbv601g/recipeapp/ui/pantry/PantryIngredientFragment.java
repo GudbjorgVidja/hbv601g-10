@@ -75,12 +75,11 @@ public class PantryIngredientFragment extends Fragment {
      */
     private AlertDialog.Builder makeAlert(NavController navController, MainActivity mainActivity) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());
-        alert.setTitle("Remove from pantry");
+        alert.setTitle("Remove from pantry"); // TODO: Harðkóðaður strengur x2
         alert.setMessage("Are you sure you want to remove this item from the pantry?");
         alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
 
-                // TODO: ath hvernig við viljum gera með Boolean gildin í callback (ekkert notað)
                 mUserService.removeIngredientFromPantry(mainActivity.getUserId(), mPantryIngredient.getIngredient().getId(), new CustomCallback<>() {
                     @Override
                     public void onSuccess(Boolean aBoolean) {

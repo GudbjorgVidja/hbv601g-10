@@ -47,8 +47,7 @@ public class IngredientsFragment extends Fragment {
 
         NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
 
-        long uid = mainActivity.getUserId();
-        mIngredientService = new IngredientService(new NetworkingService(), uid);
+        mIngredientService = new IngredientService(new NetworkingService(), mainActivity.getUserId());
 
 
         mIngredientService.getAllIngredients(new CustomCallback<>() {
