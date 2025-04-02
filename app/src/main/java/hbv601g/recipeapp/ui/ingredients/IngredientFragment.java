@@ -4,6 +4,7 @@ import static android.view.View.GONE;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -89,6 +90,8 @@ public class IngredientFragment extends Fragment{
      */
     private void makeRenameAlert(NavController navController, MainActivity mainActivity){
         final EditText editText = new EditText(mainActivity.getApplicationContext());
+        editText.setInputType(InputType.TYPE_CLASS_TEXT);
+
         AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());
         alert.setTitle(getString(R.string.rename_ingredient_alert_title));
         alert.setMessage(getString(R.string.rename_ingredient_alert_message));

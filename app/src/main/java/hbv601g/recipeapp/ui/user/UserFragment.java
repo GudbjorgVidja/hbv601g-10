@@ -5,7 +5,6 @@ import static android.view.View.VISIBLE;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
-import android.text.method.PasswordTransformationMethod;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -196,7 +195,7 @@ public class UserFragment extends Fragment{
      */
     public void changePasswordAlert(MainActivity activity){
         EditText oldPass = new EditText(activity.getApplicationContext());
-        oldPass.setTransformationMethod(PasswordTransformationMethod.getInstance());
+        oldPass.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
         AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());
         alert.setTitle(R.string.validate_current_password_title);
