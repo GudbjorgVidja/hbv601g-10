@@ -250,8 +250,9 @@ public class UserService extends Service {
 
         try {
             mNetworkingService.patchRequest(url, null);
+            Log.i("Changed password", "User " + uid + " has change there password");
         } catch (IOException e) {
-            Log.d("Networking exception", "Failed to change password");
+            Log.e("Networking exception", "Failed to change password");
         }
     }
 
