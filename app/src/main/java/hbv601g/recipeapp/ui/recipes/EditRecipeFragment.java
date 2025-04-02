@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -72,12 +73,18 @@ public class EditRecipeFragment extends Fragment {
         }
 
         setEdit(mainActivity);
+        List<IngredientMeasurement> newIngredients = new ArrayList<>();
 
         mBinding.addIngredient.setOnClickListener(view -> {
             navController.navigate(R.id.nav_add_ingredient_measurement_to_recipe);
         });
 
         mBinding.cancelEditRecipe.setOnClickListener(view -> {
+            if(!newIngredients.isEmpty()){
+                for (IngredientMeasurement x : newIngredients){
+                    mList.remove(x);
+                }
+            }
             navController.popBackStack();
         });
 
@@ -106,6 +113,7 @@ public class EditRecipeFragment extends Fragment {
             IngredientMeasurement ingredientMeasurement
                     = result.getParcelable(getString(R.string.selected_ingredient_measurement));
             mList.add(ingredientMeasurement);
+            newIngredients.add(ingredientMeasurement);
         });
 
         return root;
@@ -162,8 +170,19 @@ public class EditRecipeFragment extends Fragment {
             return null;
         }
 
+        EditText temp = mBinding.recipeName;
+        String title =  temp.getText().toString();
+
+        if(title.isEmpty()){
+            temp.setError(getString(R.string.recipe_name_is_empty_error));
+            return null;
+        }
+        else{
+            temp.setError(null);
+        }
+        
         Recipe upRes = new Recipe();
-        upRes.setTitle(mBinding.recipeName.getText().toString());
+        upRes.setTitle(title);
         upRes.setInstructions(mBinding.instructions.getText().toString());
         upRes.setPrivate(mBinding.isPrivate.isChecked());
 
@@ -199,5 +218,11 @@ public class EditRecipeFragment extends Fragment {
 
         alert.setNegativeButton(R.string.cancel_button_text, null);
         alert.show();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mBinding = null;
     }
 }
