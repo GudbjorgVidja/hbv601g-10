@@ -69,12 +69,18 @@ public class EditRecipeFragment extends Fragment {
         }
 
         setEdit(mainActivity);
+        List<IngredientMeasurement> newIngredients = new ArrayList<>();
 
         mBinding.addIngredient.setOnClickListener(view -> {
             navController.navigate(R.id.nav_add_ingredient_measurement_to_recipe);
         });
 
         mBinding.cancelEditRecipe.setOnClickListener(view -> {
+            if(!newIngredients.isEmpty()){
+                for (IngredientMeasurement x : newIngredients){
+                    mList.remove(x);
+                }
+            }
             navController.popBackStack();
         });
 
@@ -103,6 +109,7 @@ public class EditRecipeFragment extends Fragment {
             IngredientMeasurement ingredientMeasurement
                     = result.getParcelable(getString(R.string.selected_ingredient_measurement));
             mList.add(ingredientMeasurement);
+            newIngredients.add(ingredientMeasurement);
         });
 
         return root;
@@ -178,5 +185,11 @@ public class EditRecipeFragment extends Fragment {
         upRes.setPrivate(mBinding.isPrivate.isChecked());
 
         return mRecipeService.updateRecipe(upRes, mRecipe.getId(), mList);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mBinding = null;
     }
 }
