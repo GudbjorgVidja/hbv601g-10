@@ -101,24 +101,29 @@
             tools:ignore="UseSwitchCompatOrMaterialXml" />
 
         <Button
-            android:id="@+id/edit_recipe"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginBottom="41dp"
-            android:text="@string/edit_button_text"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <Button
             android:id="@+id/cancel_edit_recipe"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
+            android:layout_marginHorizontal="20dp"
             android:layout_marginBottom="41dp"
             android:text="@string/cancel_button_text"
+            style="@style/outlinedButton"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/edit_recipe" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/edit_recipe"/>
+
+        <Button
+            android:id="@+id/edit_recipe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginBottom="41dp"
+            android:text="@string/edit_button_text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/cancel_edit_recipe"/>
+
+
 
         <ListView
             android:id="@+id/ingredients"

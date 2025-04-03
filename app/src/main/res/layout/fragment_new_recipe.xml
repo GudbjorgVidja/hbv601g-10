@@ -93,29 +93,10 @@
             android:layout_height="49dp"
             android:layout_marginStart="20dp"
             android:layout_marginBottom="8dp"
-            android:text="Private?"
+            android:text="@string/privacy_selection_label"
             app:layout_constraintBottom_toTopOf="@+id/create_recipe"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <Button
-            android:id="@+id/create_recipe"
-            android:layout_width="123dp"
-            android:layout_height="54dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginBottom="41dp"
-            android:text="@string/create_button_text"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <Button
-            android:id="@+id/cancel_recipe"
-            android:layout_width="123dp"
-            android:layout_height="54dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginBottom="41dp"
-            android:text="@string/cancel_button_text"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/create_recipe" />
 
         <ListView
             android:id="@+id/ingredients"
@@ -125,6 +106,30 @@
             android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toTopOf="@+id/is_private"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/cancel_recipe"
+            android:layout_width="123dp"
+            android:layout_height="54dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginBottom="41dp"
+            android:text="@string/cancel_button_text"
+            style="@style/outlinedButton"
+            app:layout_constraintEnd_toStartOf="@id/create_recipe"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <Button
+            android:id="@+id/create_recipe"
+            android:layout_width="123dp"
+            android:layout_height="54dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginBottom="41dp"
+            android:text="@string/create_button_text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/cancel_recipe"
+            app:layout_constraintEnd_toEndOf="parent" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

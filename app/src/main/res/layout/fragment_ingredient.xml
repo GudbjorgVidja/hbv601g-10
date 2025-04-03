@@ -18,11 +18,11 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.1"/>
 
-    <com.google.android.material.button.MaterialButton
+    <Button
         android:id="@+id/ingredient_creator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/Widget.Material3.Button.TextButton"
+        style="@style/textButton"
         android:text="@string/created_by_unknown_text"
         android:textSize="16sp"
         app:layout_constraintTop_toBottomOf="@id/ingredient_title"
@@ -33,10 +33,12 @@
         android:id="@+id/delete_ingredient_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginVertical="32dp"
         android:text="@string/delete_button_text"
-        app:layout_constraintTop_toBottomOf="@id/ingredient_creator"
+        style="@style/outlinedDeleteButton"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/rename_ingredient_button"
+        app:layout_constraintTop_toBottomOf="@id/ingredient_details"
         />
 
     <Button
@@ -45,7 +47,7 @@
         android:layout_height="wrap_content"
         android:text="@string/rename_button_text"
         app:layout_constraintTop_toBottomOf="@id/ingredient_creator"
-        app:layout_constraintStart_toEndOf="@id/delete_ingredient_button"
+        app:layout_constraintStart_toEndOf="@id/add_to_pantry_button"
         app:layout_constraintEnd_toEndOf="parent"
         />
 
@@ -55,9 +57,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/add_to_pantry"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ingredient_creator"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ingredient_details" />
+        app:layout_constraintEnd_toStartOf="@id/rename_ingredient_button"
+
+         />
 
     <LinearLayout
         android:id="@+id/ingredient_details"
@@ -66,7 +70,7 @@
         android:layout_marginHorizontal="40dp"
         android:layout_marginVertical="20dp"
         android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@id/delete_ingredient_button"
+        app:layout_constraintTop_toBottomOf="@id/add_to_pantry_button"
         tools:layout_editor_absoluteX="40dp">
 
         <TextView

@@ -10,6 +10,7 @@
     </style>
 
     <style name="textButton" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="textAllCaps">false</item>
     </style>
 
     <style name="tonalButton" parent="Widget.MaterialComponents.Button">
@@ -32,7 +33,7 @@
     </style>
 
     <style name="filledBookmarkButton" parent="filledButton">
-        <item name="icon">@drawable/ic_bookmark_black_outline_24dp</item>
+        <item name="icon">@drawable/ic_bookmark_black_24dp</item>
         <item name="iconPadding">8sp</item>
     </style>
 
