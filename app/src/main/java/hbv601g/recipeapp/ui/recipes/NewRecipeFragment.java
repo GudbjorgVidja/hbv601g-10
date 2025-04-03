@@ -50,7 +50,7 @@ public class NewRecipeFragment extends Fragment {
         assert mainActivity != null;
 
         IngredientMeasurementAdapter adapter = new IngredientMeasurementAdapter(
-                mainActivity.getApplicationContext(), mList);
+                mainActivity.getApplicationContext(), mIngredientList);
         mBinding.ingredients.setAdapter(adapter);
 
         NavController navController = Navigation.findNavController(

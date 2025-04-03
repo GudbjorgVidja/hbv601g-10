@@ -51,10 +51,6 @@ public class RecipesFragment extends Fragment {
         mBinding = FragmentRecipesBinding.inflate(inflater, container, false);
         View root = mBinding.getRoot();
 
-        MainActivity mainActivity = (MainActivity) getActivity();
-        assert mainActivity != null;
-        // TODO: Double main
-
         mMainActivity = (MainActivity) getActivity();
         assert mMainActivity != null;
 
@@ -80,7 +76,7 @@ public class RecipesFragment extends Fragment {
 
 
 
-        if(mainActivity.getUserId() != 0) {
+        if(mMainActivity.getUserId() != 0) {
             mBinding.addRecipe.setOnClickListener(view -> {
                 navController.navigate(R.id.nav_new_recipe);
             });

@@ -95,7 +95,7 @@ public class PantryFragment extends Fragment {
         // An adapter to connect the list to the list view
         PantryAdapter pantryAdapter = new PantryAdapter(mainActivity.getApplicationContext(),
                 Objects.requireNonNullElseGet(mPantryIngredients, ArrayList::new));
-        mPantryListView.setAdapter(pantryAdapter);
+        pantryListView.setAdapter(pantryAdapter);
 
         pantryListView.setOnItemClickListener((parent, view, position, id) -> {
             IngredientMeasurement pantryItem = (IngredientMeasurement) parent.getItemAtPosition(position);

@@ -88,14 +88,14 @@ public class IngredientsFragment extends Fragment {
 
         // Create an adapter to connect the list of ingredients to the listView
         IngredientAdapter ingredientAdapter = new IngredientAdapter(mainActivity.getApplicationContext(), mAllIngredients);
-        mIngredientsListView.setAdapter(ingredientAdapter);
+        ingredientsListView.setAdapter(ingredientAdapter);
 
-            ingredientsListView.setOnItemClickListener((parent, view, position, id) -> {
-                Ingredient ingredient = (Ingredient) parent.getItemAtPosition(position);
-                Bundle bundle = new Bundle();
-                bundle.putParcelable(getString(R.string.selected_ingredient), ingredient);
-                navController.navigate(R.id.nav_ingredient, bundle);
-            });
+        ingredientsListView.setOnItemClickListener((parent, view, position, id) -> {
+            Ingredient ingredient = (Ingredient) parent.getItemAtPosition(position);
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(getString(R.string.selected_ingredient), ingredient);
+            navController.navigate(R.id.nav_ingredient, bundle);
+        });
 
     }
 
