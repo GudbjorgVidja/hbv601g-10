@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <style name="filledButton" parent="Widget.MaterialComponents.Button">
+        <!-- <item name="cornerRadius">20dp</item> -->
+    </style>
+
+    <style name="outlinedButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="strokeColor">?attr/colorPrimary</item>
+    </style>
+
+    <style name="textButton" parent="Widget.MaterialComponents.Button.TextButton">
+    </style>
+
+    <style name="tonalButton" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">?attr/colorSecondary</item>
+        <item name="android:textColor">?attr/colorOnSecondary</item>
+    </style>
+
+
+    <style name="iconButton" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="iconTint">?colorOnBackground</item>
+        <item name="iconSize">32sp</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="icon">@drawable/ic_edit_black_24dp</item>
+    </style>
+
+    <style name="outlinedDeleteButton" parent="outlinedButton">
+        <item name="icon">@drawable/ic_trash_black_24dp</item>
+        <item name="iconTint">?attr/colorPrimary</item>
+        <item name="iconPadding">8sp</item>
+    </style>
+
+    <style name="filledBookmarkButton" parent="filledButton">
+        <item name="icon">@drawable/ic_bookmark_black_outline_24dp</item>
+        <item name="iconPadding">8sp</item>
+    </style>
+
+    <style name="TitleTextView">
+        <item name="android:textSize">32sp</item>
+    </style>
+
+    <style name="HeadingTextView">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+</resources>
