@@ -24,10 +24,9 @@ import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.IngredientService;
 
 /**
- * Fragment með nánari upplýsingum um tiltekið ingredient, valið úr lista
+ * A fragment displaying a single ingredient
  */
 public class IngredientFragment extends Fragment{
-
     private FragmentIngredientBinding mBinding;
     private Ingredient mIngredient;
     private IngredientService mIngredientService;
@@ -81,10 +80,12 @@ public class IngredientFragment extends Fragment{
     }
 
     /**
-     * Makes and shows an alert dialog for renaming ingredients. After the user confirms their action
-     * an attempt is made to rename the ingredient. If the user cancels the action, nothing happens
-     * @param navController - the NavController being used for navigation
-     * @param mainActivity - the MainActivity of the app
+     * Makes and shows an alert dialog for renaming ingredients. After the user confirms their
+     * action an attempt is made to rename the ingredient. If the user cancels the action, nothing
+     * happens
+     *
+     * @param navController the NavController being used for navigation
+     * @param mainActivity the MainActivity of the app
      */
     private void makeRenameAlert(NavController navController, MainActivity mainActivity){
         final EditText editText = new EditText(mainActivity.getApplicationContext());
@@ -123,11 +124,14 @@ public class IngredientFragment extends Fragment{
         alert.setNegativeButton(getString(R.string.cancel_button_text), null);
         alert.show();
     }
+
     /**
-     * Makes and shows an alert dialog for deleting ingredients. After the user confirms their action
-     * an attempt is made to delete the ingredient. If the user cancels the action, nothing happens
-     * @param navController - the NavController being used for navigation
-     * @param mainActivity - the MainActivity of the app
+     * Makes and shows an alert dialog for deleting ingredients. After the user confirms their
+     * action an attempt is made to delete the ingredient. If the user cancels the action, nothing
+     * happens
+     *
+     * @param navController the NavController being used for navigation
+     * @param mainActivity the MainActivity of the app
      */
     private void makeDeleteIngredientAlert(NavController navController, MainActivity mainActivity) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());
@@ -158,7 +162,7 @@ public class IngredientFragment extends Fragment{
     }
 
     /**
-     * Setur upplýsingar fyrir ingredientið í viðmóti
+     * Sets the information about the ingredient in the UI
      */
     private void setIngredient(){
         mBinding.ingredientTitle.setText(mIngredient.getTitle());

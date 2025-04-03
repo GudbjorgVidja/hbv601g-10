@@ -27,6 +27,9 @@ import hbv601g.recipeapp.networking.CustomCallback;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.IngredientService;
 
+/**
+ * A fragment for adding an ingredient measurement to a recipe
+ */
 public class AddIngredientMeasurementFragment extends Fragment {
     private FragmentAddIngredientMeasurementBinding mBinding;
 
@@ -102,6 +105,12 @@ public class AddIngredientMeasurementFragment extends Fragment {
                 new IngredientAdapter(mainActivity.getApplicationContext(), ingredients));
     }
 
+    /**
+     * Gets information from the UI and uses it to create an ingredient measurement to add to a
+     * recipe
+     *
+     * @return the new ingredient measurement
+     */
     private IngredientMeasurement addIngredientMeasurement(){
         double value;
         Unit unit = (Unit) mBinding.spinnerUnit.getSelectedItem();

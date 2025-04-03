@@ -29,6 +29,9 @@ import hbv601g.recipeapp.networking.CustomCallback;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.RecipeService;
 
+/**
+ * A fragment to create new recipes
+ */
 public class NewRecipeFragment extends Fragment {
     private RecipeService mRecipeService;
     private FragmentNewRecipeBinding mBinding;
@@ -46,10 +49,8 @@ public class NewRecipeFragment extends Fragment {
         MainActivity mainActivity = (MainActivity) getActivity();
         assert mainActivity != null;
 
-        IngredientMeasurementAdapter adapter = new IngredientMeasurementAdapter
-                        (
-                            mainActivity.getApplicationContext(), mIngredientList
-                        );
+        IngredientMeasurementAdapter adapter = new IngredientMeasurementAdapter(
+                mainActivity.getApplicationContext(), mList);
         mBinding.ingredients.setAdapter(adapter);
 
         NavController navController = Navigation.findNavController(
@@ -88,7 +89,8 @@ public class NewRecipeFragment extends Fragment {
     }
 
     /**
-     * Creates a recipe and changes the ui based on the result
+     * Uses information from the UI to create a new recipe, and updates the UI based on the result.
+     *
      * @param navController - The NavController
      */
     private void createRecipe( NavController navController){

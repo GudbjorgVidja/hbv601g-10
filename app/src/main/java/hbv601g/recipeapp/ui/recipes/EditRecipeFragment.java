@@ -53,7 +53,8 @@ public class EditRecipeFragment extends Fragment {
 
         mRecipeService = new RecipeService(new NetworkingService(), mainActivity.getUserId());
 
-        if (getArguments() == null || getArguments().getParcelable(getString(R.string.selected_recipe)) == null) {
+        if (getArguments() == null ||
+                getArguments().getParcelable(getString(R.string.selected_recipe)) == null){
             Log.e("EditRecipeFragment", "No recipe to edit");
             navController.popBackStack();
         }
@@ -90,18 +91,16 @@ public class EditRecipeFragment extends Fragment {
     }
 
     /**
-     * Sets all of the information so that the user/owner can edit their recipe
+     * Displays the information about the recipe that should be edited in the UI
      *
-     * @param activity: MainActivity value, is the activity that is now it progress.
+     * @param activity the current activity.
      */
     private void setEditable(MainActivity activity) {
         mBinding.recipeName.setText(mRecipe.getTitle());
         mBinding.instructions.setText(mRecipe.getInstructions());
 
         mList = mRecipe.getIngredientMeasurements();
-        if (mList == null) {
-            mList = new ArrayList<>();
-        }
+        if (mList == null) mList = new ArrayList<>();
 
         ListView ingredientsList = mBinding.ingredients;
         IngredientMeasurementAdapter adapter = new IngredientMeasurementAdapter
@@ -132,10 +131,10 @@ public class EditRecipeFragment extends Fragment {
     }
 
     /**
-     * Updates the recipe when changes get confirmed, and reacts in the ui
+     * Gets information from the UI and uses it to update the recipe
      *
-     * @param mainActivity  : MainActivity value, is the activity of the fragment
-     * @param navController : the NavController
+     * @param activity the current activity
+     * @return the updated recipe if possible else return null
      */
     private void editRecipe(MainActivity mainActivity, NavController navController) {
         if (mRecipe.getCreatedBy().getId() != mainActivity.getUserId()) {

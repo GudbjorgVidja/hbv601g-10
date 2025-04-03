@@ -21,6 +21,9 @@ import hbv601g.recipeapp.networking.CustomCallback;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.UserService;
 
+/**
+ * A fragment for the signup screen
+ */
 public class SignupFragment extends Fragment {
     private FragmentSignupBinding mBinding;
 

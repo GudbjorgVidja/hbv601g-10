@@ -7,11 +7,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -31,14 +33,15 @@ import hbv601g.recipeapp.networking.CustomCallback;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.RecipeService;
 
+/**
+ * A fragment displaying an overview of recipes
+ */
 public class RecipesFragment extends Fragment {
-
     private FragmentRecipesBinding mBinding;
     private RecipeService mRecipeService;
     private List<Recipe> mRecipeList;
     private ListView mRecipeListView;
     private String mSelected;
-
     private RecipeAdapter mRecipeAdapter;
     private MainActivity mMainActivity;
 
@@ -50,6 +53,7 @@ public class RecipesFragment extends Fragment {
 
         MainActivity mainActivity = (MainActivity) getActivity();
         assert mainActivity != null;
+        // TODO: Double main
 
         mMainActivity = (MainActivity) getActivity();
         assert mMainActivity != null;
@@ -66,8 +70,6 @@ public class RecipesFragment extends Fragment {
         mRecipeListView = mBinding.recipesListView;
         mRecipeListView.setAdapter(mRecipeAdapter);
 
-        // Þarf updateListView() hér?
-
         mRecipeListView.setOnItemClickListener((parent, view, position, id) -> {
             Recipe recipe = (Recipe) parent.getItemAtPosition(position);
             Log.d("Selected", recipe.toString());
@@ -78,7 +80,6 @@ public class RecipesFragment extends Fragment {
 
 
 
-        // var eytt frá mér niður að search bar
         if(mainActivity.getUserId() != 0) {
             mBinding.addRecipe.setOnClickListener(view -> {
                 navController.navigate(R.id.nav_new_recipe);
@@ -207,10 +208,11 @@ public class RecipesFragment extends Fragment {
         });
     }
 
+
     /**
      * Alert dialog that allows the user to input a maximum TPC to filter the recipe list by.
      * The filtered list is then sent to the UI. The user can only input numbers.
-     * @param mainActivity - The MainActivity of the application.
+     * @param mainActivity The MainActivity of the application.
      */
     private void makeFilterTPCAlert(MainActivity mainActivity) {
         AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
@@ -256,9 +258,9 @@ public class RecipesFragment extends Fragment {
 
 
     /**
-     * Alert dialog that allows the user to input a maximum TIC to filter the recipe list by.
+     * Makes an Alert dialog that allows the user to input a maximum TIC to filter the recipes by.
      * The filtered list is then sent to the UI. The user can only input numbers.
-     * @param mainActivity - The MainActivity of the application
+     * @param mainActivity The MainActivity of the application
      */
     private void makeFilterTICAlert(MainActivity mainActivity) {
         AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
@@ -304,7 +306,7 @@ public class RecipesFragment extends Fragment {
 
 
     /**
-     * Updates the list of recipes shown in the user interface. Called after the list itself changes.
+     * Updates the recipe list displayed in the Recipe ListView.
      */
     private void updateListView(){
         mRecipeAdapter.setList(mRecipeList);

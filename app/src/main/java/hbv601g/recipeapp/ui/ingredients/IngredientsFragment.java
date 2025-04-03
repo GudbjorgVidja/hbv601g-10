@@ -28,7 +28,7 @@ import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.IngredientService;
 
 /**
- * Fragment fyrir yfirlit yfir ingredients
+ * A fragment displaying an overview of ingredients
  */
 public class IngredientsFragment extends Fragment {
     private FragmentIngredientsBinding mBinding;
@@ -44,12 +44,12 @@ public class IngredientsFragment extends Fragment {
 
         MainActivity mainActivity = (MainActivity) getActivity();
         assert mainActivity != null;
-
         NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
 
         mIngredientService = new IngredientService(new NetworkingService(), mainActivity.getUserId());
 
 
+        // An attempt to populate the list of ingredients by making an API call
         mIngredientService.getAllIngredients(new CustomCallback<>() {
             @Override
             public void onSuccess(List<Ingredient> ingredients) {
@@ -84,11 +84,11 @@ public class IngredientsFragment extends Fragment {
      */
     private void makeIngredientsView(MainActivity mainActivity, NavController navController){
 
-            ListView ingredientsListView = mBinding.ingredientsListView;
+        ListView ingredientsListView = mBinding.ingredientsListView;
 
-            // Gera adapter til að tengja lista af ingredients við listView hlutinn
-            IngredientAdapter ingredientAdapter = new IngredientAdapter(mainActivity.getApplicationContext(), mAllIngredients);
-            ingredientsListView.setAdapter(ingredientAdapter);
+        // Create an adapter to connect the list of ingredients to the listView
+        IngredientAdapter ingredientAdapter = new IngredientAdapter(mainActivity.getApplicationContext(), mAllIngredients);
+        mIngredientsListView.setAdapter(ingredientAdapter);
 
             ingredientsListView.setOnItemClickListener((parent, view, position, id) -> {
                 Ingredient ingredient = (Ingredient) parent.getItemAtPosition(position);

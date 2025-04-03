@@ -29,15 +29,13 @@ import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.IngredientService;
 
 /**
- * Fragment til að búa til nýtt ingredient, notandi slær inn upplýsingar.
+ * A fragment for having the user create a new ingredient
  */
 public class NewIngredientFragment extends Fragment{
-
     private FragmentNewIngredientBinding mBinding;
     private EditText mQuantityField;
     private EditText mTitleField;
     private EditText mPriceField;
-
     private IngredientService mIngredientService;
 
 
@@ -113,9 +111,10 @@ public class NewIngredientFragment extends Fragment{
 
 
     /**
-     * Staðfestir að titill, magn og verð séu skráð,
-     * kröfur fyrir valid ingredient
-     * @return hvort inntak sé valid
+     * Verifies that the title, quantity and price have been set, which is a requirement for a valid
+     * ingredient
+     *
+     * @return a boolean value indicating the validity of the required fields
      */
     private boolean isValid(){
         boolean isValid = true;
