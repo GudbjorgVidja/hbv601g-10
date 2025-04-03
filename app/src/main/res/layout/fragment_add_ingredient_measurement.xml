@@ -101,8 +101,7 @@
             android:text="@string/add_button_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/cancel_add_ingredient_to_recipe"
-            app:layout_constraintBaseline_toBaselineOf="@id/cancel_add_ingredient_to_recipe"
-            />
+            app:layout_constraintTop_toBottomOf="@id/ingredient_quantity" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
