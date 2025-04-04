@@ -2,16 +2,17 @@
 <resources xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <style name="filledButton" parent="Widget.MaterialComponents.Button">
-        <!-- <item name="cornerRadius">20dp</item> -->
+        <!-- <item name="iconTint">?attr/colorOnPrimary</item> -->
+        <item name="drawableTint">?attr/colorOnPrimary</item>
     </style>
 
     <style name="cameraButton" parent="filledButton">
-        <item name="iconTint">?attr/colorOnPrimary</item>
         <item name="icon">@drawable/ic_camera_black_24dp</item>
     </style>
 
     <style name="outlinedButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
         <item name="strokeColor">?attr/colorPrimary</item>
+        <item name="drawableTint">?attr/colorPrimary</item>
     </style>
 
     <style name="textButton" parent="Widget.MaterialComponents.Button.TextButton">
@@ -37,7 +38,6 @@
     <!-- delete button -->
     <style name="deleteButton" parent="outlinedButton">
         <item name="icon">@drawable/ic_delete_24dp</item>
-        <item name="iconTint">?attr/colorPrimary</item>
         <item name="iconPadding">8sp</item>
     </style>
 
@@ -57,6 +57,13 @@
     <style name="contentTitle">
         <item name="android:textSize">32sp</item>
         <item name="android:layout_marginTop">40sp</item>
+    </style>
+
+    <!-- secondary heading, describing the content below -->
+    <style name="subHeading">
+        <item name="android:textSize">18sp</item>
+        <item name="android:layout_marginTop">20sp</item>
+        <item name="android:paddingBottom">10sp</item>
     </style>
 
 </resources>
