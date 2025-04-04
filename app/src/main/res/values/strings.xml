@@ -25,23 +25,26 @@
     <string name="title_filter_tic">Filter by TIC</string>
 
     <!-- Buttons/textfields -->
-    <string name="ingredients_text">Ingredients</string>
-    <string name="instructions_text">Instructions</string>
-    <string name="name_text">Name</string>
-    <string name="value_text">Value</string>
+        <!-- hints -->
     <string name="password_hint">Password</string>
     <string name="username_hint">Username</string>
     <string name="recipe_hint">Name of recipe</string>
     <string name="instructions_hint">Instructions steps</string>
     <string name="ingredient_value_hint">Quantity needed</string>
     <string name="new_ingredient_title_hint">Title</string>
-    <string name="new_ingredient_quantity_hint">Qty.</string>
+    <string name="quantity_hint">Quantity</string>
     <string name="new_ingredient_price_hint">Price</string>
     <string name="new_ingredient_store_hint">Store</string>
     <string name="new_ingredient_brand_hint">Brand</string>
     <string name="new_password_hint">New password</string>
     <string name="validate_new_password_hint">Retype password</string>
     <string name="recipe_search_bar_hint">Search for recipe</string>
+    <string name="unit_dropdown_hint">Unit</string>
+
+    <string name="ingredients_text">Ingredients</string>
+    <string name="instructions_text">Instructions</string>
+    <string name="name_text">Name</string>
+    <string name="value_text">Value</string>
     <string name="add_to_pantry">Add to pantry</string>
     <string name="remove_from_pantry">Remove</string>
     <string name="ingredient_price_store">%1$dkr at %2$s</string>

@@ -41,11 +41,11 @@
                 android:orientation="horizontal">
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="100dp"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
-                    android:hint="@string/new_ingredient_quantity_hint">
+                    android:hint="@string/quantity_hint">
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/new_ingredient_quantity_input"
                         android:layout_width="match_parent"
@@ -53,11 +53,22 @@
                         android:inputType="numberDecimal" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <Spinner
-                    android:id="@+id/unit_spinner"
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="100dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:layout_height="wrap_content" />
+                    android:labelFor="@id/unit_dropdown"
+                    android:hint="@string/unit_dropdown_hint">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/unit_dropdown"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
 
             </LinearLayout>
 

@@ -1,13 +1,14 @@
 package hbv601g.recipeapp.ui.ingredients;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -37,10 +38,24 @@ public class NewIngredientFragment extends Fragment{
     private EditText mTitleField;
     private EditText mPriceField;
     private IngredientService mIngredientService;
+    private AutoCompleteTextView mUnitDropdown;
+    private Unit mSelectedUnit;
+
+    private final String TAG = "New Ingredient Fragment";
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+
+        if (savedInstanceState != null){
+            String unitString = savedInstanceState.getString(getString(R.string.selected_unit), "");
+            try {
+                //Log.d(TAG, "unit string:" + unitString);
+                mSelectedUnit = Unit.valueOf(unitString);
+            } catch (IllegalArgumentException e) {
+                Log.d(TAG, "Illegal argument for unit");
+            }
+        }
 
         mBinding = FragmentNewIngredientBinding.inflate(inflater, container, false);
         View root = mBinding.getRoot();
@@ -57,15 +72,9 @@ public class NewIngredientFragment extends Fragment{
 
 
         Button confirmButton = mBinding.confirmNewIngredientButton;
-        Spinner unitSpinner = mBinding.unitSpinner;
         EditText storeField = mBinding.newIngredientStoreInput;
         EditText brandField = mBinding.newIngredientBrandInput;
         SwitchMaterial privateSwitch = mBinding.newIngredientPrivateSelection;
-
-        unitSpinner.setAdapter(new ArrayAdapter<>(
-                mainActivity.getApplicationContext(),
-                android.R.layout.simple_spinner_dropdown_item,
-                Unit.values()));
 
         confirmButton.setOnClickListener(v -> {
             if(isValid()){
@@ -94,7 +103,7 @@ public class NewIngredientFragment extends Fragment{
                 mIngredientService.createIngredient(
                         mTitleField.getText().toString(),
                         Double.parseDouble(mQuantityField.getText().toString()),
-                        (Unit) unitSpinner.getSelectedItem(),
+                        mSelectedUnit,
                         Double.parseDouble(mPriceField.getText().toString()),
                         Objects.requireNonNull(storeField.getText()).toString(),
                         Objects.requireNonNull(brandField.getText()).toString(),
@@ -109,6 +118,33 @@ public class NewIngredientFragment extends Fragment{
         return root;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        mUnitDropdown = mBinding.unitDropdown;
+
+        ArrayAdapter<Unit> adapter = new ArrayAdapter<>(
+                requireContext(),
+                android.R.layout.simple_spinner_dropdown_item,
+                Unit.values());
+
+        mUnitDropdown.setAdapter(adapter);
+
+        mUnitDropdown.setOnItemClickListener((parent, view, position, id) -> {
+            mUnitDropdown.setError(null);
+            mSelectedUnit = adapter.getItem(position);
+        });
+
+    }
+
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        // Ensures the selected unit is kept until the fragment is closed
+        if(mSelectedUnit != null)
+            outState.putCharSequence(getString(R.string.selected_unit), mSelectedUnit.name());
+    }
 
     /**
      * Verifies that the title, quantity and price have been set, which is a requirement for a valid
@@ -130,6 +166,10 @@ public class NewIngredientFragment extends Fragment{
         }
         if(mPriceField.getText().toString().isEmpty()){
             mPriceField.setError(errorMessage);
+            isValid = false;
+        }
+        if(mSelectedUnit == null){
+            mUnitDropdown.setError(errorMessage);
             isValid = false;
         }
 

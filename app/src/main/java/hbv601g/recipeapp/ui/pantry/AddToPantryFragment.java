@@ -7,13 +7,14 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import hbv601g.recipeapp.MainActivity;
@@ -35,6 +36,8 @@ public class AddToPantryFragment extends Fragment {
     private EditText mQuantityInput;
     private Ingredient mIngredient;
     private UserService mUserService;
+    private AutoCompleteTextView mUnitDropdown;
+    private Unit mSelectedUnit;
 
 
     @Override
@@ -43,6 +46,17 @@ public class AddToPantryFragment extends Fragment {
         if(getArguments() != null) {
             mIngredient = getArguments().getParcelable(getString(R.string.selected_ingredient));
         }
+
+        // Attempting to update mSelectedUnit when relevant
+        if (savedInstanceState != null){
+            String unitString = savedInstanceState.getString(getString(R.string.selected_unit), "");
+            try {
+                mSelectedUnit = Unit.valueOf(unitString);
+            } catch (IllegalArgumentException e) {
+                Log.d("Add to pantry fragment", "Illegal argument for unit");
+            }
+        }
+
         mBinding = FragmentAddToPantryBinding.inflate(inflater, container, false);
         View root = mBinding.getRoot();
         MainActivity mainActivity = (MainActivity) getActivity();
@@ -55,27 +69,24 @@ public class AddToPantryFragment extends Fragment {
         }
 
         Button confirmButton = mBinding.addToPantryConfirmButton;
-        Spinner unitSpinner = mBinding.addToPantryUnitSpinner;
         mQuantityInput = mBinding.addToPantryInputQuantity;
-
-
-        unitSpinner.setAdapter(new ArrayAdapter<>(
-                mainActivity.getApplicationContext(),
-                android.R.layout.simple_spinner_dropdown_item,
-                Unit.values()));
 
 
         confirmButton.setOnClickListener(v -> {
             String quantityText = mQuantityInput.getText().toString().trim();
-            boolean quantityValid = !quantityText.isEmpty();
+            boolean isValid = !quantityText.isEmpty();
+            if(mSelectedUnit == null){
+                isValid = false;
+                mBinding.unitDropdown.setError(getString(R.string.field_required_error));
+            }
             if(mainActivity.getUserId() == 0) {
                 navController.popBackStack();
-            } else if(quantityValid){
+            } else if(isValid){
 
                 mUserService.addIngredientToPantry(
                         mainActivity.getUserId(),
                         mIngredient.getId(),
-                        (Unit) unitSpinner.getSelectedItem(),
+                        mSelectedUnit,
                         Double.parseDouble(mQuantityInput.getText().toString()),
                         new CustomCallback<>() {
                             @Override
@@ -108,6 +119,36 @@ public class AddToPantryFragment extends Fragment {
         });
 
         return root;
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        mUnitDropdown = mBinding.unitDropdown;
+
+        ArrayAdapter<Unit> adapter = new ArrayAdapter<>(
+                requireContext(),
+                android.R.layout.simple_spinner_dropdown_item,
+                Unit.values());
+
+        mUnitDropdown.setAdapter(adapter);
+
+        mUnitDropdown.setOnItemClickListener((parent, view, position, id) -> {
+            mUnitDropdown.setError(null);
+            mSelectedUnit = adapter.getItem(position);
+        });
+
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        // Ensures the selected unit is kept until the fragment is closed
+        if(mSelectedUnit != null)
+            outState.putCharSequence(getString(R.string.selected_unit), mSelectedUnit.name());
+
     }
 
     /**
