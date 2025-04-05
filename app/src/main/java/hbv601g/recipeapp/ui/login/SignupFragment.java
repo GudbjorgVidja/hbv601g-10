@@ -41,7 +41,7 @@ public class SignupFragment extends Fragment {
         NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
 
         mBinding.signupButton.setOnClickListener(v -> {
-            String username = Objects.requireNonNull(mBinding.userNameInput.getText()).toString();
+            String username = Objects.requireNonNull(mBinding.usernameInput.getText()).toString();
             String password = Objects.requireNonNull(mBinding.passwordInput.getText()).toString();
 
             if(username.isEmpty() || password.isEmpty()){
