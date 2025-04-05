@@ -60,17 +60,72 @@ public class RecipeFragment extends Fragment {
         mRecipeService = new RecipeService(new NetworkingService(), mainActivity.getUserId());
         mRecipeListService = new RecipeListService(new NetworkingService(), mainActivity.getUserId());
 
-        if (getArguments() == null || getArguments().getParcelable(getString(R.string.selected_recipe)) == null){
-            Log.e("RecipeFragment", "No recipe to view");
-            return root;
+        readArguments(mainActivity,navController);
+        setRecipe();
+        verifyRecipeExists(mainActivity,navController);
+        setButtonListeners(mainActivity, navController);
+
+        getParentFragmentManager().setFragmentResultListener(
+                getString(R.string.request_edit_recipe), this, (requestKey, result) -> {
+                    Recipe temp = result.getParcelable(getString(R.string.selected_recipe));
+                    if (temp != null) {
+                        mRecipe = temp;
+                        setRecipe();
+                    }
+                });
+
+        return root;
+    }
+
+    /**
+     * Uses the id of the recipe to fetch it from the API to make sure it is up to date. If the
+     * recipe no longer exists, the user is notified and the app navigates to the last page
+     */
+    private void verifyRecipeExists(MainActivity mainActivity, NavController navController){
+        if (mainActivity != null){
+            mRecipeService.checkRecipeExistsById(mRecipe.getId(), new CustomCallback<>() {
+                @Override
+                public void onSuccess(Boolean exists) {
+                    Log.d("RecipeFragment", "Recipe exists");
+                }
+
+                @Override
+                public void onFailure(Boolean exists) {
+                    if(getActivity() == null) return;
+                    requireActivity().runOnUiThread(() -> {
+                        mainActivity.makeToast(R.string.viewing_deleted_recipe_toast, Toast.LENGTH_LONG);
+                        navController.popBackStack();
+                    });
+                }
+            });
+        }
+    }
+
+
+
+
+    /**
+     * Sets listeners and visibility on various buttons. Users who are logged in can add recipes
+     * to Recipe Lists. Users can view the profile of the creator of the recipe if one is
+     * registered. Users can edit and delete their own recipes
+     * @param mainActivity the current activity
+     * @param navController the NavController used to navigate between fragments
+     */
+    private void setButtonListeners(MainActivity mainActivity, NavController navController){
+        if (mainActivity.getUserId() == 0) mBinding.addToListButton.setVisibility(GONE);
+        else mBinding.addToListButton.setOnClickListener(v -> makeAddToListAlert(mainActivity));
+
+        if(mRecipe.getCreatedBy()!=null){
+            mBinding.recipeCreator.setOnClickListener(v -> {
+                Bundle bundle = new Bundle();
+                bundle.putLong(getString(R.string.selected_user_id), mRecipe.getCreatedBy().getId());
+                bundle.putString(getString(R.string.selected_user_name), mRecipe.getRecipeCreator());
+                navController.navigate(R.id.nav_user,bundle);
+            });
         }
 
-        mBinding.addToListButton.setOnClickListener(v -> makeAddToListAlert(mainActivity) );
-
-        mRecipe = getArguments().getParcelable(getString(R.string.selected_recipe));
-        setRecipe();
-
-        if (mRecipe != null && mRecipe.getCreatedBy() != null && mainActivity.getUserId() != 0 && mRecipe.getCreatedBy().getId() == mainActivity.getUserId()){
+        if (mRecipe.getCreatedBy() != null && mainActivity.getUserId() != 0 &&
+                mRecipe.getCreatedBy().getId() == mainActivity.getUserId()) {
             mBinding.deleteRecipeButton.setOnClickListener(
                     v -> makeDeleteRecipeAlert(navController, mainActivity));
 
@@ -84,24 +139,25 @@ public class RecipeFragment extends Fragment {
             mBinding.deleteRecipeButton.setVisibility(GONE);
             mBinding.editRecipeButton.setVisibility(GONE);
         }
+    }
 
-        getParentFragmentManager().setFragmentResultListener(getString(R.string.request_edit_recipe),
-                this, (requestKey, result) -> {
-                    Recipe temp = result.getParcelable(getString(R.string.selected_recipe));
-                    if (temp != null){
-                        mRecipe = temp;
-                        setRecipe();
-                    }
-                });
-
-        mBinding.recipeCreator.setOnClickListener(v -> {
-            Bundle bundle = new Bundle();
-            bundle.putLong(getString(R.string.selected_user_id), mRecipe.getCreatedBy().getId());
-            bundle.putString(getString(R.string.selected_user_name), mRecipe.getRecipeCreator());
-            navController.navigate(R.id.nav_user,bundle);
-        });
-
-        return root;
+    /**
+     * Reads the arguments from the bundle and ensures they are valid, otherwise the user
+     * is notified and the app navigates to the last page
+     *
+     * @param mainActivity the current activity
+     * @param navController the NavController used to navigate between fragments
+     */
+    private void readArguments(MainActivity mainActivity, NavController navController){
+        Bundle bundle = getArguments();
+        if (bundle != null){
+            mRecipe = bundle.getParcelable(getString(R.string.selected_recipe));
+        }
+        if (bundle == null || mRecipe == null) {
+            Log.e("RecipeFragment", "No recipe to view");
+            mainActivity.makeToast(R.string.open_recipe_failed_toast, Toast.LENGTH_LONG);
+            navController.popBackStack();
+        }
     }
 
     /**
@@ -183,19 +239,24 @@ public class RecipeFragment extends Fragment {
         }
         else {
             mBinding.recipePpc.setVisibility(GONE);
-            mBinding.addToListButton.setVisibility(GONE);
         }
 
         assert mainActivity != null;
+        setListView(mainActivity);
+    }
+
+    /**
+     * sets the listview. Adds an adapter to it to display the ingredientMeasurements of the
+     * recipe, and sets the height of the listview to fit the contents
+     * @param mainActivity the current activity
+     */
+    private void setListView(MainActivity mainActivity){
         ListView ingredientMeasurementListView = mBinding.recipeIngredients;
         IngredientMeasurementAdapter adapter = new IngredientMeasurementAdapter(
                 mainActivity.getApplicationContext(),
                 Objects.requireNonNullElseGet(mRecipe.getIngredientMeasurements(), ArrayList::new));
 
         ingredientMeasurementListView.setAdapter(adapter);
-
-
-        // setting the listview height to fit the contents
 
         int totalHeight = 0;
 
@@ -209,7 +270,6 @@ public class RecipeFragment extends Fragment {
         params.height = totalHeight + (ingredientMeasurementListView.getDividerHeight() * (adapter.getCount() - 1));
         ingredientMeasurementListView.setLayoutParams(params);
         ingredientMeasurementListView.requestLayout();
-
     }
 
 

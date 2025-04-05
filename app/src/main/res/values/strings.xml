@@ -144,6 +144,8 @@
     <string name="delete_list_success_toast">Recipe list deleted successfully.</string>
     <string name="rename_list_failed_toast">Something went wrong when renaming the list.</string>
     <string name="missing_information_toast">Some information is missing</string>
+    <string name="open_recipe_failed_toast">"Unable to open the recipe, please try again later"</string>
+    <string name="viewing_deleted_recipe_toast">The recipe you were viewing has been deleted</string>
 
     <!-- variables -->
     <string name="selected_ingredient">Ingredient</string>
