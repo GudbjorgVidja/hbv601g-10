@@ -38,6 +38,31 @@ public class IngredientService extends Service {
     }
 
     /**
+     * Checks whether an ingredient exists with the given id. Makes a request to the API to get the
+     * ingredient with the given id
+     * @param iid the id of the recipe
+     * @param callback returns true on success if the ingredient is found, or false otherwise
+     */
+    public void checkIngredientExistsById(long iid, CustomCallback<Boolean> callback){
+        String url = String.format("ingredient/id/%s?uid=%s",iid,mUid);
+
+        mNetworkingService.getRequest(url, new CustomCallback<>() {
+
+            @Override
+            public void onSuccess(JsonElement jsonElement) {
+                if (jsonElement != null) callback.onSuccess(true);
+                else callback.onFailure(false);
+            }
+
+            @Override
+            public void onFailure(JsonElement jsonElement) {
+                callback.onFailure(false);
+            }
+        });
+    }
+
+
+    /**
      * makes a delete request to send to the external API, to try to delete an ingredient
      *
      * @param iid the id of the ingredient to delete
