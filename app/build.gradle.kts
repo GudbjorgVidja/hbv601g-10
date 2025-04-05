@@ -33,6 +33,21 @@ android {
     buildFeatures {
         viewBinding = true
     }
+    sourceSets {
+        getByName("main") {
+            res {
+                srcDirs(
+                    "src\\main\\res",
+                    "src\\main\\res\\layouts\\user",
+                    "src\\main\\res\\layouts\\recipe",
+                    "src\\main\\res\\layouts\\ingredient",
+                    "src\\main\\res\\layouts\\pantry",
+                    "src\\main\\res\\layouts\\home",
+                    "src\\main\\res\\layouts\\recipeList"
+                )
+            }
+        }
+    }
 }
 
 dependencies {

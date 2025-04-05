@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -38,7 +39,7 @@ public class HomeFragment extends Fragment {
             navController.navigate(R.id.nav_camera);
         });
 
-        showPhoto();
+        showPhoto(mainActivity);
 
         return root;
     }
@@ -47,12 +48,17 @@ public class HomeFragment extends Fragment {
      * Gets a photo from the device and displays it if it exists. If the photo isn't found, a
      * predetermined photo is shown
      */
-    private void showPhoto(){
-        Bitmap bitmap = PhotoBaseLab.get(getActivity()).getPhoto();
-        if (bitmap!=null){
-            mBinding.homeImage.setImageBitmap(bitmap);
+    private void showPhoto(MainActivity mainActivity){
+        try{
+            Bitmap bitmap = PhotoBaseLab.get(getActivity()).getPhoto();
+            if (bitmap!=null){
+                mBinding.homeImage.setImageBitmap(bitmap);
+            }
+            else mBinding.homeImage.setImageResource(R.drawable.no_image_available);
+        } catch (Exception e){
+            mainActivity.makeToast(R.string.home_photo_unavailable_toast, Toast.LENGTH_LONG);
+            mBinding.homeImage.setImageResource(R.drawable.no_image_available);
         }
-        else mBinding.homeImage.setImageResource(R.drawable.no_image_available);
     }
 
     @Override

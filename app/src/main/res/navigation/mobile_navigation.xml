@@ -84,13 +84,13 @@
     <!-- fragments  -->
     <fragment
         android:id="@+id/nav_signup"
-        android:name="hbv601g.recipeapp.ui.login.SignupFragment"
+        android:name="hbv601g.recipeapp.ui.user.SignupFragment"
         android:label="@string/title_signup"
         tools:layout="@layout/fragment_signup" />
 
     <fragment
         android:id="@+id/nav_login"
-        android:name="hbv601g.recipeapp.ui.login.LoginFragment"
+        android:name="hbv601g.recipeapp.ui.user.LoginFragment"
         android:label="@string/title_login"
         tools:layout="@layout/fragment_login"/>
 

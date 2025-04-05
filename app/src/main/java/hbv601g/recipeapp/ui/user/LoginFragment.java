@@ -1,4 +1,4 @@
-package hbv601g.recipeapp.ui.login;
+package hbv601g.recipeapp.ui.user;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
