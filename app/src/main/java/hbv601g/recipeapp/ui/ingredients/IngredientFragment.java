@@ -19,15 +19,14 @@ import hbv601g.recipeapp.MainActivity;
 import hbv601g.recipeapp.R;
 import hbv601g.recipeapp.databinding.FragmentIngredientBinding;
 import hbv601g.recipeapp.entities.Ingredient;
-import hbv601g.recipeapp.exceptions.DeleteFailedException;
+import hbv601g.recipeapp.networking.CustomCallback;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.IngredientService;
 
 /**
- * Fragment með nánari upplýsingum um tiltekið ingredient, valið úr lista
+ * A fragment displaying a single ingredient
  */
 public class IngredientFragment extends Fragment{
-
     private FragmentIngredientBinding mBinding;
     private Ingredient mIngredient;
     private IngredientService mIngredientService;
@@ -71,14 +70,22 @@ public class IngredientFragment extends Fragment{
             mBinding.renameIngredientButton.setVisibility(GONE);
         }
 
+        mBinding.ingredientCreator.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putLong(getString(R.string.selected_user_id), mIngredient.getCreatedBy().getId());
+            bundle.putString(getString(R.string.selected_user_name), mIngredient.getCreatedBy().getUsername());
+            navController.navigate(R.id.nav_user, bundle);
+        });
         return root;
     }
 
     /**
-     * Makes and shows an alert dialog for renaming ingredients. After the user confirms their action
-     * an attempt is made to rename the ingredient. If the user cancels the action, nothing happens
-     * @param navController - the NavController being used for navigation
-     * @param mainActivity - the MainActivity of the app
+     * Makes and shows an alert dialog for renaming ingredients. After the user confirms their
+     * action an attempt is made to rename the ingredient. If the user cancels the action, nothing
+     * happens
+     *
+     * @param navController the NavController being used for navigation
+     * @param mainActivity the MainActivity of the app
      */
     private void makeRenameAlert(NavController navController, MainActivity mainActivity){
         final EditText editText = new EditText(mainActivity.getApplicationContext());
@@ -92,47 +99,70 @@ public class IngredientFragment extends Fragment{
             String newTitle = editText.getText().toString();
             if (newTitle.isEmpty()) editText.setError(errorMessage);
             else {
-                Ingredient ingredient = mIngredientService.changeIngredientTitle(mIngredient.getId(), newTitle);
-                if (ingredient == null){
-                    mainActivity.makeToast(R.string.rename_ingredient_failed_toast, Toast.LENGTH_LONG);
-                }
-                else{
-                    Bundle bundle = new Bundle();
-                    bundle.putParcelable(getString(R.string.selected_ingredient), ingredient);
-                    navController.popBackStack();
-                    navController.navigate(R.id.nav_ingredient, bundle);
-                }
+                mIngredientService.changeIngredientTitle(mIngredient.getId(), newTitle, new CustomCallback<>() {
+                    @Override
+                    public void onSuccess(Ingredient ingredient) {
+                        if(getActivity() == null) return;
+                        requireActivity().runOnUiThread(() -> {
+                            Bundle bundle = new Bundle();
+                            bundle.putParcelable(getString(R.string.selected_ingredient), ingredient);
+                            navController.popBackStack();
+                            navController.navigate(R.id.nav_ingredient, bundle);
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(Ingredient ingredient) {
+                        if(getActivity() == null) return;
+                        requireActivity().runOnUiThread(() ->
+                                mainActivity.makeToast(R.string.rename_ingredient_failed_toast, Toast.LENGTH_LONG));
+                    }
+                });
             }
         });
 
         alert.setNegativeButton(getString(R.string.cancel_button_text), null);
         alert.show();
     }
+
     /**
-     * Makes and shows an alert dialog for deleting ingredients. After the user confirms their action
-     * an attempt is made to delete the ingredient. If the user cancels the action, nothing happens
-     * @param navController - the NavController being used for navigation
-     * @param mainActivity - the MainActivity of the app
+     * Makes and shows an alert dialog for deleting ingredients. After the user confirms their
+     * action an attempt is made to delete the ingredient. If the user cancels the action, nothing
+     * happens
+     *
+     * @param navController the NavController being used for navigation
+     * @param mainActivity the MainActivity of the app
      */
     private void makeDeleteIngredientAlert(NavController navController, MainActivity mainActivity) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());
         alert.setTitle(getString(R.string.delete_ingredient_alert_title));
         alert.setMessage(getString(R.string.delete_ingredient_alert_message));
         alert.setPositiveButton(android.R.string.yes, (dialog, which) -> {
-            try {
-                mIngredientService.deleteIngredient(mIngredient.getId());
-                navController.popBackStack();
-                mainActivity.makeToast(R.string.delete_ingredient_success, Toast.LENGTH_LONG);
-            } catch (DeleteFailedException e) {
-                mainActivity.makeToast(R.string.delete_ingredient_failed, Toast.LENGTH_LONG);
-            }
+            mIngredientService.deleteIngredient(mIngredient.getId(), new CustomCallback<>() {
+                @Override
+                public void onSuccess(Ingredient ingredient) {
+                    if(getActivity() == null) return;
+                    requireActivity().runOnUiThread(() -> {
+                        navController.popBackStack();
+                        mainActivity.makeToast(R.string.delete_ingredient_success, Toast.LENGTH_LONG);
+                    });
+                }
+
+                @Override
+                public void onFailure(Ingredient ingredient) {
+                    if(getActivity() == null) return;
+                    requireActivity().runOnUiThread(() ->
+                            mainActivity.makeToast(R.string.delete_ingredient_failed, Toast.LENGTH_LONG));
+                }
+            });
+
         });
         alert.setNegativeButton(android.R.string.no, (dialog, which) -> {});
         alert.show();
     }
 
     /**
-     * Setur upplýsingar fyrir ingredientið í viðmóti
+     * Sets the information about the ingredient in the UI
      */
     private void setIngredient(){
         mBinding.ingredientTitle.setText(mIngredient.getTitle());

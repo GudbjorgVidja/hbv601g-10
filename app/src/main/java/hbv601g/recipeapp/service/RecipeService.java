@@ -9,11 +9,9 @@ import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,238 +19,406 @@ import java.util.List;
 
 import hbv601g.recipeapp.entities.IngredientMeasurement;
 import hbv601g.recipeapp.entities.Recipe;
+import hbv601g.recipeapp.networking.CustomCallback;
 import hbv601g.recipeapp.networking.NetworkingService;
 
+/**
+ * A service class for interacting with the networking service in order to make requests related to
+ * the Recipe entity to the external API
+ */
 public class RecipeService extends Service {
     private NetworkingService mNetworkingService;
-    private JsonElement mJsonElement;
     private long mUid;
 
-    public RecipeService(NetworkingService networkingService, long uid){
+    public RecipeService(NetworkingService networkingService, long uid) {
         this.mNetworkingService = networkingService;
         this.mUid = uid;
     }
 
     /**
      * Makes a request to get the personalized purchase cost (ppc) of a recipe
-     * @param rid - the id of the recipe
+     *
+     * @param rid the id of the recipe
+     * @param callback - returns the personalized purchase cost for the current user on success, or
+     *                   0.0 on failure
      * @return the personalized purchase cost for the current user
      */
-    public double getPersonalizedPurchaseCost(long rid){
-        String url = String.format("recipe/id/%s/personal?uid=%s",rid,mUid);
+    public void getPersonalizedPurchaseCost(long rid, CustomCallback<Double> callback) {
+        String url = String.format("recipe/id/%s/personal?uid=%s", rid, mUid);
 
-        try{
-            mJsonElement=mNetworkingService.getRequest(url);
-        } catch (IOException e){
-            Log.d("Networking exception", "Failed to get PPC");
-        }
+        mNetworkingService.getRequest(url, new CustomCallback<>() {
+            @Override
+            public void onSuccess(JsonElement jsonElement) {
+                if (jsonElement != null) callback.onSuccess(jsonElement.getAsDouble());
+                else callback.onFailure(0.0);
+            }
 
-        double ppc = 0;
+            @Override
+            public void onFailure(JsonElement jsonElement) {
+                callback.onFailure(0.0);
+            }
+        });
 
-        if(mJsonElement!=null){
-            ppc = mJsonElement.getAsDouble();
-            Log.d("API", "PPC: " + ppc);
-        }
-        return ppc;
     }
 
     /**
      * makes a delete request to send to the external API, to try to delete a recipe
-     * @param rid - the id of the recipe to delete
+     *
+     * @param rid the id of the recipe to delete
+     * @param callback - a callback to the fragment
      */
-    public void deleteRecipe(long rid){
-        String url = String.format("recipe/delete/%s?uid=%s",rid, mUid);
-        try {
-            mNetworkingService.deleteRequest(url);
-        } catch (IOException e) {
-            Log.d("Networking exception", "Delete recipe failed");
-        }
+    public void deleteRecipe(long rid, CustomCallback<Boolean> callback) {
+        String url = String.format("recipe/delete/%s?uid=%s", rid, mUid);
+
+        mNetworkingService.deleteRequest(url, new CustomCallback<>() {
+            @Override
+            public void onSuccess(JsonElement jsonElement) {
+                callback.onSuccess(null);
+            }
+
+            @Override
+            public void onFailure(JsonElement jsonElement) {
+                Log.d("Networking failure", "Delete recipe failed");
+                callback.onFailure(null);
+            }
+        });
+
     }
 
 
     /**
-     * Makes a get request for the external API, for the endpoint that gets all recipes
-     * and turns it from a JsonElement to a List of Recipes
+     * Makes a get request for the external API, for the endpoint that gets all recipes and turns it
+     * from a JsonElement to a List of Recipes
+
+     * @param callback returns all recipes on success, or an empty list on failure or when recipes
+     *                 are null
      * @return all recipes
      */
-    public List<Recipe> getAllRecipes(){
+    public void getAllRecipes(CustomCallback<List<Recipe>> callback) {
         String url = "recipe/all?uid=" + mUid;
 
-        try{
-            mJsonElement = mNetworkingService.getRequest(url);
-        } catch (IOException e){
-            Log.d("Networking exception", "Failed to get all recipes");
-        }
+        mNetworkingService.getRequest(url, new CustomCallback<>() {
+            @Override
+            public void onSuccess(JsonElement jsonElement) {
+                if (jsonElement != null) {
+                    Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+                    Type collectionType = new TypeToken<Collection<Recipe>>() {}.getType();
+                    callback.onSuccess(gson.fromJson(jsonElement, collectionType));
+                } else callback.onFailure(new ArrayList<>());
+            }
 
-        List<Recipe> recipes = new ArrayList<>();
-        if(mJsonElement != null){
-            Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-            if(!mJsonElement.isJsonArray()) return null;
+            @Override
+            public void onFailure(JsonElement jsonElement) {
+                Log.d("Networking failure", "Failed to get all recipes");
+                callback.onFailure(new ArrayList<>());
+            }
+        });
 
-            JsonArray array = mJsonElement.getAsJsonArray();
-
-            Type collectionType = new TypeToken<Collection<Recipe>>(){}.getType();
-            recipes = gson.fromJson(array, collectionType);
-        }
-        else throw new NullPointerException("Recipe list is null");
-
-        return recipes;
     }
 
     /**
-     * This function takes in 5 parameters, 2 String, int, arrayList and
-     * Boolean.
+     * Creates a recipe with the given information
      *
-     * @param title       : String value, is the name of the recipe.
-     * @param instructions: String value, is the step by step progress to make the recipe
-     * @param ingredList  : IngredientMeasurement list array, content all in ingredients, unit and
-     *                        there quantity in the recipe.
-     * @param isPrivate   : Boolean, ture if the author want it to be private and false for the
-     *                      recipe to be public.
-     * @return Return the newly created recipe
+     * @param title the title of the recipe
+     * @param instructions instructions for how to make the recipe
+     * @param ingredientList a list of IngredientMeasurements containing the ingredients needed
+     *         for making the recipe and their amounts
+     * @param isPrivate a boolean value indicating whether the recipe is visible to users
+     *         other than the one who created it
+     * @param callback       - callback returning the new recipe on success, or null on failure
+     * @return the newly created recipe
      */
-    public Recipe createRecipe(
-            String title, String instructions,
-            List<IngredientMeasurement> ingredList, Boolean isPrivate
-    )
-    {
+    public void createRecipe(String title, String instructions,
+                             List<IngredientMeasurement> ingredientList, Boolean isPrivate,
+                             CustomCallback<Recipe> callback) {
+
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-
-        Recipe rep = new Recipe();
-
-        rep.setTitle(title);
-        rep.setInstructions(instructions);
-        rep.setPrivate(isPrivate);
+        Recipe recipe = new Recipe();
+        recipe.setTitle(title);
+        recipe.setInstructions(instructions);
+        recipe.setPrivate(isPrivate);
 
         String url = "recipe/new?uid=" + mUid;
-        String data = gson.toJson(rep);
+        String data = gson.toJson(recipe);
 
-        try {
-            mJsonElement = mNetworkingService.postRequest(url, data);
-        } catch (IOException e) {
-            Log.d("Networking exception", "Failed to create recipe");
-        }
+        mNetworkingService.postRequest(url, data, new CustomCallback<>() {
+            @Override
+            public void onSuccess(JsonElement jsonElement) {
+                if (jsonElement == null) {
+                    callback.onFailure(null);
+                    return;
+                }
 
-        if(mJsonElement != null){
-            rep = gson.fromJson(mJsonElement, Recipe.class);
-            Log.d("API", "recipe object, title:" + rep.getTitle());
-        }
-        else{
-            return null;
-        }
+                Recipe newRecipe = gson.fromJson(jsonElement, Recipe.class);
+                Log.d("API", "recipe object, title:" + newRecipe.getTitle());
 
-        return addIngredientMeasurement(rep.getId(), ingredList);
+                addIngredientMeasurements(newRecipe.getId(), ingredientList, new CustomCallback<>() {
+                    @Override
+                    public void onSuccess(Recipe recipe) {
+                        callback.onSuccess(recipe);
+                    }
+
+                    @Override
+                    public void onFailure(Recipe recipe) {
+                        // TODO: ef ingredient measurements klikka, á þá að skila null recipe?
+                        callback.onFailure(recipe);
+                        //callback.onFailure(newRecipe);
+                    }
+                });
+
+            }
+
+            @Override
+            public void onFailure(JsonElement jsonElement) {
+                callback.onFailure(null);
+            }
+        });
+
     }
 
     /**
-     * This function update the recipe that has the ID value of id.
+     * Updates the recipe with the given id
      *
-     * @param rep         : Recipe value, is a recipe that has all of the updates for the recipe.
-     * @param id          : long value, is the id of recipe that is being updated
-     * @param upIngredList: arrayList value, is a list that contains all of the now ingredients in
-     *                      the recipe.
-     *
+     * @param recipe a recipe that has all of the updates for the recipe.
+     * @param id the id of recipe that is being updated
+     * @param upIngredList arrayList value, is a list that contains all of the now
+     *         ingredients in the recipe.
+     * @param callback : callback returning the updated recipe on success, or null on failure
      * @return The updated recipe if all thing ar in order.
      */
-    public Recipe updateRecipe(Recipe rep, long id, List<IngredientMeasurement> upIngredList){
+    public void updateRecipe(Recipe recipe, long id, List<IngredientMeasurement> upIngredList,
+                             CustomCallback<Recipe> callback){
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
 
         String url = "recipe/" + id + "/update?uid=" + mUid;
-        String data = gson.toJson(rep);
+        String data = gson.toJson(recipe);
 
-        try {
-            mJsonElement = mNetworkingService.putRequest(url, data);
-        } catch (IOException e) {
-            Log.d("Networking exception", "Failed to create recipe");
-        }
+        mNetworkingService.putRequest(url, data, new CustomCallback<>() {
+            @Override
+            public void onSuccess(JsonElement jsonElement) {
+                if (jsonElement == null) {
+                    callback.onFailure(null);
+                    return;
+                }
 
-        if(mJsonElement != null){
-            rep = gson.fromJson(mJsonElement, Recipe.class);
-            Log.d("API", "recipe object updated, title:" + rep.getTitle());
-        }
-        else{
-            return null;
-        }
+                Recipe recipe = gson.fromJson(jsonElement, Recipe.class);
+                Log.d("API", "recipe object, title:" + recipe.getTitle());
 
-        return addIngredientMeasurement(id, upIngredList);
+                addIngredientMeasurements(recipe.getId(), upIngredList, new CustomCallback<>() {
+                    @Override
+                    public void onSuccess(Recipe recipe) {
+                        callback.onSuccess(recipe);
+                    }
+
+                    @Override
+                    public void onFailure(Recipe recipe) {
+                        callback.onFailure(recipe);
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(JsonElement jsonElement) {
+                callback.onFailure(null);
+            }
+        });
+
     }
 
     /**
-     * This function add new ingredient measurement to a recipe with the same ID value of id
-     * @param id         : long value, ist the id of the recipe.
-     * @param ingredList: arrayList value, is a list of IngredientMeasurement that will be added
-     *                     to a recipe
+     * Adds This function add new ingredient measurement to a recipe with the same ID value of id
      *
+     * @param rid long value, ist the id of the recipe.
+     * @param ingredientList arrayList value, is a list of IngredientMeasurement that will be
+     *         added to a recipe
+     * @param callback - a callback returning the recipe on success,
+     *                   or the original recipe on failure
      * @return the recipe with ID value id and contains the added ingredient measurement list
      */
-    private Recipe addIngredientMeasurement(long id, List<IngredientMeasurement> ingredList){
-        Gson gson = new Gson();
+    public void addIngredientMeasurements(long rid, List<IngredientMeasurement> ingredientList,
+                                          CustomCallback<Recipe> callback) {
 
         StringBuilder units = new StringBuilder();
         StringBuilder ingredientIDs = new StringBuilder();
         StringBuilder qty = new StringBuilder();
 
-        for(int i = 0; i < ingredList.size(); i++){
-            units.append(ingredList.get(i).getUnit().name());
-            units.append(",");
-            ingredientIDs.append(ingredList.get(i).getIngredient().getId());
-            ingredientIDs.append(",");
-            qty.append(ingredList.get(i).getQuantity());
-            qty.append(",");
+        for (int i = 0; i < ingredientList.size(); i++) {
+            units.append(ingredientList.get(i).getUnit().name()).append(",");
+            ingredientIDs.append(ingredientList.get(i).getIngredient().getId()).append(",");
+            qty.append(ingredientList.get(i).getQuantity()).append(",");
         }
 
-        if(!units.toString().isEmpty()){
-            units = units.deleteCharAt(units.length()-1);
+        if (!units.toString().isEmpty()) {
+            units = units.deleteCharAt(units.length() - 1);
             ingredientIDs = ingredientIDs.deleteCharAt(ingredientIDs.length() - 1);
             qty = qty.deleteCharAt(qty.length() - 1);
         }
 
-        String url = "recipe/addIngredients?recipeID=" + id
+        String url = "recipe/addIngredients?recipeID=" + rid
                 + "&uid=" + mUid
                 + "&units=" + units
                 + "&ingredientIDs="+ingredientIDs
                 + "&qty="+qty;
 
-        try {
-            mJsonElement = mNetworkingService.putRequest(url, null);
-        } catch (IOException e) {
-            Log.d("Networking exception", "Failed to update recipe");
-            //throw new RuntimeException(e);
-        }
+        mNetworkingService.putRequest(url, null, new CustomCallback<>() {
+            @Override
+            public void onSuccess(JsonElement jsonElement) {
+                if (jsonElement != null) {
+                    Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+                    callback.onSuccess(gson.fromJson(jsonElement, Recipe.class));
+                }
+                else callback.onFailure(null);
+            }
 
-        if(mJsonElement != null){
-            Recipe rep = gson.fromJson(mJsonElement, Recipe.class);
-            Log.d("API", "recipe object, title:" + rep.getTitle());
-            return rep;
-        }
-        else {
-            return null;
-        }
+            @Override
+            public void onFailure(JsonElement jsonElement) {
+                Log.d("Networking failure", "Failed to add ingredients to recipe");
+                callback.onFailure(null);
+            }
+        });
     }
 
     /**
-     * This function look for all recipe with the tile that is contains the in put string.
+     * Searches for recipes containing the input string in the title
      *
-     * @param inPut : String value, is the sting that is use in the search.
-     *
+     * @param input a string that should be included in the recipe titles
      * @return a list of recipes having titles that contains the input string.
      */
-    public List<Recipe> SearchRecipe (String inPut){
-        String url = "recipe/search/" + inPut + "?uid=" + mUid;
+    public void SearchRecipe (String input, CustomCallback<List<Recipe>> callback){
+        String url = "recipe/search/" + input + "?uid=" + mUid;
 
-        try {
-            mJsonElement = mNetworkingService.getRequest(url);
-        } catch (IOException e) {
-            Log.d("Networking exception", "Failed to get search results for recipe");
-        }
+        mNetworkingService.getRequest(url, new CustomCallback<>() {
+            @Override
+            public void onSuccess(JsonElement jsonElement) {
+                if(jsonElement != null){
+                    Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+                    Type collectionType = new TypeToken<Collection<Recipe>>(){}.getType();
+                    callback.onSuccess(gson.fromJson(jsonElement, collectionType));
+                }
+                else callback.onFailure(new ArrayList<>());
+            }
 
-        List<Recipe> repList = null;
-        if(mJsonElement != null){
-            Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-            Type collectionType = new TypeToken<Collection<Recipe>>(){}.getType();
-            repList = gson.fromJson(mJsonElement, collectionType);
-        }
-        return repList;
+            @Override
+            public void onFailure(JsonElement jsonElement) {
+                Log.d("Networking failure", "Failed to get search results for recipe");
+                callback.onFailure(new ArrayList<>());
+            }
+        });
+
+    }
+
+    /**
+     * Fetches all recipes under a given TPC.
+     *
+     * @param tpc Total Purchase Cost to filter by.
+     * @return List of recipes under given TIC.
+     */
+    public void getAllRecipesUnderTPC(int tpc, CustomCallback<List<Recipe>> callback) {
+        String url = String.format("recipe/underTPC/%s?uid=%s", tpc, mUid);
+
+        mNetworkingService.getRequest(url, new CustomCallback<>() {
+            @Override
+            public void onSuccess(JsonElement jsonElement) {
+                if(jsonElement != null){
+                    Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+
+                    Type collectionType = new TypeToken<Collection<Recipe>>(){}.getType();
+                    callback.onSuccess(gson.fromJson(jsonElement, collectionType));
+                }
+                else callback.onFailure(new ArrayList<>());
+            }
+
+            @Override
+            public void onFailure(JsonElement jsonElement) {
+                Log.d("Networking failure", "Failed to fetch recipes");
+                callback.onFailure(new ArrayList<>());
+            }
+        });
+
+    }
+
+    /**
+     * Fetches all recipes under a given TIC.
+     *
+     * @param tic Total Ingredient Cost to filter by
+     * @return List of recipes under given TIC
+     */
+    public void getAllRecipesUnderTIC(int tic, CustomCallback<List<Recipe>> callback) {
+        String url = String.format("recipe/underTIC/%s?uid=%s", tic, mUid);
+
+        mNetworkingService.getRequest(url, new CustomCallback<>() {
+            @Override
+            public void onSuccess(JsonElement jsonElement) {
+                if(jsonElement != null){
+                    Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+                    Type collectionType = new TypeToken<Collection<Recipe>>(){}.getType();
+                    callback.onSuccess(gson.fromJson(jsonElement, collectionType));
+                }
+                else callback.onFailure(new ArrayList<>());
+            }
+
+            @Override
+            public void onFailure(JsonElement jsonElement) {
+                Log.d("Networking failure", "Failed to fetch recipes");
+                callback.onFailure(new ArrayList<>());
+            }
+        });
+
+    }
+
+    /**
+     * Fetches all recipes ordered by Total Purchase Cost ascending.
+     * @return List of sorted recipes
+     */
+    public void getAllOrderedRecipes(CustomCallback<List<Recipe>> callback){
+        String url = "recipe/all/ordered?uid=" + mUid;
+
+        mNetworkingService.getRequest(url, new CustomCallback<>() {
+            @Override
+            public void onSuccess(JsonElement jsonElement) {
+                if(jsonElement != null){
+                    Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+                    Type collectionType = new TypeToken<Collection<Recipe>>(){}.getType();
+                    callback.onSuccess(gson.fromJson(jsonElement, collectionType));
+                } else {
+                    onFailure(jsonElement);
+                }
+            }
+
+            @Override
+            public void onFailure(JsonElement jsonElement) {
+                Log.d("Networking exception", "Failed to fetch sorted recipes");
+                callback.onFailure(new ArrayList<>());
+            }
+        });
+    }
+
+    /**
+     * Fetches all recipes sorted by title.
+     * @return List of sorted recipes
+     */
+    public void getAllOrderedRecipesByTitle(CustomCallback<List<Recipe>> callback){
+        String url = "recipe/all/orderedByTitle?uid=" + mUid;
+
+        mNetworkingService.getRequest(url, new CustomCallback<>() {
+            @Override
+            public void onSuccess(JsonElement jsonElement) {
+                if(jsonElement != null){
+                    Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+                    Type collectionType = new TypeToken<Collection<Recipe>>(){}.getType();
+                    callback.onSuccess(gson.fromJson(jsonElement, collectionType));
+                } else {
+                    onFailure(jsonElement);
+                }
+            }
+
+            @Override
+            public void onFailure(JsonElement jsonElement) {
+                Log.d("Networking exception", "Failed to fetch sorted recipes");
+                callback.onFailure(new ArrayList<>());
+            }
+        });
+
     }
 
     @Nullable

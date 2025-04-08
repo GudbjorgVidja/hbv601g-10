@@ -12,7 +12,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,14 +21,15 @@ import java.util.Map;
 
 import hbv601g.recipeapp.entities.Recipe;
 import hbv601g.recipeapp.entities.RecipeList;
+import hbv601g.recipeapp.networking.CustomCallback;
 import hbv601g.recipeapp.networking.NetworkingService;
 
 /**
- * Service class for recipe list API calls
+ * A service class for interacting with the networking service in order to make requests related to
+ * the RecipeList entity to the external API
  */
 public class RecipeListService extends Service {
     private NetworkingService mNetworkingService;
-    private JsonElement mJsonElement;
     private long mUid;
 
     public RecipeListService(NetworkingService networkingService, long uid) {
@@ -38,179 +38,257 @@ public class RecipeListService extends Service {
     }
 
     /**
-     *  TODO: Breyta útfærslu í bakenda, líklega ekki gott að nota requestParams fyrir allt. //
-     *        nota frekar requestBody?
      * Creates a recipe list and adds it to the database
-     * @param title       - title of the list, max 50 characters
-     * @param description - description of the list, max 250 chars, may be null
-     * @param isPrivate   - true if the list is private, otherwise false
+     *
+     * @param title title of the list, max 50 characters
+     * @param description description of the list, max 250 chars, may be null
+     * @param isPrivate true if the list is private, otherwise false
      * @return RecipeList object added to the db, or null
      */
-    public RecipeList createRecipeList(String title, String description, boolean isPrivate) {
-        String url = String.format("list/new?uid=%s&title=%s&description=%s&isPrivate=%b", mUid, title, description, isPrivate);
+    public void createRecipeList(String title, String description, boolean isPrivate,
+                                 CustomCallback<RecipeList> callback) {
 
-        RecipeList recipeList;
-        mJsonElement = null;
-        try {
-            mJsonElement = mNetworkingService.postRequest(url, "");
-        } catch (IOException e) {
-            Log.d("Networking exception", "Failed to create recipe list");
-        }
+        String url = String.format("list/new?uid=%s&title=%s&description=%s&isPrivate=%b",
+                mUid, title, description, isPrivate);
 
-        if (mJsonElement != null && mJsonElement.isJsonObject()) {
-            Gson gson = new GsonBuilder().create();
-            recipeList = gson.fromJson(mJsonElement, RecipeList.class);
-        }
-        else throw new NullPointerException("Failed to create recipe list");
+        mNetworkingService.postRequest(url, null, new CustomCallback<>() {
+            @Override
+            public void onSuccess(JsonElement jsonElement) {
+                if(jsonElement != null){
+                    Gson gson = new GsonBuilder().create();
+                    callback.onSuccess(gson.fromJson(jsonElement, RecipeList.class));
+                }
+                else callback.onFailure(null);
+            }
 
-        return recipeList;
+            @Override
+            public void onFailure(JsonElement jsonElement) {
+                Log.d("Networking failure", "Failed to create recipe list");
+                callback.onFailure(null);
+            }
+        });
+
     }
 
 
     /**
      * Makes a request to get all recipe lists for the current user, public and private
-     *
+     * @param uid - user id
+     * @param callback - returns all of the user's recipe lists on success, or an empty list on failure
      * @return all of the user's recipe lists
      */
-    public List<RecipeList> getUserRecipeLists(long uid) {
+    public void getUserRecipeLists(long uid, CustomCallback<List<RecipeList>> callback) {
         String url = "list/user/" + uid + "?uid=" + mUid;
+        mNetworkingService.getRequest(url, new CustomCallback<>() {
+            @Override
+            public void onSuccess(JsonElement jsonElement) {
+                if(jsonElement != null){
+                    Log.d("Callback", "onSuccess í service");
+                    Gson gson = new GsonBuilder().create();
+                    Type collectionType = new TypeToken<Collection<RecipeList>>() {}.getType();
+                    callback.onSuccess(gson.fromJson(jsonElement, collectionType));
+                }
+                else callback.onFailure(new ArrayList<>());
+            }
 
-        mJsonElement = null;
-        try {
-            mJsonElement = mNetworkingService.getRequest(url);
-        } catch (IOException e) {
-            Log.d("Networking exception", "Failed to get recipe lists for user");
-        }
+            @Override
+            public void onFailure(JsonElement jsonElement) {
+                Log.d("Callback", "onFailure í service");
+                callback.onFailure(new ArrayList<>());
+            }
+        });
 
-        List<RecipeList> recipeLists = new ArrayList<>();
-        if (mJsonElement != null ) {
-            Gson gson = new GsonBuilder().create();
-
-            Type collectionType = new TypeToken<Collection<RecipeList>>() {}.getType();
-            recipeLists = gson.fromJson(mJsonElement, collectionType);
-        }
-        else throw new NullPointerException("User recipe lists are null");
-
-        return recipeLists;
     }
 
 
     /**
      * Adds the given recipe to the given recipe list.
-     * @param recipeId - id of the recipe to add
-     * @param listId - id of the list to be added to
+     *
+     * @param recipeId id of the recipe to add
+     * @param listId id of the list to be added to
+     * @param callback - callback returning the new list size on success, or null on failure
      */
-    public void addRecipeToList(long recipeId, long listId) {
-        String url = String.format("list/addRecipe?recipeID=%s&listID=%s&uid=%s", recipeId, listId, mUid);
-        mJsonElement = null;
-        try {
-            mJsonElement = mNetworkingService.putRequest(url, "");
-        } catch (IOException e) {
-            Log.d("Networking exception", "Failed to add recipe to list");
-        }
+    public void addRecipeToList(long recipeId, long listId, CustomCallback<Integer> callback) {
+        String url = String.format("list/addRecipe?recipeID=%s&listID=%s&uid=%s",
+                recipeId, listId, mUid);
 
-        RecipeList recipeList;
-        if (mJsonElement != null ) {
-            Gson gson = new GsonBuilder().create();
+        mNetworkingService.putRequest(url, null, new CustomCallback<>() {
+            @Override
+            public void onSuccess(JsonElement jsonElement) {
+                if(jsonElement != null){
+                    Gson gson = new GsonBuilder().create();
+                    RecipeList recipeList = gson.fromJson(jsonElement, RecipeList.class);
+                    callback.onSuccess(recipeList.getRecipes().size());
+                }
+                else callback.onFailure(null);
+            }
 
-            recipeList = gson.fromJson(mJsonElement, RecipeList.class);
-        }
-        else throw new NullPointerException("Recipe list is null");
+            @Override
+            public void onFailure(JsonElement jsonElement) {
+                Log.d("Networking failure", "Failed to add recipe to list");
+                callback.onFailure(null);
+            }
+        });
 
     }
 
     /**
-     * Fetches a recipe list by it's Id.
-     * @param lid - id of the recipe list.
-     * @return Recipe list with the Id 'lid'.
+     * Fetches a recipe list by its id.
+     *
+     * @param lid id of the recipe list.
+     * @param callback - callback returning the recipeList on success, or null on failure.
+     * @return Recipe list with the id 'lid'.
      */
-    public RecipeList getListById(long lid){
+    public void getListById(long lid, CustomCallback<RecipeList> callback){
         String url = String.format("list/id/%s?uid=%s", lid, mUid);
 
-        try {
-            mJsonElement = mNetworkingService.getRequest(url);
-        } catch(IOException e) {
-            Log.d("Networking exception", "Failed to fetch recipe list");
-        }
+        mNetworkingService.getRequest(url, new CustomCallback<>() {
+            @Override
+            public void onSuccess(JsonElement jsonElement) {
+                if(jsonElement != null) {
+                    Gson gson = new GsonBuilder().create();
+                    callback.onSuccess(gson.fromJson(jsonElement, RecipeList.class));
+                }
+                else callback.onFailure(null);
+            }
 
-        RecipeList recipeList = null;
-        if(mJsonElement != null) {
-            Gson gson = new GsonBuilder().create();
+            @Override
+            public void onFailure(JsonElement jsonElement) {
+                Log.d("Networking exception", "Failed to fetch recipe list");
+                callback.onFailure(null);
+            }
+        });
 
-            recipeList = gson.fromJson(mJsonElement, RecipeList.class);
-        } else {
-            throw new NullPointerException("Recipe list is null");
-        }
-
-        return recipeList;
     }
 
     /**
-     * Fetches all recipes from the recipe list with the Id 'lid'.
-     * @param lid - id of the recipe list.
+     * Fetches all recipes from the recipe list with the id 'lid'.
+     *
+     * @param lid id of the recipe list.
      * @return All recipes from the corresponding recipe list.
      */
-    public List<Recipe> getRecipesFromList(long lid){
+    public void getRecipesFromList(long lid, CustomCallback<List<Recipe>> callback){
         String url = String.format("list/id/%s/recipe?uid=%s", lid, mUid);
 
-        try {
-            mJsonElement = mNetworkingService.getRequest(url);
-        } catch(IOException e) {
-            Log.d("Networking exception", "Failed to fetch list recipes");
-        }
+        mNetworkingService.getRequest(url, new CustomCallback<>() {
+            @Override
+            public void onSuccess(JsonElement jsonElement) {
+                if(jsonElement != null) {
+                    Gson gson = new GsonBuilder().create();
+                    Type collectionType = new TypeToken<Collection<Recipe>>() {}.getType();
+                    callback.onSuccess(gson.fromJson(jsonElement, collectionType));
+                }
+                else {
+                    callback.onFailure(new ArrayList<>());
+                    //throw new NullPointerException("List recipes are null");
+                }
+            }
 
-        List<Recipe> listRecipes = new ArrayList<>();
+            @Override
+            public void onFailure(JsonElement jsonElement) {
+                Log.d("Networking failure", "Failed to fetch list recipes");
+                callback.onFailure(new ArrayList<>());
 
-        if(mJsonElement != null) {
-            Gson gson = new GsonBuilder().create();
+            }
+        });
 
-            Type collectionType = new TypeToken<Collection<Recipe>>() {}.getType();
-            listRecipes = gson.fromJson(mJsonElement, collectionType);
-        } else {
-            throw new NullPointerException("List recipes are null");
-        }
-        return listRecipes;
+
+    }
+
+    /**
+     * Removes the given recipe from the given recipe list, if the recipe is in it
+     *
+     * @param list The RecipeList the recipe should be removed from.
+     * @param recipe The Recipe that should be removed from the list.
+     * @param callback A callback to the fragment, returning the updated list on success
+     *                 or the original list on failure
+     * @return true if the recipe was removed, otherwise false
+     */
+    public void removeRecipeFromList(RecipeList list, Recipe recipe,
+                                     CustomCallback<RecipeList> callback) {
+
+        String url = String.format("list/id/%s/recipe/%s/remove?uid=%s",
+                list.getId(), recipe.getId(), mUid);
+
+        int originalSize = list.getRecipes().size();
+        mNetworkingService.patchRequest(url, null, new CustomCallback<>() {
+            @Override
+            public void onSuccess(JsonElement jsonElement) {
+                if (jsonElement != null) {
+                    Gson gson = new GsonBuilder().create();
+                    RecipeList returnedList = gson.fromJson(jsonElement, RecipeList.class);
+                    Log.d("Recipe list", "removeRecipeFromList: " + jsonElement);
+
+                    if(returnedList.getRecipes().size() != originalSize)
+                        callback.onSuccess(returnedList);
+                    else onFailure(null);
+                }
+                else onFailure(null);
+            }
+
+            @Override
+            public void onFailure(JsonElement jsonElement) {
+                Log.d("Networking exception", "Failed to remove recipe from list");
+                callback.onFailure(list);
+            }
+        });
+
     }
 
     /**
      * Sends a patch request to the API with a new title for the recipe list.
-     * @param id - Id of the recipe list being renamed
-     * @param newTitle - New title of the recipe list
+     *
+     * @param id the id of the recipe list being renamed
+     * @param newTitle New title of the recipe list
+     * @param callback onSuccess if the title was changed, otherwise onFailure
      */
-    public void updateRecipeListTitle(long id, String newTitle){
+    public void updateRecipeListTitle(long id, String newTitle, CustomCallback<Boolean> callback) {
         String url = String.format("list/updateTitle/%s?uid=%s", id, mUid);
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
         Map<String, String> requestBody = new HashMap<>();
-        requestBody.put("title",newTitle);
+        requestBody.put("title", newTitle);
         String data = gson.toJson(requestBody);
 
-        try {
-            mJsonElement = mNetworkingService.patchRequest(url, data);
-            Log.d("API", "Updated recipe list title: " + mJsonElement);
-        } catch(IOException e) {
-            Log.d("Networking exception", "Failed to update list title");
-        }
+        mNetworkingService.patchRequest(url, data, new CustomCallback<>() {
+            @Override
+            public void onSuccess(JsonElement jsonElement) {
+                Log.d("API", "Updated recipe list: " + jsonElement);
 
-        if(mJsonElement == null){
-            throw new NullPointerException("Renamed recipe list is null");
-        }
+                if(jsonElement != null) callback.onSuccess(null);
+                else callback.onFailure(null);
+            }
+
+            @Override
+            public void onFailure(JsonElement jsonElement) {
+                Log.d("Networking failure", "Failed to update list title");
+                callback.onFailure(null);
+            }
+        });
+
     }
-
 
     /**
-     * Deletes the given recipe list from database
-     * @param lid - id of the recipe list
+     * Deletes the given recipe list
+     *
+     * @param lid id of the recipe list
      */
-    public void deleteRecipeList(long lid){
+    public void deleteRecipeList(long lid, CustomCallback<Boolean> callback) {
         String url = String.format("list/id/%s/delete?uid=%s", lid, mUid);
-        try {
-            mNetworkingService.deleteRequest(url);
-        } catch (IOException e) {
-            Log.d("Networking exception", "Delete recipe list failed");
-        }
+
+        mNetworkingService.deleteRequest(url, new CustomCallback<>() {
+            @Override
+            public void onSuccess(JsonElement jsonElement) {
+                callback.onSuccess(null);
+            }
+
+            @Override
+            public void onFailure(JsonElement jsonElement) {
+                Log.d("Networking failure", "Delete recipe list failed");
+                callback.onFailure(null);
+            }
+        });
 
     }
-
 
     @Nullable
     @Override
