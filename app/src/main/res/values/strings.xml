@@ -1,4 +1,10 @@
-<resources>
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE resources [
+    <!ENTITY curr "kr">
+    ]>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+
     <!-- Titles -->
     <string name="app_name">Recipe App</string>
     <string name="title_home">Home</string>
@@ -48,15 +54,9 @@
     <string name="value_text">Value</string>
     <string name="add_to_pantry">Add to pantry</string>
     <string name="remove_from_pantry">Remove</string>
-    <string name="ingredient_price_store">%1$dkr at %2$s</string>
-    <string name="ingredient_quantity_brand">%1$s%2$s, %3$s brand</string>
-    <string name="pantry_ingredient_quantity_brand">%1$s%2$s, %3$s brand</string>
     <string name="privacy_selection_label">Make private</string>
     <string name="confirm_new_ingredient_button">Create ingredient</string>
     <string name="check_password_button">Check if password is valid</string>
-    <string name="recipe_tpc">Total purchase cost: %1$s kr</string>
-    <string name="recipe_tic">Total ingredient cost: %1$s kr</string>
-    <string name="recipe_ppc">Personalized purchase cost: %1$s kr</string>
     <string name="recipe_instructions">Instructions</string>
     <string name="recipe_ingredients">Ingredients</string>
     <string name="recipe_list_description">Description</string>
@@ -93,9 +93,24 @@
     <string name="sort_by_price_button">Sort by price</string>
     <string name="sort_by_title_button">Sort by title</string>
 
+    <!-- format strings -->
+    <string name="recipe_tpc">Total purchase cost: %1$,d &curr;</string>
+    <string name="recipe_tic">Total ingredient cost: %1$,.0f &curr;</string>
+    <string name="recipe_ppc">Personalized purchase cost: %1$,.0f &curr;</string>
+
+    <string name="ingredient_price">%1$,.0f &curr;</string>
+    <string name="ingredient_price_store">%1$,.0f &curr; at %2$s</string>
+    <string name="quantity_brand">%1$s %2$s, %3$s brand</string>
+    <string name="quantity">%1$s %2$s</string>
+
+    <string name="ingredient_quantity_brand">%1$s %2$s, %3$s brand</string>
+    <string name="pantry_ingredient_quantity_brand">%1$s %2$s, %3$s brand</string>
+
+    <string name="private_text">private</string>
+    <string name="public_text">public</string>
+
     <!-- Messages/toasts -->
     <string name="login_failed_toast">Login failed. Please ensure username and password are correct.</string>
-    <string name="signup_not_implemented">Signup hasn\'t been implemented</string>
     <string name="login_not_empty_toast">Username and password cannot be empty</string>
     <string name="signup_failed_toast">Signup failed. I won\'t tell you why..</string>
     <string name="null_ingredient_list">Something went wrong displaying the ingredient list.</string>
@@ -190,7 +205,7 @@
     <string name="remove_recipe_from_recipe_list_alert_title">Remove Recipe</string>
 
     <!-- misc -->
-    <string name="currency">kr.</string>
+    <string name="currency">&curr;</string>
     <string name="created_by_unknown_text">Unknown</string>
 
 

@@ -2,6 +2,7 @@ package hbv601g.recipeapp.ui.pantry;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.icu.text.DecimalFormat;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -114,10 +115,14 @@ public class PantryIngredientFragment extends Fragment {
     private void setPantryIngredient() {
         mBinding.pantryIngredientTitle.setText(mPantryIngredient.getIngredient().getTitle());
         String tmp;
+        DecimalFormat df = new DecimalFormat("###,##0.###");
         if (mPantryIngredient.getIngredient().getBrand() != null){
-            tmp = getString(R.string.pantry_ingredient_quantity_brand, mPantryIngredient.getQuantity()+"", mPantryIngredient.getUnit().toString(), mPantryIngredient.getIngredient().getBrand());
+            tmp = getString(R.string.pantry_ingredient_quantity_brand,
+                    df.format(mPantryIngredient.getQuantity()),
+                    mPantryIngredient.getUnit().toString(),
+                    mPantryIngredient.getIngredient().getBrand());
         } else {
-            tmp = mPantryIngredient.getQuantity() + mPantryIngredient.getUnit().toString();
+            tmp = df.format(mPantryIngredient.getQuantity()) + mPantryIngredient.getUnit().toString();
         }
         mBinding.pantryIngredientQuantityUnit.setText(tmp);
     }

@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import java.util.List;
+import java.util.Locale;
 
 import hbv601g.recipeapp.R;
 import hbv601g.recipeapp.entities.Recipe;
@@ -71,8 +72,8 @@ public class RecipeAdapter extends BaseAdapter {
 
         title.setText(currentRecipe.getTitle());
         createdBy.setText(currentRecipe.getRecipeCreator());
-        tpc.setText(String.format("%s",currentRecipe.getTotalPurchaseCost()));
-        tic.setText(String.format("%s",(int) Math.round(currentRecipe.getTotalIngredientCost())));
+        tpc.setText(String.format(Locale.getDefault(),"%,d",currentRecipe.getTotalPurchaseCost()));
+        tic.setText(String.format(Locale.getDefault(), "%,.0f",currentRecipe.getTotalIngredientCost()));
         return convertView;
     }
 }

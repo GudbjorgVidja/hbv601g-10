@@ -1,6 +1,7 @@
 package hbv601g.recipeapp.adapters;
 
 import android.content.Context;
+import android.icu.text.DecimalFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,9 +52,10 @@ public class IngredientMeasurementAdapter extends BaseAdapter {
         IngredientMeasurement ingreMeas = (IngredientMeasurement) getItem(position);
 
         if(ingreMeas != null && ingreMeas.getIngredient() != null && ingreMeas.getUnit() != null){
+            DecimalFormat df = new DecimalFormat("###,##0.###");
             title.setText(ingreMeas.getIngredient().getTitle());
-            quantity.setText(String.format("%.2f " + ingreMeas.getUnit().toString(),
-                        ingreMeas.getQuantity()));
+            quantity.setText(String.format("%s %s", df.format(ingreMeas.getQuantity()),
+                    ingreMeas.getUnit().toString()));
         }
         return convertView;
     }

@@ -153,10 +153,10 @@ public class RecipeFragment extends Fragment {
         tmp = mRecipe.getInstructions() == null ? "No instructions" : mRecipe.getInstructions();
         mBinding.recipeInstructions.setText(tmp);
 
-        tmp = getString(R.string.recipe_tpc, mRecipe.getTotalPurchaseCost()+"");
+        tmp = getString(R.string.recipe_tpc, mRecipe.getTotalPurchaseCost());
         mBinding.recipeTpc.setText(tmp);
 
-        tmp=getString(R.string.recipe_tic,mRecipe.getTotalIngredientCost()+"");
+        tmp=getString(R.string.recipe_tic,mRecipe.getTotalIngredientCost());
         mBinding.recipeTic.setText(tmp);
 
         tmp = mRecipe.isPrivate() ? "private" : "public";
@@ -169,7 +169,7 @@ public class RecipeFragment extends Fragment {
                 public void onSuccess(Double ppc) {
                     if(getActivity() == null) return;
                     requireActivity().runOnUiThread(() -> {
-                        String tmp = getString(R.string.recipe_ppc, ppc+"");
+                        String tmp = getString(R.string.recipe_ppc, ppc);
                         mBinding.recipePpc.setText(tmp);
                     });
                 }

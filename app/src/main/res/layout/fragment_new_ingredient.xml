@@ -30,6 +30,7 @@
                 android:hint="@string/new_ingredient_title_hint">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/new_ingredient_title_input"
+                    android:singleLine="true"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -93,6 +94,7 @@
                 android:hint="@string/new_ingredient_store_hint">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/new_ingredient_store_input"
+                    android:singleLine="true"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -106,6 +108,7 @@
                 android:hint="@string/new_ingredient_brand_hint">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/new_ingredient_brand_input"
+                    android:singleLine="true"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>

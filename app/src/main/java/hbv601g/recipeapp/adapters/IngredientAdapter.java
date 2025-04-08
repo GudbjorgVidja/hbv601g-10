@@ -1,6 +1,7 @@
 package hbv601g.recipeapp.adapters;
 
 import android.content.Context;
+import android.icu.text.DecimalFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import java.util.List;
+import java.util.Locale;
 
 import hbv601g.recipeapp.R;
 import hbv601g.recipeapp.entities.Ingredient;
@@ -65,9 +67,11 @@ public class IngredientAdapter extends ArrayAdapter<Ingredient> {
         // Ingredient object for a given list item
         Ingredient currentIngredient = getItem(position);
 
+        DecimalFormat df = new DecimalFormat("###,##0.###");
+
         title.setText(currentIngredient.getTitle());
-        quantity.setText(String.format("%s", currentIngredient.getQuantity()));
-        price.setText(String.format("%s", currentIngredient.getPrice()));
+        quantity.setText(String.format("%s", df.format(currentIngredient.getQuantity())));
+        price.setText(String.format(Locale.getDefault(), "%,.0f", currentIngredient.getPrice()));
         unit.setText(currentIngredient.getUnit().toString());
         return convertView;
     }

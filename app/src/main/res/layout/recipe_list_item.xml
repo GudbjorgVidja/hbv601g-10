@@ -10,62 +10,78 @@
 
     <TextView
         android:id="@+id/recipe_overview_name"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constrainedWidth="true"
         app:layout_constraintWidth_percent="0.6"
+        app:layout_constraintEnd_toStartOf="@id/end_constraint"
+        android:maxLines="2"
+        android:scrollHorizontally="true"
+        android:ellipsize="end"
         android:textSize="17sp"/>
 
-    <TextView
-        android:id="@+id/recipe_overview_tpc_title"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/end_constraint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/tpc_string"
-        app:layout_constraintStart_toEndOf="@+id/recipe_overview_name"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constrainedWidth="true"
+        app:layout_constraintWidth_percent="0.4"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <TextView
-        android:id="@+id/recipe_overview_tic_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/tic_string"
-        app:layout_constraintStart_toEndOf="@+id/recipe_overview_name"
-        app:layout_constraintTop_toBottomOf="@id/recipe_overview_tpc"/>
+        <TextView
+            android:id="@+id/recipe_overview_tpc_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tpc_string"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@+id/recipe_overview_tic_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tic_string"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
 
-    <TextView
-        android:id="@+id/recipe_overview_tpc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="5dp"
-        app:layout_constraintStart_toEndOf="@+id/recipe_overview_tpc_title"
-        app:layout_constraintTop_toTopOf="parent"/>
+        <TextView
+            android:id="@+id/recipe_overview_tpc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="5dp"
+            app:layout_constraintStart_toEndOf="@+id/recipe_overview_tpc_title"
+            app:layout_constraintTop_toTopOf="parent"/>
 
-    <TextView
-        android:id="@+id/recipe_overview_tic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="5dp"
-        app:layout_constraintStart_toEndOf="@+id/recipe_overview_tic_title"
-        app:layout_constraintTop_toBottomOf="@id/recipe_overview_tpc"/>
+        <TextView
+            android:id="@+id/recipe_overview_tic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="5dp"
+            app:layout_constraintStart_toEndOf="@+id/recipe_overview_tic_title"
+            app:layout_constraintTop_toBottomOf="@id/recipe_overview_tpc"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/currency"
-        android:layout_marginHorizontal="5dp"
-        app:layout_constraintStart_toEndOf="@+id/recipe_overview_tpc"
-        app:layout_constraintTop_toTopOf="parent"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/currency"
+            android:layout_marginHorizontal="5dp"
+            app:layout_constraintStart_toEndOf="@+id/recipe_overview_tpc"
+            app:layout_constraintTop_toTopOf="parent"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/currency"
-        android:layout_marginHorizontal="5dp"
-        app:layout_constraintStart_toEndOf="@+id/recipe_overview_tic"
-        app:layout_constraintTop_toBottomOf="@id/recipe_overview_tpc"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/currency"
+            android:layout_marginHorizontal="5dp"
+            app:layout_constraintStart_toEndOf="@+id/recipe_overview_tic"
+            app:layout_constraintTop_toBottomOf="@id/recipe_overview_tpc"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
         android:id="@+id/recipe_overview_created_by"
