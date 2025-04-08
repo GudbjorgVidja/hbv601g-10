@@ -15,9 +15,13 @@ import androidx.navigation.Navigation;
 import hbv601g.recipeapp.MainActivity;
 import hbv601g.recipeapp.R;
 import hbv601g.recipeapp.databinding.FragmentChangePasswordBinding;
+import hbv601g.recipeapp.networking.CustomCallback;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.UserService;
 
+/**
+ * A fragment for changing a user's password
+ */
 public class ChangePasswordFragment extends Fragment {
     private FragmentChangePasswordBinding mBinding;
     private UserService mUserService;
@@ -52,9 +56,9 @@ public class ChangePasswordFragment extends Fragment {
     }
 
     /**
-     * This function set the color for the new Password and validate New Password fields as red
+     * Sets errors on the input fields depending on their contents
      *
-     * @param empty : Boolean value, if one or both password filed are empty, else ture.
+     * @param empty a boolean value indicating whether either input fields are empty
      */
     private void newPassInvalid(boolean empty){
         if(empty){
@@ -71,7 +75,7 @@ public class ChangePasswordFragment extends Fragment {
     }
 
     /**
-     * Creates a dialog let ask if the user if sure if they want to change there password.
+     * Creates and displays a dialog to ask the user to confirm their intention to change their password
      */
     private void confirmAlert(){
         AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());
@@ -79,13 +83,25 @@ public class ChangePasswordFragment extends Fragment {
         alert.setMessage(R.string.change_password_alert_message);
 
         alert.setPositiveButton(android.R.string.yes, (dialog, which) -> {
-            mUserService.changePassword
-                    (
-                            ((MainActivity) getActivity()).getUserId(),
-                            mBinding.newPasswordInput.getText().toString()
-                    );
+            mUserService.changePassword(((MainActivity) getActivity()).getUserId(),
+                    mBinding.newPasswordInput.getText().toString(),
+                    new CustomCallback<>() {
+                        @Override
+                        public void onSuccess(Boolean aBoolean) {
+                            // allt gekk vel
+                            if(getActivity()==null) return;
+                            requireActivity().runOnUiThread(() -> mNavController.popBackStack());
+                        }
 
-            mNavController.popBackStack();
+                        @Override
+                        public void onFailure(Boolean aBoolean) {
+                            // onFailure í networking
+                            if(getActivity() == null) return;;
+                            requireActivity().runOnUiThread(() -> mNavController.popBackStack());
+                        }
+                    });
+
+
         });
 
         alert.setNegativeButton(android.R.string.no, (dialog, which) -> {
@@ -97,8 +113,7 @@ public class ChangePasswordFragment extends Fragment {
 
 
     /**
-     * The function checks if the new password is valid if it is the password for the user is
-     * change.
+     * Checks if the new password is valid. If it is, the password for the user is changed.
      */
     private void confirmPass(){
         try {

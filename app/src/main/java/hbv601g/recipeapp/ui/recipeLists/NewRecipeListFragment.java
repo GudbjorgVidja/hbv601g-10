@@ -18,6 +18,7 @@ import hbv601g.recipeapp.MainActivity;
 import hbv601g.recipeapp.R;
 import hbv601g.recipeapp.databinding.FragmentNewRecipeListBinding;
 import hbv601g.recipeapp.entities.RecipeList;
+import hbv601g.recipeapp.networking.CustomCallback;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.RecipeListService;
 
@@ -28,7 +29,6 @@ import hbv601g.recipeapp.service.RecipeListService;
 public class NewRecipeListFragment extends Fragment {
     private FragmentNewRecipeListBinding mBinding;
     private RecipeListService mRecipeListService;
-    private RecipeList mRecipeList;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -49,19 +49,33 @@ public class NewRecipeListFragment extends Fragment {
             if (Objects.requireNonNull(titleInput.getText()).toString().isEmpty())
                 titleInput.setError(getString(R.string.field_required_error));
             else {
-                try {
-                    mRecipeList = mRecipeListService.createRecipeList(
-                            titleInput.getText().toString(),
-                            Objects.requireNonNull(descriptionInput.getText()).toString(),
-                            mBinding.newRecipeListPrivateSelection.isChecked());
-                    mainActivity.makeToast(R.string.create_recipe_list_success_toast, Toast.LENGTH_LONG);
-                    Bundle bundle = new Bundle();
-                    bundle.putLong(getString(R.string.selected_user_id), mainActivity.getUserId());
-                    bundle.putString(getString(R.string.selected_user_name), mainActivity.getUserName());
-                    navController.navigate(R.id.nav_user, bundle);
-                } catch (NullPointerException e) {
-                    mainActivity.makeToast(R.string.create_recipe_list_failed_toast, Toast.LENGTH_LONG);
-                }
+
+                mRecipeListService.createRecipeList(
+                        titleInput.getText().toString(),
+                        Objects.requireNonNull(descriptionInput.getText()).toString(),
+                        mBinding.newRecipeListPrivateSelection.isChecked(),
+                        new CustomCallback<>() {
+                            @Override
+                            public void onSuccess(RecipeList recipeList) {
+                                if(getActivity() == null) return;
+                                requireActivity().runOnUiThread(() -> {
+                                    mainActivity.makeToast(R.string.create_recipe_list_success_toast, Toast.LENGTH_LONG);
+                                    Bundle bundle = new Bundle();
+                                    bundle.putLong(getString(R.string.selected_user_id), mainActivity.getUserId());
+                                    bundle.putString(getString(R.string.selected_user_name), mainActivity.getUserName());
+                                    navController.navigate(R.id.nav_user, bundle);
+                                });
+                            }
+
+                            @Override
+                            public void onFailure(RecipeList recipeList) {
+                                if(getActivity() == null) return;
+                                requireActivity().runOnUiThread(() ->
+                                        mainActivity.makeToast(R.string.create_recipe_list_failed_toast, Toast.LENGTH_LONG));
+                            }
+                        }
+                );
+
             }
         });
 

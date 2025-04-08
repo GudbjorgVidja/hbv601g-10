@@ -24,20 +24,18 @@ import hbv601g.recipeapp.R;
 import hbv601g.recipeapp.databinding.FragmentNewIngredientBinding;
 import hbv601g.recipeapp.entities.Ingredient;
 import hbv601g.recipeapp.entities.Unit;
+import hbv601g.recipeapp.networking.CustomCallback;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.IngredientService;
 
 /**
- * Fragment til að búa til nýtt ingredient, notandi slær inn upplýsingar.
+ * A fragment for having the user create a new ingredient
  */
 public class NewIngredientFragment extends Fragment{
-
     private FragmentNewIngredientBinding mBinding;
     private EditText mQuantityField;
     private EditText mTitleField;
     private EditText mPriceField;
-
-    private Ingredient mIngredient;
     private IngredientService mIngredientService;
 
 
@@ -64,32 +62,45 @@ public class NewIngredientFragment extends Fragment{
         EditText brandField = mBinding.newIngredientBrandInput;
         SwitchMaterial privateSwitch = mBinding.newIngredientPrivateSelection;
 
-        unitSpinner.setAdapter(new ArrayAdapter<Unit>(
+        unitSpinner.setAdapter(new ArrayAdapter<>(
                 mainActivity.getApplicationContext(),
                 android.R.layout.simple_spinner_dropdown_item,
                 Unit.values()));
 
         confirmButton.setOnClickListener(v -> {
             if(isValid()){
-                try{
-                    mIngredient = mIngredientService.createIngredient(
-                            mTitleField.getText().toString(),
-                            Double.parseDouble(mQuantityField.getText().toString()),
-                            (Unit) unitSpinner.getSelectedItem(),
-                            Double.parseDouble(mPriceField.getText().toString()),
-                            Objects.requireNonNull(storeField.getText()).toString(),
-                            Objects.requireNonNull(brandField.getText()).toString(),
-                            privateSwitch.isChecked()
-                    );
-                } catch (NullPointerException e){
-                    mainActivity.makeToast(R.string.create_ingredient_failed_toast, Toast.LENGTH_LONG);
-                }
+                CustomCallback<Ingredient> callback = new CustomCallback<>() {
+                    @Override
+                    public void onSuccess(Ingredient ingredient) {
+                        if(getActivity() == null) return;
+                        requireActivity().runOnUiThread(() -> {
+                            Bundle bundle = new Bundle();
+                            bundle.putParcelable(getString(R.string.selected_ingredient), ingredient);
+                            navController.popBackStack();
+                            navController.navigate(R.id.nav_ingredient, bundle);
+                        });
+                    }
 
+                    @Override
+                    public void onFailure(Ingredient ingredient) {
+                        if(getActivity() == null) return;
+                        requireActivity().runOnUiThread(() -> {
+                            mainActivity.makeToast(R.string.create_ingredient_failed_toast, Toast.LENGTH_LONG);
+                            navController.popBackStack();
+                        });
+                    }
+                };
 
-                 Bundle bundle = new Bundle();
-                 bundle.putParcelable(getString(R.string.selected_ingredient), mIngredient);
-                 navController.popBackStack();
-                 navController.navigate(R.id.nav_ingredient, bundle);
+                mIngredientService.createIngredient(
+                        mTitleField.getText().toString(),
+                        Double.parseDouble(mQuantityField.getText().toString()),
+                        (Unit) unitSpinner.getSelectedItem(),
+                        Double.parseDouble(mPriceField.getText().toString()),
+                        Objects.requireNonNull(storeField.getText()).toString(),
+                        Objects.requireNonNull(brandField.getText()).toString(),
+                        privateSwitch.isChecked(),
+                        callback
+                );
 
             }
         });
@@ -100,9 +111,10 @@ public class NewIngredientFragment extends Fragment{
 
 
     /**
-     * Staðfestir að titill, magn og verð séu skráð,
-     * kröfur fyrir valid ingredient
-     * @return hvort inntak sé valid
+     * Verifies that the title, quantity and price have been set, which is a requirement for a valid
+     * ingredient
+     *
+     * @return a boolean value indicating the validity of the required fields
      */
     private boolean isValid(){
         boolean isValid = true;

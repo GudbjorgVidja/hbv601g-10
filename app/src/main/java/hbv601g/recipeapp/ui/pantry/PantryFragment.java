@@ -22,19 +22,18 @@ import hbv601g.recipeapp.R;
 import hbv601g.recipeapp.adapters.PantryAdapter;
 import hbv601g.recipeapp.databinding.FragmentPantryBinding;
 import hbv601g.recipeapp.entities.IngredientMeasurement;
+import hbv601g.recipeapp.networking.CustomCallback;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.UserService;
 
 /**
- * Fragment fyrir pantry hjá user
+ * A fragment for displaying a user's pantry
  */
-
 public class PantryFragment extends Fragment {
 
     private FragmentPantryBinding mBinding;
     private UserService mUserService;
     private List<IngredientMeasurement> mPantryIngredients;
-    private ListView mPantryListView;
     private long mUid;
 
 
@@ -51,39 +50,59 @@ public class PantryFragment extends Fragment {
 
         mUserService = new UserService(new NetworkingService());
 
-        // Athuga hvort einhver sé skráður inn áður en pantry er sótt
+        // Check whether someone is logged in before getting the pantry
         if(mainActivity.getUserName() != null){
             mUid = mainActivity.getUserId();
-            try{
-                mPantryIngredients = mUserService.getUserPantry(mUid);
-            } catch (NullPointerException e) {
-                mPantryIngredients = new ArrayList<>();
-                mainActivity.makeToast(R.string.null_pantry_list, Toast.LENGTH_LONG);
-            }
+
+            mUserService.getUserPantry(mUid, new CustomCallback<>() {
+                @Override
+                public void onSuccess(List<IngredientMeasurement> ingredientMeasurements) {
+                    if(getActivity() == null) return;
+                    requireActivity().runOnUiThread(() -> {
+                        mPantryIngredients = ingredientMeasurements;
+                        setPantryView(mainActivity, navController);
+                    });
+                }
+
+                @Override
+                public void onFailure(List<IngredientMeasurement> ingredientMeasurements) {
+                    if(getActivity() == null) return;
+                    requireActivity().runOnUiThread(() -> {
+                        mPantryIngredients = ingredientMeasurements;
+                        mainActivity.makeToast(R.string.null_pantry_list, Toast.LENGTH_LONG);
+                    });
+                }
+            });
+
+
         } else {
             mainActivity.makeToast(R.string.pantry_no_user, Toast.LENGTH_LONG);
         }
 
 
-        mPantryListView = mBinding.pantryListView;
+        return root;
 
+    }
 
-        // Adapter til að tengja listann við ListView
-        PantryAdapter pantryAdapter = new PantryAdapter(mainActivity.getApplicationContext(), Objects.requireNonNullElseGet(mPantryIngredients, ArrayList::new));
-        //PantryAdapter pantryAdapter = new PantryAdapter(mainActivity.getApplicationContext(), mPantryIngredients);
-        mPantryListView.setAdapter(pantryAdapter);
+    /**
+     * Sets the ui components which use a list of pantry contents
+     * @param mainActivity - the mainActivity instance
+     * @param navController - the NavController
+     */
+    private void setPantryView(MainActivity mainActivity, NavController navController){
+        ListView pantryListView = mBinding.pantryListView;
 
+        // An adapter to connect the list to the list view
+        PantryAdapter pantryAdapter = new PantryAdapter(mainActivity.getApplicationContext(),
+                Objects.requireNonNullElseGet(mPantryIngredients, ArrayList::new));
+        pantryListView.setAdapter(pantryAdapter);
 
-        mPantryListView.setOnItemClickListener((parent, view, position, id) -> {
+        pantryListView.setOnItemClickListener((parent, view, position, id) -> {
             IngredientMeasurement pantryItem = (IngredientMeasurement) parent.getItemAtPosition(position);
-
             Bundle bundle = new Bundle();
             bundle.putParcelable(getString(R.string.selected_pantry_item), pantryItem);
             navController.navigate(R.id.nav_pantry_ingredient, bundle);
         });
-
-        return root;
-
     }
 
     @Override

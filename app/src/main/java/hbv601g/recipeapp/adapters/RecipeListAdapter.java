@@ -40,6 +40,10 @@ public class RecipeListAdapter extends BaseAdapter {
         return position;
     }
 
+    public void setRecipeLists(List<RecipeList> recipeLists){
+        mRecipeLists = recipeLists;
+    }
+
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
