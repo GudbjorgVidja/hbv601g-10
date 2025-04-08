@@ -136,6 +136,7 @@
     <string name="recipe_missing_toast">Recipe is missing</string>
     <string name="delete_list_failed_toast">Something went wrong when trying to delete the recipe list.</string>
     <string name="delete_list_success_toast">Recipe list deleted successfully.</string>
+    <string name="how_to_remove_ingredient_form_recipe_tool_tip">To remove an ingredient form the recipe, first lick on the ingredient then click remove</string>
 
     <!-- variables -->
     <string name="selected_ingredient">Ingredient</string>

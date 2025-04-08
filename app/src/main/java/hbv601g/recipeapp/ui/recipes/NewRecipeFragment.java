@@ -16,6 +16,8 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +38,7 @@ public class NewRecipeFragment extends Fragment {
     private FragmentNewRecipeBinding mBinding;
 
     private List<IngredientMeasurement> mList = new ArrayList<>();
-    private  int mTotalHeight = 0;
+    private int mTotalHeight = 0;
 
     @Nullable
     @Override
@@ -84,9 +86,14 @@ public class NewRecipeFragment extends Fragment {
 
         ingredientsList.setOnItemClickListener((parent, view, position, id) -> {
             removeIngredientAlert(
-                    mainActivity, adapter, (IngredientMeasurement) parent.getItemAtPosition(position)
+                    mainActivity,
+                    adapter,
+                    (IngredientMeasurement) parent.getItemAtPosition(position),
+                    position
             );
         });
+
+        mBinding.removeIngerdiendTool.performLongClick();
 
         getParentFragmentManager().setFragmentResultListener(getString(R.string.request_ingredient_measurement),
                 this, (requestKey, result) -> {
@@ -101,7 +108,6 @@ public class NewRecipeFragment extends Fragment {
             params.height = mTotalHeight + (ingredientsList.getDividerHeight() * (adapter.getCount() - 1));
             ingredientsList.setLayoutParams(params);
             ingredientsList.requestLayout();
-
         });
 
         return root;
@@ -134,10 +140,15 @@ public class NewRecipeFragment extends Fragment {
      * @param activity The MainActivity of the app
      * @param adapter Is the adapter for IngredientMeasurement list,
      * @param ingerd Is the IngredientMeasurement that is being removed
+     * @param position Is the position of the IngredientMeasurement in the adapter that is being
+     *                 remove
      */
     private void removeIngredientAlert
     (
-            MainActivity activity , IngredientMeasurementAdapter adapter, IngredientMeasurement ingerd
+            MainActivity activity,
+            IngredientMeasurementAdapter adapter,
+            IngredientMeasurement ingerd,
+            int position
     ) {
         AlertDialog.Builder alert = new AlertDialog.Builder(activity);
         alert.setTitle(
@@ -150,6 +161,18 @@ public class NewRecipeFragment extends Fragment {
         alert.setMessage(R.string.remove_ingredient_measurement_alert_message);
 
         alert.setPositiveButton(R.string.remove_button, (dialog, which) -> {
+
+            ListView ingredientsList = mBinding.ingredients;
+            View listItem = adapter.getView(position, null, ingredientsList);
+            listItem.measure(0, 0);
+
+            mTotalHeight -= listItem.getMeasuredHeight();
+
+            ViewGroup.LayoutParams params = ingredientsList.getLayoutParams();
+            params.height = mTotalHeight + (ingredientsList.getDividerHeight() * (adapter.getCount() - 1));
+            ingredientsList.setLayoutParams(params);
+            ingredientsList.requestLayout();
+
             mList.remove(ingerd);
 
             adapter.setList(mList);
