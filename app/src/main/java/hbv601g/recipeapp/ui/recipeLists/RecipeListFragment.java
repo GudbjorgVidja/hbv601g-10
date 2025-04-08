@@ -96,7 +96,7 @@ public class RecipeListFragment extends Fragment {
             Bundle bundle = new Bundle();
             bundle.putLong(getString(R.string.selected_user_id), mRecipeList.getCreatedBy().getId());
             bundle.putString(getString(R.string.selected_user_name), mRecipeList.getCreatedBy().getUsername());
-            navController.navigate(R.id.nav_user, bundle);
+            navController.navigate(R.id.nav_user_profile, bundle);
         });
 
         return root;
