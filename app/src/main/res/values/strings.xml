@@ -2,7 +2,7 @@
 <!DOCTYPE resources [
     <!ENTITY curr "kr">
     ]>
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
 
 
     <!-- Titles -->
