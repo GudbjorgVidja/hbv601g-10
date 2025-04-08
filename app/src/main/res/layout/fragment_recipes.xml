@@ -17,11 +17,10 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
-
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/view_option_dropdown_layout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-        android:layout_width="wrap_content"
+        android:layout_width="170dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16sp"
         android:hint="@string/sort_and_filter_hint"

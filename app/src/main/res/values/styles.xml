@@ -57,10 +57,11 @@
     <style name="contentTitle">
         <item name="android:textSize">32sp</item>
         <item name="android:layout_marginTop">40sp</item>
-        <item name="android:paddingHorizontal">8sp</item>
         <item name="android:maxLines">2</item>
         <item name="android:scrollHorizontally">true</item>
         <item name="android:ellipsize">end</item>
+        <item name="layout_constrainedWidth">true</item>
+        <item name="android:gravity">center</item>
     </style>
 
     <!-- secondary heading, describing the content below -->

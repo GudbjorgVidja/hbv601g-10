@@ -11,25 +11,46 @@
         android:layout_height="wrap_content"
         android:paddingHorizontal="16dp">
 
-        <TextView
-            android:id="@+id/recipe_title"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/title_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/contentTitle"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
 
-        <Button
-            android:id="@+id/recipe_creator"
-            style="@style/creatorButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/created_by_unknown_text"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/recipe_title" />
+            <TextView
+                android:id="@+id/recipe_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/contentTitle"
+                app:layout_constraintEnd_toStartOf="@id/edit_recipe_button"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/edit_recipe_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/editIconButton"
+                android:tooltipText="@string/edit_button_text"
+                tools:text="@string/edit_button_text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/recipe_title"
+                app:layout_constraintBottom_toBottomOf="@id/recipe_title"
+                app:layout_constraintTop_toTopOf="@id/recipe_title"/>
+
+            <Button
+                android:id="@+id/recipe_creator"
+                style="@style/creatorButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/created_by_unknown_text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/recipe_title" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 
@@ -40,20 +61,10 @@
             android:text="@string/add_to_list_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/recipe_creator"/>
+            app:layout_constraintTop_toBottomOf="@id/title_container"/>
 
 
-        <Button
-            android:id="@+id/edit_recipe_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="20dp"
-            style="@style/editIconButton"
-            android:tooltipText="@string/edit_button_text"
-            tools:text="@string/edit_button_text"
-            app:layout_constraintStart_toEndOf="@id/recipe_title"
-            app:layout_constraintBottom_toBottomOf="@id/recipe_title"
-            app:layout_constraintTop_toTopOf="@id/recipe_title"/>
+
 
         <LinearLayout
             android:id="@+id/recipe_info_layout"
