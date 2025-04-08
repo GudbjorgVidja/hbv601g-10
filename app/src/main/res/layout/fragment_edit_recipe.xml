@@ -120,6 +120,20 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/edit_recipe" />
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/remove_ingredients_tool_tip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="35dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:contentDescription="@string/how_to_remove_ingredient_form_recipe_tool_tip"
+            android:tooltipText="@string/how_to_remove_ingredient_form_recipe_tool_tip"
+            app:backgroundTint="#FFFFFF"
+            app:layout_constraintBottom_toTopOf="@+id/ingredients"
+            app:layout_constraintStart_toEndOf="@+id/textview_title_ingredients"
+            app:srcCompat="@android:drawable/ic_dialog_info" />
+
         <ListView
             android:id="@+id/ingredients"
             android:layout_width="match_parent"

@@ -93,7 +93,8 @@ public class NewRecipeFragment extends Fragment {
             );
         });
 
-        mBinding.removeIngerdiendTool.performLongClick();
+        //This make a listener to revel the tool tip on a long tip
+        mBinding.removeIngredientsToolTip.performLongClick();
 
         getParentFragmentManager().setFragmentResultListener(getString(R.string.request_ingredient_measurement),
                 this, (requestKey, result) -> {

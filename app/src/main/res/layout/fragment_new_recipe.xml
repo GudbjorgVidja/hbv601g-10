@@ -130,7 +130,7 @@
             tools:ignore="NestedScrolling"/>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/remove_ingerdiend_tool_"
+            android:id="@+id/remove_ingredients_tool_tip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="35dp"
