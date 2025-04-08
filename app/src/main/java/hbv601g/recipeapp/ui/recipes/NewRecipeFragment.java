@@ -60,7 +60,7 @@ public class NewRecipeFragment extends Fragment {
         });
 
         mBinding.createRecipe.setOnClickListener(view -> {
-                Recipe recipe = createRecipe();
+                Recipe recipe = createRecipe(mainActivity);
                 if (recipe != null) {
                     navController.popBackStack();
                 }
@@ -80,7 +80,7 @@ public class NewRecipeFragment extends Fragment {
         return root;
     }
 
-    private Recipe createRecipe(){
+    private Recipe createRecipe(MainActivity activity){
         EditText temp = mBinding.recipeName;
         String title =  temp.getText().toString();
 
@@ -102,9 +102,17 @@ public class NewRecipeFragment extends Fragment {
             ingredientMeasurementList.add((IngredientMeasurement) ingredients.getItem(i));
         }
 
-        return  mRecipeService.createRecipe(
+
+        Recipe res = mRecipeService.createRecipe(
                 title,instructions, ingredientMeasurementList, isPrivate
         );
+
+        if (res == null){
+            activity.makeToast(R.string.recipe_unknown_error, Toast.LENGTH_LONG);
+            return null;
+        }
+
+        return res;
     }
 
     @Override
