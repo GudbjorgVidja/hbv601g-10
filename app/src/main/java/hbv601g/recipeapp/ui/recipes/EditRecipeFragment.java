@@ -154,8 +154,7 @@ public class EditRecipeFragment extends Fragment {
         mBinding.recipeName.setText(mRecipe.getTitle());
         mBinding.instructions.setText(mRecipe.getInstructions());
 
-        mList = mRecipe.getIngredientMeasurements();
-        if(mList == null){mList = new ArrayList<>();}
+        mList = new ArrayList<>(mRecipe.getIngredientMeasurements());
 
         ListView ingredientsList = mBinding.ingredients;
         mAdapter = new IngredientMeasurementAdapter
@@ -230,12 +229,7 @@ public class EditRecipeFragment extends Fragment {
             int position
     ) {
         AlertDialog.Builder alert = new AlertDialog.Builder(activity);
-        alert.setTitle(
-                String.format(
-                        getString(R.string.remove_ingredient_measurement_alert_title),
-                        ingerd.getIngredient().getTitle()
-                )
-        );
+        alert.setTitle(ingerd.getIngredient().getTitle());
 
         alert.setMessage(R.string.remove_ingredient_measurement_alert_message);
 

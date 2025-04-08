@@ -16,8 +16,6 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -152,12 +150,7 @@ public class NewRecipeFragment extends Fragment {
             int position
     ) {
         AlertDialog.Builder alert = new AlertDialog.Builder(activity);
-        alert.setTitle(
-                String.format(
-                        getString(R.string.remove_ingredient_measurement_alert_title),
-                        ingerd.getIngredient().getTitle()
-                )
-        );
+        alert.setTitle(ingerd.getIngredient().getTitle());
 
         alert.setMessage(R.string.remove_ingredient_measurement_alert_message);
 
