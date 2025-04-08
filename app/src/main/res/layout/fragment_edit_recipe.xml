@@ -60,6 +60,7 @@
             android:hint="@string/recipe_hint"
             android:importantForAutofill="no"
             android:inputType="text"
+            android:digits="÷×=%_-+#().,abcdefghijklmnopqrstuvwxyzA BCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textview_title_name" />
 
@@ -72,6 +73,7 @@
             android:hint="@string/instructions_hint"
             android:importantForAutofill="no"
             android:inputType="textMultiLine"
+            android:digits="÷×=%_-+#().,abcdefghijklmnopqrstuvwxyzA BCDEFGHIJKLMNOPQRSTUVWXYZ1234567890\n"
             app:layout_constraintBottom_toTopOf="@id/add_ingredient"
             app:layout_constraintStart_toStartOf="parent" />
 

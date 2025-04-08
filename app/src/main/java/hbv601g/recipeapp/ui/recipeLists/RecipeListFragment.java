@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import android.text.InputFilter;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -127,6 +128,8 @@ public class RecipeListFragment extends Fragment {
         final EditText input = new EditText(mainActivity);
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         input.setText(mRecipeListTitle.getText().toString());
+        input.setFilters(new InputFilter[]{ mainActivity.getFilter() });
+
         builder.setView(input);
 
         builder.setPositiveButton(getString(R.string.save_button), null);

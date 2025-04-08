@@ -21,7 +21,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLength="50"
-                android:singleLine="true"/>
+                android:inputType="text"
+                android:digits="÷×=%_-+#().,abcdefghijklmnopqrstuvwxyzA BCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"/>
         </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -37,6 +38,7 @@
                 android:layout_height="match_parent"
                 android:gravity="top"
                 android:inputType="textMultiLine"
+                android:digits="÷×=%_-+#().,abcdefghijklmnopqrstuvwxyzA BCDEFGHIJKLMNOPQRSTUVWXYZ1234567890\n"
                 android:maxLength="250" />
         </com.google.android.material.textfield.TextInputLayout>
 

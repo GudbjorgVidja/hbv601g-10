@@ -5,7 +5,11 @@ import static android.view.View.VISIBLE;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.text.InputType;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,7 +55,6 @@ public class UserFragment extends Fragment{
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-
         MainActivity mainActivity = (MainActivity) getActivity();
         assert mainActivity != null;
         mNavController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
@@ -186,7 +189,6 @@ public class UserFragment extends Fragment{
         mBinding.changePasswordButton.setVisibility(GONE);
     }
 
-
     /**
      * Create a dialog that validate the password of the user svo that only they can change there
      * password.
@@ -196,6 +198,7 @@ public class UserFragment extends Fragment{
     public void changePasswordAlert(MainActivity activity){
         EditText oldPass = new EditText(activity.getApplicationContext());
         oldPass.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        oldPass.setFilters(new InputFilter[]{ activity.getFilter() });
 
         AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());
         alert.setTitle(R.string.validate_current_password_title);
@@ -236,6 +239,8 @@ public class UserFragment extends Fragment{
     private void deleteUserAlert(MainActivity mainActivity) {
         EditText editText = new EditText(mainActivity.getApplicationContext());
         editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        editText.setFilters(new InputFilter[]{ mainActivity.getFilter() });
+
         AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());
         alert.setTitle(getString(R.string.delete_user_alert_title));
         alert.setMessage(getString(R.string.delete_user_alert_message));
