@@ -10,7 +10,6 @@ import android.widget.Toast;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -47,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_recipes, R.id.nav_ingredients, R.id.nav_user)
+                R.id.nav_home, R.id.nav_recipes, R.id.nav_ingredients, R.id.nav_user, R.id.nav_pantry)
                 .build();
 
         // sets navController as the view for the fragment in activity_main
@@ -59,10 +58,27 @@ public class MainActivity extends AppCompatActivity {
         // Shows on the bottomNavigationBar what has been selected
         NavigationUI.setupWithNavController(binding.navView, navController);
 
+        menuSelectionListener(navController);
 
         // Gets sharedPreferences information
         sharedpreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
 
+    }
+
+    /**
+     * Ensures that the correct menu items appear selected, and that a second selection of the
+     * current menu item navigates to the first page of that menu item
+     *
+     * @param navController the NavController used to navigate between fragments
+     */
+    private void menuSelectionListener(NavController navController) {
+        binding.navView.setOnItemSelectedListener(item -> {
+            if (binding.navView.getSelectedItemId() == item.getItemId()) {
+                navController.popBackStack(item.getItemId(), false);
+            }
+            NavigationUI.onNavDestinationSelected(item, navController);
+            return true;
+        });
     }
 
     /**

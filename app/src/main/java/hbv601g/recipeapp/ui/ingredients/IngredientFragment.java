@@ -75,7 +75,7 @@ public class IngredientFragment extends Fragment{
             Bundle bundle = new Bundle();
             bundle.putLong(getString(R.string.selected_user_id), mIngredient.getCreatedBy().getId());
             bundle.putString(getString(R.string.selected_user_name), mIngredient.getCreatedBy().getUsername());
-            navController.navigate(R.id.nav_user, bundle);
+            navController.navigate(R.id.nav_user_profile, bundle);
         });
         return root;
     }
