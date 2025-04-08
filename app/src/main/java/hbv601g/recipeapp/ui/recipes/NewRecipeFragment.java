@@ -2,6 +2,7 @@ package hbv601g.recipeapp.ui.recipes;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ import hbv601g.recipeapp.adapters.IngredientMeasurementAdapter;
 import hbv601g.recipeapp.databinding.FragmentNewRecipeBinding;
 import hbv601g.recipeapp.entities.IngredientMeasurement;
 import hbv601g.recipeapp.entities.Recipe;
+import hbv601g.recipeapp.networking.CustomCallback;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.RecipeService;
 
@@ -34,9 +36,9 @@ import hbv601g.recipeapp.service.RecipeService;
 public class NewRecipeFragment extends Fragment {
     private RecipeService mRecipeService;
     private FragmentNewRecipeBinding mBinding;
-
     private List<IngredientMeasurement> mList = new ArrayList<>();
     private int mTotalHeight = 0;
+
 
     @Nullable
     @Override
@@ -48,10 +50,8 @@ public class NewRecipeFragment extends Fragment {
         MainActivity mainActivity = (MainActivity) getActivity();
         assert mainActivity != null;
 
-        IngredientMeasurementAdapter adapter = new IngredientMeasurementAdapter
-                        (
-                            mainActivity.getApplicationContext(), mList
-                        );
+        IngredientMeasurementAdapter adapter = new IngredientMeasurementAdapter(
+                mainActivity.getApplicationContext(), mList);
         mBinding.ingredients.setAdapter(adapter);
 
         NavController navController = Navigation.findNavController(
@@ -60,25 +60,13 @@ public class NewRecipeFragment extends Fragment {
 
         mRecipeService = new RecipeService(new NetworkingService(), mainActivity.getUserId());
 
-        mBinding.addIngredient.setOnClickListener(view -> {
-            navController.navigate(R.id.nav_add_ingredient_measurement_to_recipe);
-        });
+        mBinding.addIngredient.setOnClickListener(view ->
+            navController.navigate(R.id.nav_add_ingredient_measurement_to_recipe));
 
-        mBinding.createRecipe.setOnClickListener(view -> {
-                Recipe recipe = createRecipe();
-                if (recipe != null) {
-                    navController.popBackStack();
-                }
-                else{
-                    Toast.makeText(
-                            getActivity(), R.string.recipe_unknown_error, Toast.LENGTH_LONG
-                    ).show();
-                }
-        });
 
-        mBinding.cancelRecipe.setOnClickListener(view -> {
-            navController.popBackStack();
-        });
+        mBinding.createRecipe.setOnClickListener(view -> createRecipe(navController));
+
+        mBinding.cancelRecipe.setOnClickListener(view -> navController.popBackStack());
 
         ListView ingredientsList = mBinding.ingredients;
 
@@ -98,8 +86,9 @@ public class NewRecipeFragment extends Fragment {
                 this, (requestKey, result) -> {
             IngredientMeasurement ingredientMeasurement
                     = result.getParcelable(getString(R.string.selected_ingredient_measurement));
+
             mList.add(ingredientMeasurement);
-            View listItem = adapter.getView(adapter.getCount()-1, null, mBinding.ingredients);
+            View listItem = adapter.getView(adapter.getCount() - 1, null, mBinding.ingredients);
             listItem.measure(0, 0);
             mTotalHeight += listItem.getMeasuredHeight();
 
@@ -113,11 +102,11 @@ public class NewRecipeFragment extends Fragment {
     }
 
     /**
-     * Uses information from the UI to create a new recipe
+     * Uses information from the UI to create a new recipe, and updates the UI based on the result.
      *
-     * @return the new recipe
+     * @param navController - The NavController
      */
-    private Recipe createRecipe(){
+    private void createRecipe( NavController navController){
         String title =  mBinding.recipeName.getText().toString();
         String instructions = mBinding.instructions.getText().toString();
         Boolean isPrivate = mBinding.isPrivate.isChecked();
@@ -125,13 +114,37 @@ public class NewRecipeFragment extends Fragment {
 
         ListAdapter ingredients= mBinding.ingredients.getAdapter();
         int size = ingredients.getCount();
+        // TODO: nota IngredientMeasurementAdapter tilviksbreytu og hafa getList aðferð?
         for(int i = 0; i < size; i++){
             ingredientMeasurementList.add((IngredientMeasurement) ingredients.getItem(i));
         }
 
-        return  mRecipeService.createRecipe(
-                title,instructions, ingredientMeasurementList, isPrivate
-        );
+        mRecipeService.createRecipe(title, instructions, ingredientMeasurementList, isPrivate, new CustomCallback<>() {
+            @Override
+            public void onSuccess(Recipe recipe) {
+                if(getActivity() == null) return;
+                requireActivity().runOnUiThread(() -> {
+                    Toast.makeText(getActivity(), R.string.create_recipe_success_toast, Toast.LENGTH_LONG).show();
+                    navController.popBackStack();
+                });
+            }
+
+            @Override
+            public void onFailure(Recipe recipe) {
+                if(getActivity() == null) return;
+                requireActivity().runOnUiThread(() -> {
+                    // TODO: Á að skoða hvar villan var eða hafa bara else gaurinn?
+                    if(recipe != null){
+                        Log.d("Callback", "Recipe created but failed to add ingredient measurements");
+                        Toast.makeText(getActivity(), R.string.create_recipe_ingredients_failed_toast, Toast.LENGTH_LONG).show();
+                    }
+                    else
+                        Toast.makeText(getActivity(), R.string.create_recipe_failed_toast, Toast.LENGTH_LONG).show();
+                });
+            }
+        });
+
+
     }
 
     /**

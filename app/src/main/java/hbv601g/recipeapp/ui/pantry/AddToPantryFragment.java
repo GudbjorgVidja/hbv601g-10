@@ -2,6 +2,7 @@ package hbv601g.recipeapp.ui.pantry;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -21,6 +22,7 @@ import hbv601g.recipeapp.databinding.FragmentAddToPantryBinding;
 import hbv601g.recipeapp.entities.Ingredient;
 import hbv601g.recipeapp.entities.IngredientMeasurement;
 import hbv601g.recipeapp.entities.Unit;
+import hbv601g.recipeapp.networking.CustomCallback;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.UserService;
 
@@ -33,11 +35,10 @@ public class AddToPantryFragment extends Fragment {
     private EditText mQuantityInput;
     private Ingredient mIngredient;
     private UserService mUserService;
-    private IngredientMeasurement mPantryIngredient;
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         if(getArguments() != null) {
             mIngredient = getArguments().getParcelable(getString(R.string.selected_ingredient));
@@ -58,8 +59,7 @@ public class AddToPantryFragment extends Fragment {
         mQuantityInput = mBinding.addToPantryInputQuantity;
 
 
-
-        unitSpinner.setAdapter(new ArrayAdapter<Unit>(
+        unitSpinner.setAdapter(new ArrayAdapter<>(
                 mainActivity.getApplicationContext(),
                 android.R.layout.simple_spinner_dropdown_item,
                 Unit.values()));
@@ -71,17 +71,36 @@ public class AddToPantryFragment extends Fragment {
             if(mainActivity.getUserId() == 0) {
                 navController.popBackStack();
             } else if(quantityValid){
-                try{
-                    mPantryIngredient = mUserService.addIngredientToPantry(
-                            mainActivity.getUserId(),
-                            mIngredient.getId(),
-                            (Unit) unitSpinner.getSelectedItem(),
-                            Double.parseDouble(mQuantityInput.getText().toString()));
-                    navController.popBackStack();
-                } catch (NullPointerException e){
-                    mainActivity.makeToast(R.string.add_to_pantry_failed, Toast.LENGTH_LONG);
-                    navController.popBackStack();
-                }
+
+                mUserService.addIngredientToPantry(
+                        mainActivity.getUserId(),
+                        mIngredient.getId(),
+                        (Unit) unitSpinner.getSelectedItem(),
+                        Double.parseDouble(mQuantityInput.getText().toString()),
+                        new CustomCallback<>() {
+                            @Override
+                            public void onSuccess(IngredientMeasurement ingredientMeasurement) {
+                                if(getActivity() == null) return;
+                                requireActivity().runOnUiThread(() -> {
+                                    mainActivity.makeToast(R.string.add_to_pantry_success, Toast.LENGTH_LONG);
+                                    navController.popBackStack();
+                                });
+                            }
+
+                            @Override
+                            public void onFailure(IngredientMeasurement ingredientMeasurement) {
+                                if(getActivity() == null) return;
+                                requireActivity().runOnUiThread(() -> {
+                                    if (ingredientMeasurement == null)
+                                        mainActivity.makeToast(R.string.add_to_pantry_failed, Toast.LENGTH_LONG);
+                                    else
+                                        mainActivity.makeToast(R.string.add_to_pantry_already_existing, Toast.LENGTH_LONG);
+
+                                    navController.popBackStack();
+                                });
+                            }
+                        });
+
             } else {
                 mQuantityInput.setError(getString(R.string.field_required_error));
             }
