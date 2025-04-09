@@ -115,6 +115,7 @@
     <string name="create_recipe_ingredients_failed_toast">Failed to add ingredients to recipe</string>
     <string name="recipe_unknown_error">Recipe could not be crated, unknown error</string>
     <string name="recipe_edit_unknown_error">Recipe could not be edited, unknown error</string>
+    <string name="recipe_name_is_empty_error">Recipe Must have a name</string>
     <string name="create_recipe_list_failed_toast">Failed to create recipe list.</string>
     <string name="create_recipe_list_success_toast">Successfully created recipe list.</string>
     <string name="recipe_removed_from_list_success_toast"> Recipe was successfully removed from the list</string>
