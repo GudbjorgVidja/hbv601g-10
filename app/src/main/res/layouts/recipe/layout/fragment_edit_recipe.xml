@@ -60,7 +60,7 @@
             android:layout_height="wrap_content"
             style="@style/subHeading"
             android:layout_marginTop="32dp"
-            android:text="@string/ingredients_text"
+            android:text="@string/recipe_ingredients"
             app:layout_constraintTop_toBottomOf="@id/instructions_input_layout"
             app:layout_constraintStart_toStartOf="parent" />
 

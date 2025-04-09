@@ -150,7 +150,6 @@ public class RecipeListFragment extends Fragment {
 
                 dialog.dismiss();
             } else {
-                mainActivity.makeToast(R.string.recipe_list_rename_blank, Toast.LENGTH_LONG);
                 input.setError(getString(R.string.field_required_error));
             }
         });

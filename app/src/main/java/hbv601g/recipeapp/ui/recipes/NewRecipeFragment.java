@@ -110,7 +110,7 @@ public class NewRecipeFragment extends Fragment {
         String title =  temp.getText().toString();
 
 	    if(title.isEmpty()){
-            temp.setError(getString(R.string.recipe_name_is_empty_error));
+            temp.setError(getString(R.string.field_required_error));
             return;
         }
 
@@ -136,7 +136,7 @@ public class NewRecipeFragment extends Fragment {
                         Toast.makeText(getActivity(), R.string.create_recipe_ingredients_failed_toast, Toast.LENGTH_LONG).show();
                     }
                     else
-                        Toast.makeText(getActivity(), R.string.recipe_unknown_error, Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), R.string.create_recipe_failed_toast, Toast.LENGTH_LONG).show();
                 });
             }
         });

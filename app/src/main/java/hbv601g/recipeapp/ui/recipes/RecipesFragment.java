@@ -219,7 +219,7 @@ public class RecipesFragment extends Fragment {
         input.setInputType(InputType.TYPE_CLASS_NUMBER);
         alert.setView(input);
 
-        alert.setPositiveButton(R.string.confirm_filter_button, (dialog, which) -> {
+        alert.setPositiveButton(R.string.confirm_button, (dialog, which) -> {
             // TODO: hafa check hér? input er number?
             int maxTPC = -2;
             try {
@@ -267,7 +267,7 @@ public class RecipesFragment extends Fragment {
         input.setInputType(InputType.TYPE_CLASS_NUMBER);
         alert.setView(input);
 
-        alert.setPositiveButton(R.string.confirm_filter_button, (dialog, which) -> {
+        alert.setPositiveButton(R.string.confirm_button, (dialog, which) -> {
             int maxTIC = -2;
             try {
                 maxTIC = Integer.parseInt(input.getText().toString());

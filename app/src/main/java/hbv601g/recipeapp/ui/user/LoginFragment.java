@@ -42,11 +42,7 @@ public class LoginFragment extends Fragment{
         EditText passwordInput = mBinding.passwordInput;
 
         mBinding.loginButton.setOnClickListener(v -> {
-            if(Objects.requireNonNull(usernameInput.getText()).toString().isEmpty() ||
-                    Objects.requireNonNull(passwordInput.getText()).toString().isEmpty()){
-                mainActivity.makeToast(R.string.login_not_empty_toast, Toast.LENGTH_LONG);
-            }
-            else{
+            if(isValid()) {
                 mUserService.logIn(
                         usernameInput.getText().toString(),
                         passwordInput.getText().toString(),
@@ -80,6 +76,29 @@ public class LoginFragment extends Fragment{
 
         return root;
     }
+
+    /**
+     * Verifies that the username and password have been set, which is a requirement for a valid
+     * login
+     *
+     * @return a boolean value indicating the validity of the required fields
+     */
+    private boolean isValid(){
+        boolean isValid = true;
+        String errorMessage = getString(R.string.field_required_error);
+
+        if(Objects.requireNonNull(mBinding.usernameInput.getText()).toString().isEmpty()){
+            mBinding.usernameInput.setError(errorMessage);
+            isValid = false;
+        }
+        if(Objects.requireNonNull(mBinding.passwordInput.getText()).toString().isEmpty()){
+            mBinding.passwordInput.setError(errorMessage);
+            isValid = false;
+        }
+
+        return isValid;
+    }
+
 
     @Override
     public void onDestroyView() {

@@ -173,7 +173,7 @@ public class EditRecipeFragment extends Fragment {
         String title =  temp.getText().toString();
 
         if(title.isEmpty()){
-            temp.setError(getString(R.string.recipe_name_is_empty_error));
+            temp.setError(getString(R.string.field_required_error));
             return;
         }
        
@@ -200,7 +200,7 @@ public class EditRecipeFragment extends Fragment {
             public void onFailure(Recipe recipe) {
                 if(getActivity() == null) return;
                 requireActivity().runOnUiThread(() ->
-                        Toast.makeText(getActivity(), R.string.recipe_edit_unknown_error, Toast.LENGTH_LONG).show());
+                        Toast.makeText(getActivity(), R.string.edit_recipe_failed_toast, Toast.LENGTH_LONG).show());
             }
         });
 

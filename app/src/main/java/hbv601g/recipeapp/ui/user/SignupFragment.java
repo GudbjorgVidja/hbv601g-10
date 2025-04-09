@@ -44,10 +44,7 @@ public class SignupFragment extends Fragment {
             String username = Objects.requireNonNull(mBinding.usernameInput.getText()).toString();
             String password = Objects.requireNonNull(mBinding.passwordInput.getText()).toString();
 
-            if(username.isEmpty() || password.isEmpty()){
-                mainActivity.makeToast(R.string.login_not_empty_toast, Toast.LENGTH_LONG);
-            }
-            else{
+            if(isValid()){
                 mUserService.signup(username, password, new CustomCallback<>() {
                     @Override
                     public void onSuccess(User user) {
@@ -73,6 +70,29 @@ public class SignupFragment extends Fragment {
             }
         });
         return root;
+    }
+
+
+    /**
+     * Verifies that the username and password have been set, which is a requirement for a valid
+     * signup
+     *
+     * @return a boolean value indicating the validity of the required fields
+     */
+    private boolean isValid(){
+        boolean isValid = true;
+        String errorMessage = getString(R.string.field_required_error);
+
+        if(Objects.requireNonNull(mBinding.usernameInput.getText()).toString().isEmpty()){
+            mBinding.usernameInput.setError(errorMessage);
+            isValid = false;
+        }
+        if(Objects.requireNonNull(mBinding.passwordInput.getText()).toString().isEmpty()){
+            mBinding.passwordInput.setError(errorMessage);
+            isValid = false;
+        }
+
+        return isValid;
     }
 
     @Override

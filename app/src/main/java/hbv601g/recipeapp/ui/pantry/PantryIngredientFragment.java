@@ -117,7 +117,7 @@ public class PantryIngredientFragment extends Fragment {
         String tmp;
         DecimalFormat df = new DecimalFormat("###,##0.###");
         if (mPantryIngredient.getIngredient().getBrand() != null){
-            tmp = getString(R.string.pantry_ingredient_quantity_brand,
+            tmp = getString(R.string.ingredient_quantity_brand,
                     df.format(mPantryIngredient.getQuantity()),
                     mPantryIngredient.getUnit().toString(),
                     mPantryIngredient.getIngredient().getBrand());

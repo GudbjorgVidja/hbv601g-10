@@ -63,7 +63,7 @@ public class ChangePasswordFragment extends Fragment {
      */
     private void newPassInvalid(boolean empty){
         if(empty){
-            mBinding.newPasswordInputLayout.setError(getString(R.string.new_password_empty_error));
+            mBinding.newPasswordInputLayout.setError(getString(R.string.field_required_error));
             mBinding.validatePasswordInputLayout.setError(null);
         }
         else {
