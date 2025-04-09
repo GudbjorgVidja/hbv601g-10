@@ -75,10 +75,6 @@ public class EditRecipeFragment extends Fragment {
         }
 
         setEditable(mainActivity);
-        //List<IngredientMeasurement> newIngredients = new ArrayList<>();
-        //List<IngredientMeasurement> removedIngredients = new ArrayList<>();
-
-        setEditable(mainActivity);
 
         mBinding.ingredients.setOnItemClickListener((parent, view, position, id) -> {
             removeIngredientAlert(
@@ -88,18 +84,11 @@ public class EditRecipeFragment extends Fragment {
             );
         });
 
-        mBinding.cancelEditRecipe.setOnClickListener(view -> {
-            //if(!removedIngredients.isEmpty()){
-            //    mList.addAll(removedIngredients);
-            //}
-
-            //if(!newIngredients.isEmpty()){
-            //    mList.removeAll(newIngredients);
-            //}
-            navController.popBackStack();
-        });
-
         mBinding.cancelEditRecipe.setOnClickListener(view -> navController.popBackStack());
+        setEditable(mainActivity);
+	
+        mBinding.addIngredient.setOnClickListener(view ->
+            navController.navigate(R.id.nav_add_ingredient_measurement_to_recipe));
 
         mBinding.editRecipe.setOnClickListener(view -> editRecipe(mainActivity, navController));
 
@@ -167,6 +156,7 @@ public class EditRecipeFragment extends Fragment {
      * Gets information from the UI and uses it to update the recipe
      *
      * @param activity the current activity
+     * @param navController - The NavController
      */
     private void editRecipe(MainActivity activity, NavController navController) {
         if (mRecipe.getCreatedBy().getId() != activity.getUserId()) {
@@ -180,9 +170,7 @@ public class EditRecipeFragment extends Fragment {
             temp.setError(getString(R.string.recipe_name_is_empty_error));
             return;
         }
-        else{
-            temp.setError(null);
-        }
+       
         
         Recipe upRes = new Recipe();
         upRes.setTitle(title);
