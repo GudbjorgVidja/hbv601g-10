@@ -142,6 +142,7 @@
     <string name="new_password_empty_error">The password field can not be empty</string>
     <string name="password_change_success_toast">Your password has been change</string>
     <string name="password_change_fail_toast">Your password was not change</string>
+    <string name="password_change_error_toast">Your password could not change</string>
     <string name="recipe_missing_toast">Recipe is missing</string>
     <string name="delete_list_failed_toast">Something went wrong when trying to delete the recipe list.</string>
     <string name="delete_list_success_toast">Recipe list deleted successfully.</string>

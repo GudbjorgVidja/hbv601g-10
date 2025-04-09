@@ -102,15 +102,13 @@ public class ChangePasswordFragment extends Fragment {
 			    new CustomCallback<>() {
 				@Override
 				public void onSuccess(Boolean aBoolean) {
-				    // allt gekk vel
 				    if(getActivity()==null) return;
 				    requireActivity().runOnUiThread(() -> mNavController.popBackStack());
 				}
 
 				@Override
 				public void onFailure(Boolean aBoolean) {
-				    // onFailure í networking
-				    if(getActivity() == null) return;;
+				    if(getActivity() == null) return;
 				    requireActivity().runOnUiThread(() -> mNavController.popBackStack());
 				}
 			    });
