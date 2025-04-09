@@ -181,7 +181,6 @@ public class RecipeListService extends Service {
                 }
                 else {
                     callback.onFailure(new ArrayList<>());
-                    //throw new NullPointerException("List recipes are null");
                 }
             }
 
@@ -251,9 +250,6 @@ public class RecipeListService extends Service {
         String data = gson.toJson(requestBody);
 
         mNetworkingService.patchRequest(url, data, new CustomCallback<>() {
-//        String url = Uri.parse(String.format("list/updateTitle/%s", id)).buildUpon()
-//                .appendQueryParameter("uid", m)
-//        mNetworkingService.patchRequest(url, null, new CustomCallback<>() {
             @Override
             public void onSuccess(JsonElement jsonElement) {
                 Log.d("API", "Updated recipe list: " + jsonElement);
