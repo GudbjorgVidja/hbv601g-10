@@ -3,6 +3,7 @@ package hbv601g.recipeapp.ui.ingredients;
 import static android.view.View.GONE;
 
 import android.app.AlertDialog;
+import android.icu.text.DecimalFormat;
 import android.os.Bundle;
 import android.util.Log;
 import android.text.InputType;
@@ -228,19 +229,29 @@ public class IngredientFragment extends Fragment{
      */
     private void setIngredient(){
         mBinding.ingredientTitle.setText(mIngredient.getTitle());
+        String tmp = "";
 
-        String tmp = mIngredient.getCreatedBy()==null? "Unknown" : mIngredient.getCreatedBy().getUsername();
-        mBinding.ingredientCreator.setText(tmp);
+        if(mIngredient.getCreatedBy() != null){
+            tmp = mIngredient.getCreatedBy().getUsername();
+            mBinding.ingredientCreator.setText(tmp);
+        }
 
-        if(mIngredient.getBrand() != null) tmp = getString(R.string.ingredient_quantity_brand, mIngredient.getQuantity()+"", mIngredient.getUnit().toString(), mIngredient.getBrand());
-        else tmp = mIngredient.getQuantity() + mIngredient.getUnit().toString();
+        // Formatter to skip trailing zeros in quantity
+        DecimalFormat df = new DecimalFormat("###,##0.###");
+
+        if(mIngredient.getBrand() != null)
+            tmp=getString(R.string.quantity_brand, df.format(mIngredient.getQuantity()), mIngredient.getUnit().toString(), mIngredient.getBrand());
+        else
+            tmp=getString(R.string.quantity, df.format(mIngredient.getQuantity()), mIngredient.getUnit().toString());
         mBinding.ingredientQuantityUnit.setText(tmp);
 
-        if(mIngredient.getStore() == null) tmp = (int) mIngredient.getPrice()+getString(R.string.currency);
-        else tmp = getString(R.string.ingredient_price_store, (int) mIngredient.getPrice(), mIngredient.getStore());
+        if(mIngredient.getStore() != null)
+            tmp=getString(R.string.ingredient_price_store, mIngredient.getPrice(), mIngredient.getStore());
+        else
+            tmp=getString(R.string.ingredient_price, mIngredient.getPrice());
         mBinding.ingredientPriceStore.setText(tmp);
 
-        tmp = mIngredient.isPrivate() ? "private" : "public";
+        tmp = getString(mIngredient.isPrivate() ? R.string.private_text : R.string.public_text);
         mBinding.ingredientPrivate.setText(tmp);
     }
 

@@ -1,6 +1,7 @@
 package hbv601g.recipeapp.adapters;
 
 import android.content.Context;
+import android.icu.text.DecimalFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +48,7 @@ public class PantryAdapter extends BaseAdapter {
             convertView = mInflater.inflate(R.layout.pantry_list_item, parent, false);
         }
 
+        DecimalFormat df = new DecimalFormat("###,##0.###");
         TextView title = convertView.findViewById(R.id.pantry_list_title);
         TextView quantity = convertView.findViewById(R.id.pantry_list_quantity);
         TextView unit = convertView.findViewById(R.id.pantry_list_unit);
@@ -54,7 +56,7 @@ public class PantryAdapter extends BaseAdapter {
         IngredientMeasurement currentPantryItem = (IngredientMeasurement) getItem(position);
 
         title.setText(currentPantryItem.getIngredient().getTitle());
-        quantity.setText(String.format("%s", currentPantryItem.getQuantity()));
+        quantity.setText(String.format("%s", df.format(currentPantryItem.getQuantity())));
         unit.setText(currentPantryItem.getUnit().toString());
 
 

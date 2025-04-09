@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="filledButton" parent="Widget.MaterialComponents.Button">
+        <item name="drawableTint">?attr/colorOnPrimary</item>
+    </style>
+
+    <style name="cameraButton" parent="filledButton">
+        <item name="icon">@drawable/ic_camera_black_24dp</item>
+    </style>
+
+    <style name="outlinedButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="strokeColor">?attr/colorPrimary</item>
+        <item name="drawableTint">?attr/colorPrimary</item>
+    </style>
+
+    <style name="textButton" parent="Widget.MaterialComponents.Button.TextButton">
+    </style>
+
+    <style name="tonalButton" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">?attr/colorSecondary</item>
+        <item name="android:textColor">?attr/colorOnSecondary</item>
+    </style>
+
+
+    <!-- Button containing only an icon, no text-->
+    <style name="iconButton" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="iconSize">32sp</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:text">""</item>
+    </style>
+
+    <style name="editIconButton" parent="iconButton">
+        <item name="icon">@drawable/ic_edit_24dp</item>
+    </style>
+
+    <!-- delete button -->
+    <style name="deleteButton" parent="outlinedButton">
+        <item name="icon">@drawable/ic_delete_24dp</item>
+        <item name="iconPadding">8sp</item>
+    </style>
+
+    <!-- text button to navigate to user profile-->
+    <style name="creatorButton" parent="textButton">
+        <item name="textAllCaps">false</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+
+    <!-- main heading in the content of a fragment, e.g. username or ingredient title -->
+    <style name="contentTitle">
+        <item name="android:textSize">32sp</item>
+        <item name="android:layout_marginTop">40sp</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:scrollHorizontally">true</item>
+        <item name="android:ellipsize">end</item>
+        <item name="layout_constrainedWidth">true</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <!-- secondary heading, describing the content below -->
+    <style name="subHeading">
+        <item name="android:textSize">18sp</item>
+        <item name="android:layout_marginTop">16sp</item>
+        <item name="android:paddingVertical">8sp</item>
+    </style>
+
+</resources>

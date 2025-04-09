@@ -17,14 +17,12 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
-
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/view_option_dropdown_layout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-        android:layout_width="wrap_content"
+        android:layout_width="170dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16sp"
-        android:layout_marginTop="32dp"
         android:hint="@string/sort_and_filter_hint"
         android:labelFor="@id/view_option_dropdown"
         app:layout_constraintStart_toStartOf="parent"
@@ -43,8 +41,7 @@
         android:id="@+id/recipes_list_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginVertical="20dp"
+        android:layout_margin="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/view_option_dropdown_layout"
@@ -56,6 +53,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
+        android:layout_marginBottom="40dp"
         android:clickable="true"
         android:contentDescription="@string/title_recipe_create"
         android:src="@android:drawable/ic_input_add"

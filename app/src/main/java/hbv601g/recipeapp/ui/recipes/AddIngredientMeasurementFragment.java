@@ -1,10 +1,13 @@
 package hbv601g.recipeapp.ui.recipes;
 
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -32,11 +35,31 @@ import hbv601g.recipeapp.service.IngredientService;
  */
 public class AddIngredientMeasurementFragment extends Fragment {
     private FragmentAddIngredientMeasurementBinding mBinding;
+    private List<Ingredient> mIngredients;
+    private AutoCompleteTextView mUnitDropdown;
+    private Unit mSelectedUnit;
+    private AutoCompleteTextView mIngredientDropdown;
+    private IngredientAdapter mIngredientAdapter;
+    private Ingredient mSelectedIngredient;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        // Fetching stored state if relevant
+        if (savedInstanceState != null){
+            String unitString = savedInstanceState.getString(getString(R.string.selected_unit), "");
+            try {
+                mSelectedUnit = Unit.valueOf(unitString);
+            } catch (IllegalArgumentException e) {
+                Log.d("SavedInstanceState", "Illegal argument for unit");
+            }
+            mIngredients = savedInstanceState.getParcelableArrayList(getString(R.string.saved_ingredients));
+            mSelectedIngredient = savedInstanceState.getParcelable(getString(R.string.selected_ingredient));
+        }
+        if(mIngredients == null) mIngredients = new ArrayList<>();
+
         mBinding = FragmentAddIngredientMeasurementBinding.inflate(
                 inflater, container, false
         );
@@ -57,28 +80,26 @@ public class AddIngredientMeasurementFragment extends Fragment {
         ingredientService.getAllIngredients(new CustomCallback<>() {
             @Override
             public void onSuccess(List<Ingredient> ingredients) {
-                if(getActivity() == null) return;
-                requireActivity().runOnUiThread(() -> makeIngredientView(mainActivity, ingredients));
+                mIngredients = ingredients;
+                mIngredientAdapter.setIngredientList(ingredients);
+                mIngredientAdapter.notifyDataSetChanged();
             }
 
             @Override
             public void onFailure(List<Ingredient> ingredients) {
-                if(getActivity() == null) return;
-                requireActivity().runOnUiThread(() -> makeIngredientView(mainActivity, ingredients));
+                Log.d("Callback", "Failed to get ingredients");
             }
         });
 
-        mBinding.spinnerUnit.setAdapter(new ArrayAdapter<>(
-                mainActivity.getApplicationContext(),
-                android.R.layout.simple_spinner_dropdown_item,
-                Unit.values()));
 
 
         mBinding.addIngredientToRecipe.setOnClickListener(view -> {
-            IngredientMeasurement ingrMeas = addIngredientMeasurement();
-            if(ingrMeas != null){
+            if(isValid()){
+                IngredientMeasurement ingredientMeasurement = new IngredientMeasurement(
+                        mSelectedIngredient, mSelectedUnit,
+                        Double.parseDouble(mBinding.ingredientQuantity.getText().toString()));
                 Bundle res = new Bundle();
-                res.putParcelable(getString(R.string.selected_ingredient_measurement), ingrMeas);
+                res.putParcelable(getString(R.string.selected_ingredient_measurement), ingredientMeasurement);
                 getParentFragmentManager().setFragmentResult(getString(R.string.request_ingredient_measurement), res);
                 navController.popBackStack();
             }
@@ -95,39 +116,78 @@ public class AddIngredientMeasurementFragment extends Fragment {
         return root;
     }
 
-    /**
-     * makes the ui components which use a list of ingredients
-     * @param mainActivity - the mainActivity
-     * @param ingredients - the list of ingredients to use
-     */
-    private void makeIngredientView(MainActivity mainActivity, List<Ingredient> ingredients){
-        mBinding.spinnerIngredient.setAdapter(
-                new IngredientAdapter(mainActivity.getApplicationContext(), ingredients));
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        mUnitDropdown = mBinding.unitDropdown;
+        ArrayAdapter<Unit> unitAdapter = new ArrayAdapter<>(requireContext(),
+                android.R.layout.simple_spinner_dropdown_item, Unit.values());
+        mUnitDropdown.setAdapter(unitAdapter);
+
+        mUnitDropdown.setOnItemClickListener((parent, view, position, id) -> {
+            mUnitDropdown.setError(null);
+            mSelectedUnit = unitAdapter.getItem(position);
+        });
+
+
+        mIngredientDropdown = mBinding.ingredientDropdown;
+        mIngredientAdapter = new IngredientAdapter(requireContext(), mIngredients);
+        mIngredientDropdown.setAdapter(mIngredientAdapter);
+
+        int selectedPos = mIngredientAdapter.getPosition(mSelectedIngredient);
+        if(selectedPos != -1)
+            mBinding.selectedIngredientContainer.addView(mIngredientAdapter.getView(selectedPos, null, null));
+
+        mIngredientDropdown.setOnItemClickListener((parent, view, position, id) -> {
+            mIngredientDropdown.setError(null);
+            mSelectedIngredient = mIngredientAdapter.getItem(position);
+            mIngredientDropdown.setText(" ");
+            mBinding.selectedIngredientContainer.removeAllViews();
+            mBinding.selectedIngredientContainer.addView(mIngredientAdapter.getView(position, null, null));
+        });
+
     }
 
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        // Ensures the selected unit is kept until the fragment is closed
+        if(mSelectedUnit != null)
+            outState.putCharSequence(getString(R.string.selected_unit), mSelectedUnit.name());
+        if(mSelectedIngredient != null)
+            outState.putParcelable(getString(R.string.selected_ingredient), mSelectedIngredient);
+        if(mIngredients != null)
+            outState.putParcelableArrayList(getString(R.string.saved_ingredients), (ArrayList<? extends Parcelable>) mIngredients);
+    }
+
+
     /**
-     * Gets information from the UI and uses it to create an ingredient measurement to add to a
-     * recipe
+     * Verifies that no required field in the UI is empty, and sets an error for fields which do
+     * not contain valid input
      *
-     * @return the new ingredient measurement
+     * @return a boolean value indicating the validity of the required fields
      */
-    private IngredientMeasurement addIngredientMeasurement(){
-        double value;
-        Unit unit = (Unit) mBinding.spinnerUnit.getSelectedItem();
-        Ingredient ingredient = (Ingredient) mBinding.spinnerIngredient.getSelectedItem();
+    private boolean isValid(){
+        boolean isValid = true;
+        String errorMessage = getString(R.string.field_required_error);
 
-        String temp = mBinding.ingredientQuantity.getText().toString();
-        if(temp.isEmpty()){
-            return null;
+        if(mBinding.ingredientQuantity.getText().toString().isEmpty()) {
+            mBinding.ingredientQuantity.setError(errorMessage);
+            isValid = false;
+        }
+        if(mSelectedUnit == null){
+            mUnitDropdown.setError(errorMessage);
+            isValid = false;
+        }
+        if(mSelectedIngredient == null){
+            mIngredientDropdown.setError(errorMessage);
+            isValid = false;
         }
 
-        value = Double.parseDouble(temp);
-
-        if(Double.isNaN(value) || unit == null || ingredient == null){
-            return null;
-        }
-
-        return new IngredientMeasurement(ingredient, unit, value);
+        return isValid;
     }
 
     @Override
