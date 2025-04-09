@@ -16,6 +16,7 @@ import androidx.navigation.Navigation;
 import hbv601g.recipeapp.MainActivity;
 import hbv601g.recipeapp.R;
 import hbv601g.recipeapp.databinding.FragmentChangePasswordBinding;
+import hbv601g.recipeapp.networking.CustomCallback;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.UserService;
 
@@ -93,15 +94,26 @@ public class ChangePasswordFragment extends Fragment {
         }
 
         alert.setPositiveButton(android.R.string.yes, (dialog, which) -> {
-            mUserService.changePassword
+           mUserService.changePassword
                     (
                             activity.getUserId(),
                             mBinding.newPasswordInput.getText().toString(),
-                            getArguments().getString(getString(R.string.selected_old_password))
-                    );
+                            getArguments().getString(getString(R.string.selected_old_password)),
+			    new CustomCallback<>() {
+				@Override
+				public void onSuccess(Boolean aBoolean) {
+				    // allt gekk vel
+				    if(getActivity()==null) return;
+				    requireActivity().runOnUiThread(() -> mNavController.popBackStack());
+				}
 
-            activity.makeToast(R.string.password_change_success_toast, Toast.LENGTH_LONG);
-            mNavController.popBackStack();
+				@Override
+				public void onFailure(Boolean aBoolean) {
+				    // onFailure í networking
+				    if(getActivity() == null) return;;
+				    requireActivity().runOnUiThread(() -> mNavController.popBackStack());
+				}
+			    });
         });
 
         alert.setNegativeButton(android.R.string.no, (dialog, which) -> {

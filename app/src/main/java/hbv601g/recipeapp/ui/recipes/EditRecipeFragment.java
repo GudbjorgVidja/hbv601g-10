@@ -24,11 +24,13 @@ import hbv601g.recipeapp.adapters.IngredientMeasurementAdapter;
 import hbv601g.recipeapp.databinding.FragmentEditRecipeBinding;
 import hbv601g.recipeapp.entities.IngredientMeasurement;
 import hbv601g.recipeapp.entities.Recipe;
+import hbv601g.recipeapp.networking.CustomCallback;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.RecipeService;
 
 /**
- * A fragment to edit recipes
+ * Fragment which opens when the user chooses to edit a recipe, which includes changing the title
+ * and instructions, and adding ingredient measurements
  */
 public class EditRecipeFragment extends Fragment {
     private RecipeService mRecipeService;
@@ -39,7 +41,7 @@ public class EditRecipeFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
-                         ViewGroup container, Bundle savedInstanceState) {
+                             ViewGroup container, Bundle savedInstanceState) {
         mBinding = FragmentEditRecipeBinding.inflate(inflater, container, false);
         View root = mBinding.getRoot();
 
@@ -52,9 +54,8 @@ public class EditRecipeFragment extends Fragment {
 
         mRecipeService = new RecipeService(new NetworkingService(), mainActivity.getUserId());
 
-        if(getArguments() == null ||
-                getArguments().getParcelable(getString(R.string.selected_recipe)) == null
-        ){
+        if (getArguments() == null ||
+                getArguments().getParcelable(getString(R.string.selected_recipe)) == null){
             Log.e("EditRecipeFragment", "No recipe to edit");
             navController.popBackStack();
         }
@@ -65,41 +66,20 @@ public class EditRecipeFragment extends Fragment {
                 Log.e("EditRecipeFragment", "No ones owns this");
                 navController.popBackStack();
             }
-        }
-        catch (NullPointerException e){
+        } catch (NullPointerException e) {
             mainActivity.makeToast(R.string.recipe_missing_toast, Toast.LENGTH_LONG);
             navController.popBackStack();
         }
 
-        setEdit(mainActivity);
 
-        mBinding.addIngredient.setOnClickListener(view -> {
-            navController.navigate(R.id.nav_add_ingredient_measurement_to_recipe);
-        });
+        setEditable(mainActivity);
 
-        mBinding.cancelEditRecipe.setOnClickListener(view -> {
-            navController.popBackStack();
-        });
+        mBinding.addIngredient.setOnClickListener(view ->
+            navController.navigate(R.id.nav_add_ingredient_measurement_to_recipe));
 
-        mBinding.editRecipe.setOnClickListener(view -> {
-            Recipe recipe = editRecipe(mainActivity);
-            if (recipe != null) {
-                Bundle res = new Bundle();
-                res.putParcelable(getString(R.string.selected_recipe), recipe);
+        mBinding.cancelEditRecipe.setOnClickListener(view -> navController.popBackStack());
 
-                getParentFragmentManager().setFragmentResult
-                        (
-                                getString(R.string.request_edit_recipe), res
-                        );
-
-                navController.popBackStack();
-            }
-            else{
-                Toast.makeText(
-                        getActivity(), R.string.recipe_edit_unknown_error, Toast.LENGTH_LONG
-                ).show();
-            }
-        });
+        mBinding.editRecipe.setOnClickListener(view -> editRecipe(mainActivity, navController));
 
         getParentFragmentManager().setFragmentResultListener(getString(R.string.request_ingredient_measurement),
         this, (requestKey, result) -> {
@@ -116,12 +96,12 @@ public class EditRecipeFragment extends Fragment {
      *
      * @param activity the current activity.
      */
-    private void setEdit(MainActivity activity){
+    private void setEditable(MainActivity activity) {
         mBinding.recipeName.setText(mRecipe.getTitle());
         mBinding.instructions.setText(mRecipe.getInstructions());
 
         mList = mRecipe.getIngredientMeasurements();
-        if(mList == null){mList = new ArrayList<>();}
+        if (mList == null) mList = new ArrayList<>();
 
         ListView ingredientsList = mBinding.ingredients;
         IngredientMeasurementAdapter adapter = new IngredientMeasurementAdapter
@@ -157,9 +137,9 @@ public class EditRecipeFragment extends Fragment {
      * @param activity the current activity
      * @return the updated recipe if possible else return null
      */
-    private Recipe editRecipe(MainActivity activity){
-        if(mRecipe.getCreatedBy().getId() != activity.getUserId()){
-            return null;
+    private void editRecipe(MainActivity mainActivity, NavController navController) {
+        if (mRecipe.getCreatedBy().getId() != mainActivity.getUserId()) {
+            return;
         }
 
         EditText temp = mBinding.recipeName;
@@ -178,6 +158,26 @@ public class EditRecipeFragment extends Fragment {
         upRes.setInstructions(mBinding.instructions.getText().toString());
         upRes.setPrivate(mBinding.isPrivate.isChecked());
 
-        return mRecipeService.updateRecipe(upRes, mRecipe.getId(), mList);
+        mRecipeService.updateRecipe(upRes, mRecipe.getId(), mList, new CustomCallback<>() {
+            @Override
+            public void onSuccess(Recipe recipe) {
+                if(getActivity() == null) return;
+                requireActivity().runOnUiThread(() -> {
+                    Bundle res = new Bundle();
+                    res.putParcelable(getString(R.string.selected_recipe), recipe);
+
+                    getParentFragmentManager().setFragmentResult(getString(R.string.request_edit_recipe), res);
+                    navController.popBackStack();
+                });
+            }
+
+            @Override
+            public void onFailure(Recipe recipe) {
+                if(getActivity() == null) return;
+                requireActivity().runOnUiThread(() ->
+                        Toast.makeText(getActivity(), R.string.recipe_edit_unknown_error, Toast.LENGTH_LONG).show());
+            }
+        });
+
     }
 }
