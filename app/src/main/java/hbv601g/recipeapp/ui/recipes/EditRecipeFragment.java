@@ -72,14 +72,8 @@ public class EditRecipeFragment extends Fragment {
         }
 
         setEditable(mainActivity);
-        List<IngredientMeasurement> newIngredients = new ArrayList<>();
 
         mBinding.cancelEditRecipe.setOnClickListener(view -> {
-            if(!newIngredients.isEmpty()){
-                for (IngredientMeasurement x : newIngredients){
-                    mList.remove(x);
-                }
-            }
             navController.popBackStack();
         });
 	
@@ -93,7 +87,6 @@ public class EditRecipeFragment extends Fragment {
             IngredientMeasurement ingredientMeasurement
                     = result.getParcelable(getString(R.string.selected_ingredient_measurement));
             mList.add(ingredientMeasurement);
-            newIngredients.add(ingredientMeasurement);
         });
 
         return root;
@@ -108,8 +101,7 @@ public class EditRecipeFragment extends Fragment {
         mBinding.recipeName.setText(mRecipe.getTitle());
         mBinding.instructions.setText(mRecipe.getInstructions());
 
-        mList = mRecipe.getIngredientMeasurements();
-        if (mList == null) mList = new ArrayList<>();
+        mList = new ArrayList<>(mRecipe.getIngredientMeasurements());
 
         ListView ingredientsList = mBinding.ingredients;
         IngredientMeasurementAdapter adapter = new IngredientMeasurementAdapter
@@ -156,9 +148,6 @@ public class EditRecipeFragment extends Fragment {
         if(title.isEmpty()){
             temp.setError(getString(R.string.recipe_name_is_empty_error));
             return;
-        }
-        else{
-            temp.setError(null);
         }
         
         Recipe upRes = new Recipe();
