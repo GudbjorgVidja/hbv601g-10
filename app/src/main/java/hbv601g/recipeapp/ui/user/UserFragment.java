@@ -252,6 +252,7 @@ public class UserFragment extends Fragment{
                     oldPass.setError(getString(R.string.validate_current_password_alert_error));
                 }
                 else {
+
                     mUserService.validatePassword(activity.getUserId(), password, new CustomCallback<>() {
                         @Override
                         public void onSuccess(Boolean isValid) {
@@ -259,15 +260,18 @@ public class UserFragment extends Fragment{
                             requireActivity().runOnUiThread(() -> {
                                 if(isValid){
                                     dialog.dismiss();
-				                    Bundle bundle = new Bundle();
-				                    bundle.putString(getString(R.string.selected_old_password), password);
-				                    mNavController.navigate(R.id.nav_change_password, bundle);
+				                     Bundle bundle = new Bundle();
+                                     bundle.putString(getString(R.string.selected_old_password), password);
+                                     mNavController.navigate(R.id.nav_change_password, bundle);
+                                    
                                 }
                                 else {
                                     oldPass.setText("");
                                     activity.makeToast(R.string.password_invalid_toast,Toast.LENGTH_LONG);
                                 }
                             });
+
+
                         }
 
                         @Override
@@ -276,7 +280,9 @@ public class UserFragment extends Fragment{
                             Log.d("Callback", "failed to validate password");
                         }
                     });
-	            }
+
+
+	        }
             });
         });
 

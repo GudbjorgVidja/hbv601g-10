@@ -2,6 +2,7 @@ package hbv601g.recipeapp.service;
 
 import android.app.Service;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -54,7 +55,11 @@ public class UserService extends Service {
                     callback.onFailure(null);
                 else {
                     // If the information given is correct, delete the user
-                    String url = String.format("user/delete?uid=%s&password=%s", uid, password);
+                    String url = Uri.parse("user/delete").buildUpon()
+                            .appendQueryParameter("uid", "" + uid)
+                            .appendQueryParameter("password", password)
+                            .build().toString();
+
                     mNetworkingService.deleteRequest(url, new CustomCallback<>() {
                         @Override
                         public void onSuccess(JsonElement jsonElement) {
@@ -115,7 +120,10 @@ public class UserService extends Service {
      *                 failure
      */
     public void logIn(String username, String password, CustomCallback<User> callback) {
-        String url = String.format("user/login?username=%s&password=%s", username, password);
+        String url = Uri.parse("user/login").buildUpon()
+                .appendQueryParameter("username", username)
+                .appendQueryParameter("password", password)
+                .build().toString();
 
         mNetworkingService.getRequest(url, new CustomCallback<>() {
             @Override
@@ -142,7 +150,10 @@ public class UserService extends Service {
      * @param callback - a callback returning the new user on success, or null on failure
      */
     public void signup(String username, String password, CustomCallback<User> callback) {
-        String url = String.format("user/signup?username=%s&password=%s", username, password);
+        String url = Uri.parse("user/signup").buildUpon()
+                .appendQueryParameter("username", username)
+                .appendQueryParameter("password", password)
+                .build().toString();
 
         mNetworkingService.postRequest(url, null, new CustomCallback<>() {
             @Override
@@ -291,9 +302,11 @@ public class UserService extends Service {
         getUser(uid, uid, new CustomCallback<>() {
             @Override
             public void onSuccess(User user) {
-                String url = "user/changePassword?uid=" + uid
-                        + "&newPassword=" + newPass
-                        + "&oldPassword=" + oldPassword;
+                String url = Uri.parse("user/changePassword").buildUpon()
+                        .appendQueryParameter("uid", "" + uid)
+                        .appendQueryParameter("newPassword", newPass)
+                        .appendQueryParameter("oldPassword", oldPassword)
+                        .build().toString();
 
                 mNetworkingService.patchRequest(url, null, new CustomCallback<>() {
                     @Override
