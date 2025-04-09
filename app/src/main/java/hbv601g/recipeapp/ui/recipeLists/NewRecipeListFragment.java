@@ -63,6 +63,8 @@ public class NewRecipeListFragment extends Fragment {
                                     Bundle bundle = new Bundle();
                                     bundle.putLong(getString(R.string.selected_user_id), mainActivity.getUserId());
                                     bundle.putString(getString(R.string.selected_user_name), mainActivity.getUserName());
+                                    navController.popBackStack();
+                                    navController.popBackStack();
                                     navController.navigate(R.id.nav_user, bundle);
                                 });
                             }
