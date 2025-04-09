@@ -75,28 +75,27 @@ public class EditRecipeFragment extends Fragment {
         }
 
         setEditable(mainActivity);
-        List<IngredientMeasurement> newIngredients = new ArrayList<>();
-        List<IngredientMeasurement> removedIngredients = new ArrayList<>();
+        //List<IngredientMeasurement> newIngredients = new ArrayList<>();
+        //List<IngredientMeasurement> removedIngredients = new ArrayList<>();
 
         setEditable(mainActivity);
 
         mBinding.ingredients.setOnItemClickListener((parent, view, position, id) -> {
             removeIngredientAlert(
                     mainActivity,
-                    removedIngredients,
                     (IngredientMeasurement) parent.getItemAtPosition(position),
                     position
             );
         });
 
         mBinding.cancelEditRecipe.setOnClickListener(view -> {
-            if(!removedIngredients.isEmpty()){
-                mList.addAll(removedIngredients);
-            }
+            //if(!removedIngredients.isEmpty()){
+            //    mList.addAll(removedIngredients);
+            //}
 
-            if(!newIngredients.isEmpty()){
-                mList.removeAll(newIngredients);
-            }
+            //if(!newIngredients.isEmpty()){
+            //    mList.removeAll(newIngredients);
+            //}
             navController.popBackStack();
         });
 
@@ -216,8 +215,6 @@ public class EditRecipeFragment extends Fragment {
     /**
      * Make a Dialog, that asks the user if they want to remove the ingredient
      * @param activity The MainActivity of the app
-     * @param removeList Is a list that contains all IngredientMeasurement that have been removed
-     *                   in the edit so far.
      * @param position Is the position of the IngredientMeasurement in the adapter that is being
      *                 remove
      * @param ingerd Is the IngredientMeasurement that is being removed
@@ -225,7 +222,6 @@ public class EditRecipeFragment extends Fragment {
     private void removeIngredientAlert
     (
             MainActivity activity ,
-            List<IngredientMeasurement> removeList,
             IngredientMeasurement ingerd,
             int position
     ) {
@@ -247,7 +243,6 @@ public class EditRecipeFragment extends Fragment {
             ingredientsList.requestLayout();
 
             mList.remove(ingerd);
-            removeList.add(ingerd);
 
             mAdapter.setList(mList);
             mAdapter.notifyDataSetChanged();
