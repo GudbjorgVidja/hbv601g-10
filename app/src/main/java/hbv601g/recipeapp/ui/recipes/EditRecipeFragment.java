@@ -137,8 +137,8 @@ public class EditRecipeFragment extends Fragment {
      * @param activity the current activity
      * @return the updated recipe if possible else return null
      */
-    private void editRecipe(MainActivity mainActivity, NavController navController) {
-        if (mRecipe.getCreatedBy().getId() != mainActivity.getUserId()) {
+    private void editRecipe(MainActivity activity, NavController navController) {
+        if (mRecipe.getCreatedBy().getId() != activity.getUserId()) {
             return;
         }
 
@@ -147,7 +147,7 @@ public class EditRecipeFragment extends Fragment {
 
         if(title.isEmpty()){
             temp.setError(getString(R.string.recipe_name_is_empty_error));
-            return null;
+            return;
         }
         else{
             temp.setError(null);

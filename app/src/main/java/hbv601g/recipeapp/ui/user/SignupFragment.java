@@ -53,7 +53,7 @@ public class SignupFragment extends Fragment {
                     public void onSuccess(User user) {
                         if(getActivity() == null) return;
                         requireActivity().runOnUiThread(() -> {
-                            mainActivity.updateCurrentUser(user);
+                            mainActivity.updateCurrentUser(user, mBinding.passwordInput.getText().toString());
                             navController.popBackStack();
                             navController.popBackStack();
                             Bundle bundle = new Bundle();
