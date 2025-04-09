@@ -71,13 +71,14 @@ public class EditRecipeFragment extends Fragment {
             navController.popBackStack();
         }
 
-
         setEditable(mainActivity);
 
+        mBinding.cancelEditRecipe.setOnClickListener(view -> {
+            navController.popBackStack();
+        });
+	
         mBinding.addIngredient.setOnClickListener(view ->
             navController.navigate(R.id.nav_add_ingredient_measurement_to_recipe));
-
-        mBinding.cancelEditRecipe.setOnClickListener(view -> navController.popBackStack());
 
         mBinding.editRecipe.setOnClickListener(view -> editRecipe(mainActivity, navController));
 
@@ -100,8 +101,7 @@ public class EditRecipeFragment extends Fragment {
         mBinding.recipeName.setText(mRecipe.getTitle());
         mBinding.instructions.setText(mRecipe.getInstructions());
 
-        mList = mRecipe.getIngredientMeasurements();
-        if (mList == null) mList = new ArrayList<>();
+        mList = new ArrayList<>(mRecipe.getIngredientMeasurements());
 
         ListView ingredientsList = mBinding.ingredients;
         IngredientMeasurementAdapter adapter = new IngredientMeasurementAdapter
@@ -135,7 +135,7 @@ public class EditRecipeFragment extends Fragment {
      * Gets information from the UI and uses it to update the recipe
      *
      * @param activity the current activity
-     * @return the updated recipe if possible else return null
+     * @param navController - The NavController
      */
     private void editRecipe(MainActivity activity, NavController navController) {
         if (mRecipe.getCreatedBy().getId() != activity.getUserId()) {
@@ -148,9 +148,6 @@ public class EditRecipeFragment extends Fragment {
         if(title.isEmpty()){
             temp.setError(getString(R.string.recipe_name_is_empty_error));
             return;
-        }
-        else{
-            temp.setError(null);
         }
         
         Recipe upRes = new Recipe();
@@ -179,5 +176,11 @@ public class EditRecipeFragment extends Fragment {
             }
         });
 
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mBinding = null;
     }
 }
