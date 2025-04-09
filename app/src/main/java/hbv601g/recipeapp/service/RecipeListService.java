@@ -2,6 +2,7 @@ package hbv601g.recipeapp.service;
 
 import android.app.Service;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -43,13 +44,16 @@ public class RecipeListService extends Service {
      * @param title title of the list, max 50 characters
      * @param description description of the list, max 250 chars, may be null
      * @param isPrivate true if the list is private, otherwise false
-     * @return RecipeList object added to the db, or null
      */
     public void createRecipeList(String title, String description, boolean isPrivate,
                                  CustomCallback<RecipeList> callback) {
 
-        String url = String.format("list/new?uid=%s&title=%s&description=%s&isPrivate=%b",
-                mUid, title, description, isPrivate);
+        String url = Uri.parse("list/new").buildUpon()
+                .appendQueryParameter("uid", "" + mUid)
+                .appendQueryParameter("title", title)
+                .appendQueryParameter("description", description)
+                .appendQueryParameter("isPrivate", "" + isPrivate)
+                .build().toString();
 
         mNetworkingService.postRequest(url, null, new CustomCallback<>() {
             @Override
@@ -75,7 +79,6 @@ public class RecipeListService extends Service {
      * Makes a request to get all recipe lists for the current user, public and private
      * @param uid - user id
      * @param callback - returns all of the user's recipe lists on success, or an empty list on failure
-     * @return all of the user's recipe lists
      */
     public void getUserRecipeLists(long uid, CustomCallback<List<RecipeList>> callback) {
         String url = "list/user/" + uid + "?uid=" + mUid;
@@ -137,7 +140,6 @@ public class RecipeListService extends Service {
      *
      * @param lid id of the recipe list.
      * @param callback - callback returning the recipeList on success, or null on failure.
-     * @return Recipe list with the id 'lid'.
      */
     public void getListById(long lid, CustomCallback<RecipeList> callback){
         String url = String.format("list/id/%s?uid=%s", lid, mUid);
@@ -165,7 +167,6 @@ public class RecipeListService extends Service {
      * Fetches all recipes from the recipe list with the id 'lid'.
      *
      * @param lid id of the recipe list.
-     * @return All recipes from the corresponding recipe list.
      */
     public void getRecipesFromList(long lid, CustomCallback<List<Recipe>> callback){
         String url = String.format("list/id/%s/recipe?uid=%s", lid, mUid);
@@ -180,7 +181,6 @@ public class RecipeListService extends Service {
                 }
                 else {
                     callback.onFailure(new ArrayList<>());
-                    //throw new NullPointerException("List recipes are null");
                 }
             }
 
@@ -202,7 +202,6 @@ public class RecipeListService extends Service {
      * @param recipe The Recipe that should be removed from the list.
      * @param callback A callback to the fragment, returning the updated list on success
      *                 or the original list on failure
-     * @return true if the recipe was removed, otherwise false
      */
     public void removeRecipeFromList(RecipeList list, Recipe recipe,
                                      CustomCallback<RecipeList> callback) {
@@ -244,6 +243,7 @@ public class RecipeListService extends Service {
      */
     public void updateRecipeListTitle(long id, String newTitle, CustomCallback<Boolean> callback) {
         String url = String.format("list/updateTitle/%s?uid=%s", id, mUid);
+
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
         Map<String, String> requestBody = new HashMap<>();
         requestBody.put("title", newTitle);
