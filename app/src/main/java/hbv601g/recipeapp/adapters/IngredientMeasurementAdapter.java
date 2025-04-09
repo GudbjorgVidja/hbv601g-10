@@ -43,10 +43,6 @@ public class IngredientMeasurementAdapter extends BaseAdapter {
         mIngredientMeasurementList = list;
     }
 
-    public List<IngredientMeasurement> getList() {
-        return mIngredientMeasurementList; 
-    }
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if(convertView == null){
