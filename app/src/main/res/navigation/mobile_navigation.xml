@@ -81,16 +81,29 @@
             app:argType="long" />
     </fragment>
 
+    <fragment
+        android:id="@+id/nav_user_profile"
+        android:name="hbv601g.recipeapp.ui.user.UserFragment"
+        android:label="@string/title_user"
+        tools:layout="@layout/fragment_user">
+        <argument
+            android:name="@string/selected_user_name"
+            app:argType="string" />
+        <argument
+            android:name="@string/selected_user_id"
+            app:argType="long" />
+    </fragment>
+
     <!-- fragments  -->
     <fragment
         android:id="@+id/nav_signup"
-        android:name="hbv601g.recipeapp.ui.login.SignupFragment"
+        android:name="hbv601g.recipeapp.ui.user.SignupFragment"
         android:label="@string/title_signup"
         tools:layout="@layout/fragment_signup" />
 
     <fragment
         android:id="@+id/nav_login"
-        android:name="hbv601g.recipeapp.ui.login.LoginFragment"
+        android:name="hbv601g.recipeapp.ui.user.LoginFragment"
         android:label="@string/title_login"
         tools:layout="@layout/fragment_login"/>
 
@@ -98,7 +111,11 @@
         android:id="@+id/nav_change_password"
         android:name="hbv601g.recipeapp.ui.user.ChangePasswordFragment"
         android:label="@string/title_change_password"
-        tools:layout="@layout/fragment_change_password"/>
+        tools:layout="@layout/fragment_change_password">
+        <argument
+            android:name="@string/selected_old_password"
+            app:argType="string"/>
+    </fragment>
 
     <fragment
         android:id="@+id/nav_pantry"

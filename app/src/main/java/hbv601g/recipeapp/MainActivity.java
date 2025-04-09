@@ -4,13 +4,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.InputFilter;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -47,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_recipes, R.id.nav_ingredients, R.id.nav_user)
+                R.id.nav_home, R.id.nav_recipes, R.id.nav_ingredients, R.id.nav_user, R.id.nav_pantry)
                 .build();
 
         // sets navController as the view for the fragment in activity_main
@@ -59,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
         // Shows on the bottomNavigationBar what has been selected
         NavigationUI.setupWithNavController(binding.navView, navController);
 
+        menuSelectionListener(navController);
 
         // Gets sharedPreferences information
         sharedpreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
@@ -66,17 +70,34 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * Ensures that the correct menu items appear selected, and that a second selection of the
+     * current menu item navigates to the first page of that menu item
+     *
+     * @param navController the NavController used to navigate between fragments
+     */
+    private void menuSelectionListener(NavController navController) {
+        binding.navView.setOnItemSelectedListener(item -> {
+            if (binding.navView.getSelectedItemId() == item.getItemId()) {
+                navController.popBackStack(item.getItemId(), false);
+            }
+            NavigationUI.onNavDestinationSelected(item, navController);
+            return true;
+        });
+    }
+
+    /**
      * Sets information in shared preferences as the given user, or empties it if the user is null
      *
      * @param user the current user
+     * @param password is the password of the user
      */
-    public void updateCurrentUser(User user){
+    public void updateCurrentUser(User user, String password){
         sharedpreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedpreferences.edit();
 
         if(user != null){
             editor.putString(USERNAME_KEY, user.getUsername());
-            editor.putString(PASSWORD_KEY, user.getPassword());
+            editor.putString(PASSWORD_KEY, password);
             editor.putLong(USER_ID_KEY, user.getId());
         }
         else editor.clear();

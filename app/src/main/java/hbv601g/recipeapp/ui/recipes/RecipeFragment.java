@@ -139,6 +139,22 @@ public class RecipeFragment extends Fragment {
             mBinding.deleteRecipeButton.setVisibility(GONE);
             mBinding.editRecipeButton.setVisibility(GONE);
         }
+
+        getParentFragmentManager().setFragmentResultListener(getString(R.string.request_edit_recipe),
+                this, (requestKey, result) -> {
+                    Recipe temp = result.getParcelable(getString(R.string.selected_recipe));
+                    if (temp != null){
+                        mRecipe = temp;
+                        setRecipe();
+                    }
+                });
+
+        mBinding.recipeCreator.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putLong(getString(R.string.selected_user_id), mRecipe.getCreatedBy().getId());
+            bundle.putString(getString(R.string.selected_user_name), mRecipe.getRecipeCreator());
+            navController.navigate(R.id.nav_user_profile,bundle);
+        });
     }
 
     /**
@@ -257,6 +273,9 @@ public class RecipeFragment extends Fragment {
                 Objects.requireNonNullElseGet(mRecipe.getIngredientMeasurements(), ArrayList::new));
 
         ingredientMeasurementListView.setAdapter(adapter);
+
+
+        // setting the listview height to fit the contents
 
         int totalHeight = 0;
 

@@ -1,4 +1,4 @@
-package hbv601g.recipeapp.ui.login;
+package hbv601g.recipeapp.ui.user;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -55,7 +55,7 @@ public class LoginFragment extends Fragment{
                             public void onSuccess(User user) {
                                 if(getActivity() == null) return;
                                 requireActivity().runOnUiThread(() -> {
-                                    mainActivity.updateCurrentUser(user);
+                                    mainActivity.updateCurrentUser(user, mBinding.passwordInput.getText().toString());
                                     navController.popBackStack();
                                     navController.popBackStack();
                                     Bundle bundle = new Bundle();
@@ -74,8 +74,6 @@ public class LoginFragment extends Fragment{
                             }
                         }
                 );
-
-
             }
 
         });
