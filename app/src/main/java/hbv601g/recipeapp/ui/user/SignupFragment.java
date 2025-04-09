@@ -1,4 +1,4 @@
-package hbv601g.recipeapp.ui.login;
+package hbv601g.recipeapp.ui.user;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,6 +17,7 @@ import java.util.Objects;
 import hbv601g.recipeapp.MainActivity;
 import hbv601g.recipeapp.R;
 import hbv601g.recipeapp.databinding.FragmentSignupBinding;
+import hbv601g.recipeapp.networking.CustomCallback;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.UserService;
 
@@ -47,19 +48,29 @@ public class SignupFragment extends Fragment {
                 mainActivity.makeToast(R.string.login_not_empty_toast, Toast.LENGTH_LONG);
             }
             else{
-                User user = mUserService.signup(username,password);
-                if(user == null){
-                    mainActivity.makeToast(R.string.signup_failed_toast, Toast.LENGTH_LONG);
-                }
-                else{
-                    mainActivity.updateCurrentUser(user);
-                    navController.popBackStack();
-                    navController.popBackStack();
-                    Bundle bundle = new Bundle();
-                    bundle.putLong(getString(R.string.selected_user_id), mainActivity.getUserId());
-                    bundle.putString(getString(R.string.selected_user_name), mainActivity.getUserName());
-                    navController.navigate(R.id.nav_user, bundle);
-                }
+                mUserService.signup(username, password, new CustomCallback<>() {
+                    @Override
+                    public void onSuccess(User user) {
+                        if(getActivity() == null) return;
+                        requireActivity().runOnUiThread(() -> {
+                            mainActivity.updateCurrentUser(user);
+                            navController.popBackStack();
+                            navController.popBackStack();
+                            Bundle bundle = new Bundle();
+                            bundle.putLong(getString(R.string.selected_user_id), mainActivity.getUserId());
+                            bundle.putString(getString(R.string.selected_user_name), mainActivity.getUserName());
+                            navController.navigate(R.id.nav_user, bundle);
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(User user) {
+                        if(getActivity() == null) return;
+                        requireActivity().runOnUiThread(() ->
+                                mainActivity.makeToast(R.string.signup_failed_toast, Toast.LENGTH_LONG));
+                    }
+                });
+
             }
         });
         return root;

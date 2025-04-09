@@ -106,8 +106,13 @@
     <string name="remove_from_pantry_successful">Successfully removed item from pantry.</string>
     <string name="field_required_error">This field is required</string>
     <string name="add_to_pantry_failed">Failed to add ingredient to pantry</string>
+    <string name="add_to_pantry_success">Ingredient successfully added to pantry</string>
+    <string name="add_to_pantry_already_existing">The ingredient has not been added since it\'s already in the pantry.</string>
     <string name="create_ingredient_failed_toast">Failed to create ingredient.</string>
     <string name="rename_ingredient_failed_toast">Failed to rename ingredient.</string>
+    <string name="create_recipe_success_toast">The recipe has been created</string>
+    <string name="create_recipe_failed_toast">Failed to create recipe</string>
+    <string name="create_recipe_ingredients_failed_toast">Failed to add ingredients to recipe</string>
     <string name="recipe_unknown_error">Recipe could not be crated, unknown error</string>
     <string name="recipe_edit_unknown_error">Recipe could not be edited, unknown error</string>
     <string name="create_recipe_list_failed_toast">Failed to create recipe list.</string>
@@ -117,9 +122,11 @@
     <string name="null_recipe_lists">Something went wrong displaying the recipe lists</string>
     <string name="add_recipe_to_list_failed_toast">Failed to add recipe to list.</string>
     <string name="add_recipe_to_list_success_toast">The recipe has been added to the list</string>
+    <string name="add_recipe_to_list_existing_toast">The recipe was already on this list, and still is.</string>
     <string name="get_recipe_lists_failed_toast">Something went wrong fetching the lists.</string>
     <string name="password_invalid_toast">Invalid password</string>
     <string name="password_has_no_input_toast">The password field can not be empty</string>
+    <string name="get_recipe_list_failed_toast">Something went wrong fetching the list.</string>
     <string name="recipe_list_rename_blank">Input cannot be blank</string>
     <string name="recipe_list_rename_not_authorized">You must be the creator of this list to change the title</string>
     <string name="invalid_price_input_toast">Input is invalid</string>
@@ -135,6 +142,9 @@
     <string name="recipe_missing_toast">Recipe is missing</string>
     <string name="delete_list_failed_toast">Something went wrong when trying to delete the recipe list.</string>
     <string name="delete_list_success_toast">Recipe list deleted successfully.</string>
+    <string name="rename_list_failed_toast">Something went wrong when renaming the list.</string>
+    <string name="missing_information_toast">Some information is missing</string>
+    <string name="home_photo_unavailable_toast">An error occurred while trying to fetch the image</string>
 
     <!-- variables -->
     <string name="selected_ingredient">Ingredient</string>

@@ -5,11 +5,9 @@ import static android.view.View.VISIBLE;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
-import android.text.InputFilter;
+import android.text.method.PasswordTransformationMethod;
 import android.text.InputType;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,9 +29,10 @@ import hbv601g.recipeapp.R;
 import hbv601g.recipeapp.adapters.RecipeListAdapter;
 import hbv601g.recipeapp.databinding.FragmentUserBinding;
 import hbv601g.recipeapp.entities.RecipeList;
+import hbv601g.recipeapp.entities.User;
+import hbv601g.recipeapp.networking.CustomCallback;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.RecipeListService;
-import hbv601g.recipeapp.exceptions.DeleteFailedException;
 import hbv601g.recipeapp.service.UserService;
 
 /**
@@ -49,12 +48,15 @@ public class UserFragment extends Fragment{
     private List<RecipeList> mRecipeLists;
     private RecipeListService mRecipeListService;
     private ListView mRecipeListListView;
+    private RecipeListAdapter mRecipeListAdapter;
     private long mUidOfProfile;
     private String mNameOfProfile;
     private NavController mNavController;
 
+    // TODO: ef navigate-að frá recipe þá ekki hægt að fara til baka í recipes :(
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+
         MainActivity mainActivity = (MainActivity) getActivity();
         assert mainActivity != null;
         mNavController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
@@ -62,6 +64,7 @@ public class UserFragment extends Fragment{
         View root = mBinding.getRoot();
         mUserService = new UserService(new NetworkingService());
         mRecipeListService = new RecipeListService(new NetworkingService(), mainActivity.getUserId());
+
 
         getProfileInfo(mainActivity);
 
@@ -139,23 +142,46 @@ public class UserFragment extends Fragment{
      * @param mainActivity the current activity
      */
     private void populateRecipeListOverview(MainActivity mainActivity) {
-        try {
-            mRecipeLists = mRecipeListService.getUserRecipeLists(mUidOfProfile);
-        } catch(NullPointerException e) {
-            mRecipeLists = new ArrayList<>();
-            mainActivity.makeToast(R.string.null_recipe_lists, Toast.LENGTH_LONG);
-        }
+        if(mRecipeLists == null) mRecipeLists = new ArrayList<>();
 
         mRecipeListListView = mBinding.userRecipeLists;
-        RecipeListAdapter recipeListAdapter = new RecipeListAdapter(mainActivity.getApplicationContext(), mRecipeLists);
-        mRecipeListListView.setAdapter(recipeListAdapter);
+        mRecipeListAdapter = new RecipeListAdapter(mainActivity.getApplicationContext(), mRecipeLists);
+        mRecipeListListView.setAdapter(mRecipeListAdapter);
+
+        mRecipeListService.getUserRecipeLists(mUidOfProfile, new CustomCallback<>() {
+            @Override
+            public void onSuccess(List<RecipeList> recipeLists) {
+                if(getActivity() == null) return;
+                mRecipeLists = recipeLists;
+                requireActivity().runOnUiThread(() -> updateListView());
+
+            }
+
+            @Override
+            public void onFailure(List<RecipeList> recipeLists) {
+                if(getActivity() == null) return;
+                mRecipeLists = recipeLists;
+                requireActivity().runOnUiThread(() -> {
+                    mainActivity.makeToast(R.string.null_recipe_lists, Toast.LENGTH_LONG);
+                    updateListView();
+                });
+
+            }
+        });
+
 
         mRecipeListListView.setOnItemClickListener((parent, view, position, id) -> {
+            Log.d("Callback", "Clicked list from list");
             RecipeList recipeList = (RecipeList) parent.getItemAtPosition(position);
             Bundle bundle = new Bundle();
             bundle.putParcelable(getString(R.string.selected_recipe_list), recipeList);
             mNavController.navigate(R.id.nav_recipe_list, bundle);
         });
+    }
+
+    private void updateListView(){
+        mRecipeListAdapter.setRecipeLists(mRecipeLists);
+        mRecipeListAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -176,6 +202,18 @@ public class UserFragment extends Fragment{
         mBinding.deleteUserButton.setOnClickListener(v -> deleteUserAlert(mainActivity));
         mBinding.createRecipeListButton.setOnClickListener(
                 v -> mNavController.navigate(R.id.navigation_new_recipe_list));
+
+        mBinding.changePasswordButton.setOnClickListener(v -> changePasswordAlert(mainActivity));
+
+        mBinding.usernameDisplay.setText(mainActivity.getUserName());
+
+        mBinding.createRecipeListButton.setOnClickListener(v -> {
+            mNavController.navigate(R.id.navigation_new_recipe_list);
+        });
+        mBinding.usernameDisplay.setText(mainActivity.getUserName());
+
+        mBinding.deleteUserButton.setOnClickListener(v -> deleteUserAlert(mainActivity));
+
     }
 
     /**
@@ -197,8 +235,7 @@ public class UserFragment extends Fragment{
      */
     public void changePasswordAlert(MainActivity activity){
         EditText oldPass = new EditText(activity.getApplicationContext());
-        oldPass.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        oldPass.setFilters(new InputFilter[]{ activity.getFilter() });
+        oldPass.setTransformationMethod(PasswordTransformationMethod.getInstance());
 
         AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());
         alert.setTitle(R.string.validate_current_password_title);
@@ -215,14 +252,33 @@ public class UserFragment extends Fragment{
                     oldPass.setError(getString(R.string.validate_current_password_alert_error));
                 }
                 else {
-                    if(mUserService.validatePassword(activity.getUserId(), password)){
-                        dialog.dismiss();
-                        mNavController.navigate(R.id.nav_change_password);
-                    }
-                    else {
-                        oldPass.setText("");
-                        activity.makeToast(R.string.password_invalid_toast,Toast.LENGTH_LONG);
-                    }
+
+                    mUserService.validatePassword(activity.getUserId(), password, new CustomCallback<>() {
+                        @Override
+                        public void onSuccess(Boolean isValid) {
+                            if(getActivity() == null) return;
+                            requireActivity().runOnUiThread(() -> {
+                                if(isValid){
+                                    dialog.dismiss();
+                                    mNavController.navigate(R.id.nav_change_password);
+                                }
+                                else {
+                                    oldPass.setText("");
+                                    activity.makeToast(R.string.password_invalid_toast,Toast.LENGTH_LONG);
+                                }
+                            });
+
+
+                        }
+
+                        @Override
+                        public void onFailure(Boolean aBoolean) {
+                            // TODO: gera toast?
+                            Log.d("Callback", "failed to validate password");
+                        }
+                    });
+
+
 	        }
             });
         });
@@ -239,8 +295,6 @@ public class UserFragment extends Fragment{
     private void deleteUserAlert(MainActivity mainActivity) {
         EditText editText = new EditText(mainActivity.getApplicationContext());
         editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        editText.setFilters(new InputFilter[]{ mainActivity.getFilter() });
-
         AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());
         alert.setTitle(getString(R.string.delete_user_alert_title));
         alert.setMessage(getString(R.string.delete_user_alert_message));
@@ -254,13 +308,25 @@ public class UserFragment extends Fragment{
                 String password = editText.getText().toString().trim();
                 if (password.isEmpty()) editText.setError(getString(R.string.field_required_error));
                 else{
-                    try {
-                        mUserService.deleteAccount(mainActivity.getUserId(), password);
-                        mainActivity.removeCurrentUser();
-                        mainActivity.makeToast(R.string.delete_user_success_toast,Toast.LENGTH_LONG);
-                    } catch (DeleteFailedException e) {
-                        mainActivity.makeToast(R.string.delete_user_failed_toast, Toast.LENGTH_LONG);
-                    }
+                    mUserService.deleteAccount(mainActivity.getUserId(), password, new CustomCallback<>() {
+                        @Override
+                        public void onSuccess(User user) {
+                            if(getActivity() == null) return;
+                            requireActivity().runOnUiThread(() -> {
+                                mainActivity.removeCurrentUser();
+                                mainActivity.makeToast(R.string.delete_user_success_toast,Toast.LENGTH_LONG);
+                            });
+                        }
+
+                        @Override
+                        public void onFailure(User user) {
+                            if(getActivity() == null) return;
+                            requireActivity().runOnUiThread(() ->
+                                    mainActivity.makeToast(R.string.delete_user_failed_toast, Toast.LENGTH_LONG));
+
+                        }
+                    });
+
                     alertDialog.dismiss();
                 }
             });
@@ -268,6 +334,7 @@ public class UserFragment extends Fragment{
 
         alertDialog.show();
     }
+
 
     @Override
     public void onDestroyView() {
