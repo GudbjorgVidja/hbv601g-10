@@ -62,7 +62,7 @@ public class NewRecipeFragment extends Fragment {
         mBinding.addIngredient.setOnClickListener(view ->
             navController.navigate(R.id.nav_add_ingredient_measurement_to_recipe));
 
-        mBinding.createRecipe.setOnClickListener(view -> createRecipe(navController, adapter));
+        mBinding.createRecipe.setOnClickListener(view -> createRecipe(navController));
 
         mBinding.cancelRecipe.setOnClickListener(view -> navController.popBackStack());
 
@@ -92,22 +92,19 @@ public class NewRecipeFragment extends Fragment {
      *
      * @param navController - The NavController
      */
-    private void createRecipe(NavController navController, IngredientMeasurementAdapter adapter){
+    private void createRecipe(NavController navController){
         EditText temp = mBinding.recipeName;
         String title =  temp.getText().toString();
 
-	if(title.isEmpty()){
+	    if(title.isEmpty()){
             temp.setError(getString(R.string.recipe_name_is_empty_error));
             return;
         }
-        else{
-            temp.setError(null);
-        }
 
         String instructions = mBinding.instructions.getText().toString();
-        Boolean isPrivate = mBinding.isPrivate.isChecked();
+        boolean isPrivate = mBinding.isPrivate.isChecked();
 
-        mRecipeService.createRecipe(title, instructions, adapter.getList(), isPrivate, new CustomCallback<>() {
+        mRecipeService.createRecipe(title, instructions, mIngredientList, isPrivate, new CustomCallback<>() {
             @Override
             public void onSuccess(Recipe recipe) {
                 if(getActivity() == null) return;
