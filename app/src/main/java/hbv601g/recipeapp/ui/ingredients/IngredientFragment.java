@@ -5,6 +5,8 @@ import static android.view.View.GONE;
 import android.app.AlertDialog;
 import android.icu.text.DecimalFormat;
 import android.os.Bundle;
+import android.util.Log;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,9 +37,7 @@ public class IngredientFragment extends Fragment{
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        if(getArguments()!=null){
-            mIngredient = getArguments().getParcelable(getString(R.string.selected_ingredient));
-        }
+
         mBinding = FragmentIngredientBinding.inflate(inflater, container, false);
         View root = mBinding.getRoot();
         MainActivity mainActivity = (MainActivity) getActivity();
@@ -45,10 +45,51 @@ public class IngredientFragment extends Fragment{
         NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
         mIngredientService = new IngredientService(new NetworkingService(), mainActivity.getUserId());
 
+        readArguments(mainActivity, navController);
 
-        if(mIngredient != null) setIngredient();
+        setIngredient();
+        verifyIngredientExists(mainActivity,navController);
+        setButtonListeners(mainActivity,navController);
 
-        if(mIngredient != null && mainActivity.getUserId() != 0) {
+        return root;
+    }
+
+
+    /**
+     * Uses the id of the ingredient to fetch it from the API to make sure it is up to date. If the
+     * ingredient no longer exists, the user is notified and the app navigates to the last page
+     */
+    private void verifyIngredientExists(MainActivity mainActivity, NavController navController){
+        if (mainActivity != null){
+            mIngredientService.checkIngredientExistsById(mIngredient.getId(), new CustomCallback<>() {
+                @Override
+                public void onSuccess(Boolean exists) {
+                    Log.d("IngredientFragment", "Ingredient exists");
+                }
+
+                @Override
+                public void onFailure(Boolean exists) {
+                    if(getActivity() == null) return;
+                    requireActivity().runOnUiThread(() -> {
+                        mainActivity.makeToast(R.string.viewing_deleted_ingredient_toast, Toast.LENGTH_LONG);
+                        navController.popBackStack();
+                    });
+                }
+            });
+        }
+    }
+
+
+    /**
+     * Sets listeners and visibility on various buttons. Users who are logged in can add ingredients
+     * to their pantry Users can view the profile of the creator of the ingredient if one is
+     * registered. Users can delete and rename their own ingredients
+     *
+     * @param mainActivity the current activity
+     * @param navController the NavController used to navigate between fragments
+     */
+    private void setButtonListeners(MainActivity mainActivity, NavController navController){
+        if(mainActivity.getUserId() != 0) {
             mBinding.addToPantryButton.setOnClickListener(v -> {
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(getString(R.string.selected_ingredient), mIngredient);
@@ -58,7 +99,7 @@ public class IngredientFragment extends Fragment{
             mBinding.addToPantryButton.setVisibility(GONE);
         }
 
-        if(mIngredient != null && mIngredient.getCreatedBy() != null && mainActivity.getUserId() != 0 &&
+        if(mIngredient.getCreatedBy() != null && mainActivity.getUserId() != 0 &&
                 mIngredient.getCreatedBy().getId() == mainActivity.getUserId() ){
             mBinding.deleteIngredientButton.setOnClickListener(
                     v -> makeDeleteIngredientAlert(navController, mainActivity));
@@ -77,7 +118,26 @@ public class IngredientFragment extends Fragment{
             bundle.putString(getString(R.string.selected_user_name), mIngredient.getCreatedBy().getUsername());
             navController.navigate(R.id.nav_user_profile, bundle);
         });
-        return root;
+    }
+
+
+    /**
+     * Reads the arguments from the bundle and ensures they are valid, otherwise the user
+     * is notified and the app navigates to the last page
+     *
+     * @param mainActivity the current activity
+     * @param navController the NavController used to navigate between fragments
+     */
+    private void readArguments(MainActivity mainActivity, NavController navController){
+        Bundle bundle = getArguments();
+        if (bundle != null){
+            mIngredient = bundle.getParcelable(getString(R.string.selected_ingredient));
+        }
+        if (bundle == null || mIngredient == null) {
+            Log.e("IngredientFragment", "No ingredient to view");
+            mainActivity.makeToast(R.string.open_ingredient_failed_toast, Toast.LENGTH_LONG);
+            navController.popBackStack();
+        }
     }
 
     /**
@@ -90,6 +150,8 @@ public class IngredientFragment extends Fragment{
      */
     private void makeRenameAlert(NavController navController, MainActivity mainActivity){
         final EditText editText = new EditText(mainActivity.getApplicationContext());
+        editText.setInputType(InputType.TYPE_CLASS_TEXT);
+
         AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());
         alert.setTitle(getString(R.string.rename_ingredient_alert_title));
         alert.setMessage(getString(R.string.rename_ingredient_alert_message));

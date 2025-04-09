@@ -31,7 +31,8 @@
                     android:id="@+id/new_ingredient_title_input"
                     android:singleLine="true"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:inputType="text" />
             </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -95,7 +96,8 @@
                     android:id="@+id/new_ingredient_store_input"
                     android:singleLine="true"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:inputType="text" />
             </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -109,7 +111,8 @@
                     android:id="@+id/new_ingredient_brand_input"
                     android:singleLine="true"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:inputType="text" />
             </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -129,9 +132,5 @@
                 android:layout_gravity="center_horizontal"
                 android:text="@string/confirm_new_ingredient_button" />
         </LinearLayout>
-
     </ScrollView>
-
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

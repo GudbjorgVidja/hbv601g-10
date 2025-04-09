@@ -1,10 +1,12 @@
 package hbv601g.recipeapp.ui.recipes;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -34,8 +36,11 @@ import hbv601g.recipeapp.service.RecipeService;
 public class EditRecipeFragment extends Fragment {
     private RecipeService mRecipeService;
     private FragmentEditRecipeBinding mBinding;
+    private IngredientMeasurementAdapter mAdapter;
     private List<IngredientMeasurement> mList;
+    private List<IngredientMeasurement> mOriginalList;
     private Recipe mRecipe;
+    private int mTotalHeight;
 
     @Nullable
     @Override
@@ -70,22 +75,46 @@ public class EditRecipeFragment extends Fragment {
             navController.popBackStack();
         }
 
-
         setEditable(mainActivity);
 
+        mBinding.ingredients.setOnItemClickListener((parent, view, position, id) -> {
+            removeIngredientAlert(
+                    mainActivity,
+                    (IngredientMeasurement) parent.getItemAtPosition(position),
+                    position
+            );
+        });
+
+        mBinding.cancelEditRecipe.setOnClickListener(view -> {
+            mList = mOriginalList;
+            navController.popBackStack();
+        });
+	
         mBinding.addIngredient.setOnClickListener(view ->
             navController.navigate(R.id.nav_add_ingredient_measurement_to_recipe));
 
-        mBinding.cancelEditRecipe.setOnClickListener(view -> navController.popBackStack());
-
         mBinding.editRecipe.setOnClickListener(view -> editRecipe(mainActivity, navController));
 
+        //This make a listener to revel the tool tip on a long tip
+        mBinding.removeIngredientsToolTip.performLongClick();
+
+        ListView ingredientsList = mBinding.ingredients;
+
         getParentFragmentManager().setFragmentResultListener(getString(R.string.request_ingredient_measurement),
-        this, (requestKey, result) -> {
-            IngredientMeasurement ingredientMeasurement
-                    = result.getParcelable(getString(R.string.selected_ingredient_measurement));
-            mList.add(ingredientMeasurement);
-        });
+                this, (requestKey, result) -> {
+                    IngredientMeasurement ingredientMeasurement
+                            = result.getParcelable(getString(R.string.selected_ingredient_measurement));
+                    mList.add(ingredientMeasurement);
+
+                    View listItem = mAdapter.getView(mAdapter.getCount()-1, null, mBinding.ingredients);
+                    listItem.measure(0, 0);
+                    mTotalHeight += listItem.getMeasuredHeight();
+
+                    ViewGroup.LayoutParams params = ingredientsList.getLayoutParams();
+                    params.height = mTotalHeight + (ingredientsList.getDividerHeight() * (mAdapter.getCount() - 1));
+                    ingredientsList.setLayoutParams(params);
+                    ingredientsList.requestLayout();
+                });
 
         return root;
     }
@@ -99,32 +128,31 @@ public class EditRecipeFragment extends Fragment {
         mBinding.recipeName.setText(mRecipe.getTitle());
         mBinding.instructions.setText(mRecipe.getInstructions());
 
+        mOriginalList = new ArrayList<>(mRecipe.getIngredientMeasurements());
         mList = mRecipe.getIngredientMeasurements();
-        if (mList == null) mList = new ArrayList<>();
 
         ListView ingredientsList = mBinding.ingredients;
-        IngredientMeasurementAdapter adapter = new IngredientMeasurementAdapter
+        mAdapter = new IngredientMeasurementAdapter
                 (
                         activity.getApplicationContext(),
                         mList
                 );
-        ingredientsList.setAdapter(adapter);
+        ingredientsList.setAdapter(mAdapter);
 
         mBinding.isPrivate.setChecked(mRecipe.isPrivate());
 
-
         // setting the listview height to fit the contents
 
-        int totalHeight = 0;
+        mTotalHeight = 0;
 
-        for (int i = 0; i < adapter.getCount(); i++) {
-            View listItem = adapter.getView(i, null, ingredientsList);
+        for (int i = 0; i < mAdapter.getCount(); i++) {
+            View listItem = mAdapter.getView(i, null, ingredientsList);
             listItem.measure(0, 0);
-            totalHeight += listItem.getMeasuredHeight();
+            mTotalHeight += listItem.getMeasuredHeight();
         }
 
         ViewGroup.LayoutParams params = ingredientsList.getLayoutParams();
-        params.height = totalHeight + (ingredientsList.getDividerHeight() * (adapter.getCount() - 1));
+        params.height = mTotalHeight + (ingredientsList.getDividerHeight() * (mAdapter.getCount() - 1));
         ingredientsList.setLayoutParams(params);
         ingredientsList.requestLayout();
 
@@ -134,15 +162,24 @@ public class EditRecipeFragment extends Fragment {
      * Gets information from the UI and uses it to update the recipe
      *
      * @param activity the current activity
-     * @return the updated recipe if possible else return null
+     * @param navController - The NavController
      */
-    private void editRecipe(MainActivity mainActivity, NavController navController) {
-        if (mRecipe.getCreatedBy().getId() != mainActivity.getUserId()) {
+    private void editRecipe(MainActivity activity, NavController navController) {
+        if (mRecipe.getCreatedBy().getId() != activity.getUserId()) {
             return;
         }
 
+        EditText temp = mBinding.recipeName;
+        String title =  temp.getText().toString();
+
+        if(title.isEmpty()){
+            temp.setError(getString(R.string.recipe_name_is_empty_error));
+            return;
+        }
+       
+        
         Recipe upRes = new Recipe();
-        upRes.setTitle(mBinding.recipeName.getText().toString());
+        upRes.setTitle(title);
         upRes.setInstructions(mBinding.instructions.getText().toString());
         upRes.setPrivate(mBinding.isPrivate.isChecked());
 
@@ -167,5 +204,51 @@ public class EditRecipeFragment extends Fragment {
             }
         });
 
+    }
+
+    /**
+     * Make a Dialog, that asks the user if they want to remove the ingredient
+     * @param activity The MainActivity of the app
+     * @param position Is the position of the IngredientMeasurement in the adapter that is being
+     *                 remove
+     * @param ingerd Is the IngredientMeasurement that is being removed
+     */
+    private void removeIngredientAlert
+    (
+            MainActivity activity,
+            IngredientMeasurement ingerd,
+            int position
+    ) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(activity);
+        alert.setTitle(ingerd.getIngredient().getTitle());
+
+        alert.setMessage(R.string.remove_ingredient_measurement_alert_message);
+
+        alert.setPositiveButton(R.string.remove_button, (dialog, which) -> {
+            ListView ingredientsList = mBinding.ingredients;
+            View listItem = mAdapter.getView(position, null, ingredientsList);
+            listItem.measure(0, 0);
+
+            mTotalHeight -= listItem.getMeasuredHeight();
+
+            ViewGroup.LayoutParams params = ingredientsList.getLayoutParams();
+            params.height = mTotalHeight + (ingredientsList.getDividerHeight() * (mAdapter.getCount() - 1));
+            ingredientsList.setLayoutParams(params);
+            ingredientsList.requestLayout();
+
+            mList.remove(ingerd);
+
+            mAdapter.setList(mList);
+            mAdapter.notifyDataSetChanged();
+        });
+
+        alert.setNegativeButton(R.string.cancel_button_text, null);
+        alert.show();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mBinding = null;
     }
 }

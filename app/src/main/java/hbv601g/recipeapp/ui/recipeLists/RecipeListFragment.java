@@ -9,6 +9,8 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import android.text.InputFilter;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -114,7 +116,9 @@ public class RecipeListFragment extends Fragment {
         builder.setTitle(getString(R.string.title_rename_recipe_list));
 
         final EditText input = new EditText(mainActivity);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
         input.setText(mRecipeListTitle.getText().toString());
+
         builder.setView(input);
 
         builder.setPositiveButton(getString(R.string.save_button), null);

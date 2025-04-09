@@ -260,7 +260,10 @@ public class UserFragment extends Fragment{
                             requireActivity().runOnUiThread(() -> {
                                 if(isValid){
                                     dialog.dismiss();
-                                    mNavController.navigate(R.id.nav_change_password);
+				                     Bundle bundle = new Bundle();
+                                     bundle.putString(getString(R.string.selected_old_password), password);
+                                     mNavController.navigate(R.id.nav_change_password, bundle);
+                                    
                                 }
                                 else {
                                     oldPass.setText("");
@@ -273,7 +276,7 @@ public class UserFragment extends Fragment{
 
                         @Override
                         public void onFailure(Boolean aBoolean) {
-                            // TODO: gera toast?
+                            activity.makeToast(R.string.password_change_error_toast, Toast.LENGTH_LONG);
                             Log.d("Callback", "failed to validate password");
                         }
                     });

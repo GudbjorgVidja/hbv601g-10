@@ -4,6 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.InputFilter;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -85,14 +89,15 @@ public class MainActivity extends AppCompatActivity {
      * Sets information in shared preferences as the given user, or empties it if the user is null
      *
      * @param user the current user
+     * @param password is the password of the user
      */
-    public void updateCurrentUser(User user){
+    public void updateCurrentUser(User user, String password){
         sharedpreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedpreferences.edit();
 
         if(user != null){
             editor.putString(USERNAME_KEY, user.getUsername());
-            editor.putString(PASSWORD_KEY, user.getPassword());
+            editor.putString(PASSWORD_KEY, password);
             editor.putLong(USER_ID_KEY, user.getId());
         }
         else editor.clear();
