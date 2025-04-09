@@ -140,6 +140,9 @@
     <string name="camera_not_initialized_toast">Please wait for the camera to start before taking photos.</string>
     <string name="new_password_invalid_error">The passwords must be the same</string>
     <string name="new_password_empty_error">The password field can not be empty</string>
+    <string name="password_change_success_toast">Your password has been change</string>
+    <string name="password_change_fail_toast">Your password was not change</string>
+    <string name="password_change_error_toast">Your password could not change</string>
     <string name="recipe_missing_toast">Recipe is missing</string>
     <string name="delete_list_failed_toast">Something went wrong when trying to delete the recipe list.</string>
     <string name="delete_list_success_toast">Recipe list deleted successfully.</string>
@@ -157,6 +160,7 @@
     <string name="selected_ingredient_measurement">Ingredient measurement</string>
     <string name="selected_user_id">User id</string>
     <string name="selected_user_name">User name</string>
+    <string name="selected_old_password">Old password</string>
     <string name="request_ingredient_measurement">Ingredient measurement result</string>
     <string name="request_new_recipe">New recipe result</string>
     <string name="request_edit_recipe">Edited recipe result</string>

@@ -51,7 +51,7 @@ public class UserService extends Service {
         getUser(uid, uid, new CustomCallback<>() {
             @Override
             public void onSuccess(User user) {
-                if (!user.getPassword().equals(password))
+                if (!user.passwordValidation(password))
                     callback.onFailure(null);
                 else {
                     // If the information given is correct, delete the user
@@ -116,7 +116,8 @@ public class UserService extends Service {
      *
      * @param username the username to look by
      * @param password the password to look by
-     * @param callback skilar User object með onSuccess ef innskráning tókst, annars failure
+     * @param callback returns User object with onSuccess if log in was successful, else null on
+     *                 failure
      */
     public void logIn(String username, String password, CustomCallback<User> callback) {
         String url = Uri.parse("user/login").buildUpon()
@@ -280,7 +281,7 @@ public class UserService extends Service {
         getUser(uid, uid, new CustomCallback<>() {
             @Override
             public void onSuccess(User user) {
-                callback.onSuccess(pass.equals(user.getPassword()));
+                callback.onSuccess(user.passwordValidation(pass));
             }
 
             @Override
@@ -295,25 +296,28 @@ public class UserService extends Service {
      *
      * @param uid the id of the user who's password is being changed
      * @param newPass the new password
+     * @param oldPassword the old password
      */
-    public void changePassword(long uid, String newPass, CustomCallback<Boolean> callback){
+    public void changePassword(long uid, String newPass, String oldPassword, CustomCallback<Boolean> callback){
         getUser(uid, uid, new CustomCallback<>() {
             @Override
             public void onSuccess(User user) {
                 String url = Uri.parse("user/changePassword").buildUpon()
                         .appendQueryParameter("uid", "" + uid)
                         .appendQueryParameter("newPassword", newPass)
-                        .appendQueryParameter("oldPassword", user.getPassword())
+                        .appendQueryParameter("oldPassword", oldPassword)
                         .build().toString();
 
                 mNetworkingService.patchRequest(url, null, new CustomCallback<>() {
                     @Override
                     public void onSuccess(JsonElement jsonElement) {
+			            Log.i("Changed password", "User " + uid + " has change there password");
                         callback.onSuccess(null);
                     }
 
                     @Override
                     public void onFailure(JsonElement jsonElement) {
+			            Log.e("Networking exception", "Failed to change password");
                         callback.onFailure(null);
                     }
                 });
@@ -326,7 +330,6 @@ public class UserService extends Service {
 
             }
         });
-
     }
 
     @Nullable
