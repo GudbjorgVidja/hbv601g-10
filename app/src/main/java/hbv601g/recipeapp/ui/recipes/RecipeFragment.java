@@ -140,15 +140,6 @@ public class RecipeFragment extends Fragment {
             mBinding.editRecipeButton.setVisibility(GONE);
         }
 
-        getParentFragmentManager().setFragmentResultListener(getString(R.string.request_edit_recipe),
-                this, (requestKey, result) -> {
-                    Recipe temp = result.getParcelable(getString(R.string.selected_recipe));
-                    if (temp != null){
-                        mRecipe = temp;
-                        setRecipe();
-                    }
-                });
-
         mBinding.recipeCreator.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
             bundle.putLong(getString(R.string.selected_user_id), mRecipe.getCreatedBy().getId());
