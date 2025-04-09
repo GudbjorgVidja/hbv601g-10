@@ -80,9 +80,13 @@ public class AddIngredientMeasurementFragment extends Fragment {
         ingredientService.getAllIngredients(new CustomCallback<>() {
             @Override
             public void onSuccess(List<Ingredient> ingredients) {
-                mIngredients = ingredients;
-                mIngredientAdapter.setIngredientList(ingredients);
-                mIngredientAdapter.notifyDataSetChanged();
+                if(getActivity() == null) return;
+                requireActivity().runOnUiThread(() -> {
+                    mIngredients = ingredients;
+                    mIngredientAdapter.setIngredientList(ingredients);
+                    mIngredientAdapter.notifyDataSetChanged();
+                });
+
             }
 
             @Override
