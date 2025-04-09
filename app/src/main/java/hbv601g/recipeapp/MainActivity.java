@@ -163,43 +163,6 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * This function makes an valid inputFilter for EditText in alerts so that that invalid charter
-     * type can not be written
-     * @return returns the filter
-     */
-    public InputFilter getFilter() {
-        return new InputFilter() {
-            @Override
-            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
-                boolean keepOriginal = true;
-                StringBuilder sb = new StringBuilder(end - start);
-                for (int i = start; i < end; i++) {
-                    char c = source.charAt(i);
-                    if (isCharAllowed(c))
-                        sb.append(c);
-                    else
-                        keepOriginal = false;
-                }
-                if (keepOriginal)
-                    return null;
-                else {
-                    if (source instanceof Spanned) {
-                        SpannableString sp = new SpannableString(sb);
-                        TextUtils.copySpansFrom((Spanned) source, start, sb.length(), null, sp, 0);
-                        return sp;
-                    } else {
-                        return sb;
-                    }
-                }
-            }
-
-            private boolean isCharAllowed(char c) {
-                return c != '\n' && c != '{' && c != '}' && c != '[' && c != ']' && c != '\\';
-            }
-        };
-    }
-
     //Both navigation bar back press and title bar back press will trigger this method
     @Override
     public void onBackPressed() {

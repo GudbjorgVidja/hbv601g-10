@@ -14,14 +14,12 @@
         android:layout_margin="10dp"
         app:layout_constraintBottom_toTopOf="@id/password_input_layout"
         android:hint="@string/username_hint">
-
-        <!--this is the actual edit text which takes the input-->
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/username_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text"
-            android:digits="÷×=%_-+#().,abcdefghijklmnopqrstuvwxyzA BCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"/>
+            android:inputType="text"/>
+        <!--this is the actual edit text which takes the input-->
     </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -39,8 +37,7 @@
             android:id="@+id/password_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"
-            android:digits="÷×=%_-+#().,abcdefghijklmnopqrstuvwxyzA BCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"/>
+            android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button

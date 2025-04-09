@@ -34,9 +34,7 @@
                 android:id="@+id/userNameInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
-                android:digits="÷×=%_-+#().,abcdefghijklmnopqrstuvwxyzA BCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"/>
-
+                android:inputType="text"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -54,9 +52,7 @@
                 android:id="@+id/passwordInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:digits="÷×=%_-+#().,abcdefghijklmnopqrstuvwxyzA BCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"/>
-
+                android:inputType="textPassword"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button

@@ -118,7 +118,6 @@ public class RecipeListFragment extends Fragment {
         final EditText input = new EditText(mainActivity);
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         input.setText(mRecipeListTitle.getText().toString());
-        input.setFilters(new InputFilter[]{ mainActivity.getFilter() });
 
         builder.setView(input);
 
