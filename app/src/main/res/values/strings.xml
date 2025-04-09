@@ -146,6 +146,7 @@
     <string name="how_to_remove_ingredient_form_recipe_tool_tip">To remove an ingredient form the recipe, first lick on the ingredient then click remove</string>
     <string name="rename_list_failed_toast">Something went wrong when renaming the list.</string>
     <string name="missing_information_toast">Some information is missing</string>
+    <string name="home_photo_unavailable_toast">An error occurred while trying to fetch the image</string>
 
     <!-- variables -->
     <string name="selected_ingredient">Ingredient</string>
