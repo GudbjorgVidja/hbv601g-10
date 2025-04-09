@@ -38,6 +38,7 @@ public class EditRecipeFragment extends Fragment {
     private FragmentEditRecipeBinding mBinding;
     private IngredientMeasurementAdapter mAdapter;
     private List<IngredientMeasurement> mList;
+    private List<IngredientMeasurement> mOriginalList;
     private Recipe mRecipe;
     private int mTotalHeight;
 
@@ -84,8 +85,10 @@ public class EditRecipeFragment extends Fragment {
             );
         });
 
-        mBinding.cancelEditRecipe.setOnClickListener(view -> navController.popBackStack());
-        setEditable(mainActivity);
+        mBinding.cancelEditRecipe.setOnClickListener(view -> {
+            mList = mOriginalList;
+            navController.popBackStack();
+        });
 	
         mBinding.addIngredient.setOnClickListener(view ->
             navController.navigate(R.id.nav_add_ingredient_measurement_to_recipe));
@@ -102,6 +105,7 @@ public class EditRecipeFragment extends Fragment {
                     IngredientMeasurement ingredientMeasurement
                             = result.getParcelable(getString(R.string.selected_ingredient_measurement));
                     mList.add(ingredientMeasurement);
+
                     View listItem = mAdapter.getView(mAdapter.getCount()-1, null, mBinding.ingredients);
                     listItem.measure(0, 0);
                     mTotalHeight += listItem.getMeasuredHeight();
@@ -124,7 +128,8 @@ public class EditRecipeFragment extends Fragment {
         mBinding.recipeName.setText(mRecipe.getTitle());
         mBinding.instructions.setText(mRecipe.getInstructions());
 
-        mList = new ArrayList<>(mRecipe.getIngredientMeasurements());
+        mOriginalList = new ArrayList<>(mRecipe.getIngredientMeasurements());
+        mList = mRecipe.getIngredientMeasurements();
 
         ListView ingredientsList = mBinding.ingredients;
         mAdapter = new IngredientMeasurementAdapter
@@ -150,6 +155,7 @@ public class EditRecipeFragment extends Fragment {
         params.height = mTotalHeight + (ingredientsList.getDividerHeight() * (mAdapter.getCount() - 1));
         ingredientsList.setLayoutParams(params);
         ingredientsList.requestLayout();
+
     }
 
     /**
@@ -209,7 +215,7 @@ public class EditRecipeFragment extends Fragment {
      */
     private void removeIngredientAlert
     (
-            MainActivity activity ,
+            MainActivity activity,
             IngredientMeasurement ingerd,
             int position
     ) {

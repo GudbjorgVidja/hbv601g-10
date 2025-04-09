@@ -38,7 +38,7 @@ public class IngredientMeasurementAdapter extends BaseAdapter {
     public long getItemId(int position) {
         return position;
     }
-    
+
     public void setList(List<IngredientMeasurement> list){
         mIngredientMeasurementList = list;
     }
