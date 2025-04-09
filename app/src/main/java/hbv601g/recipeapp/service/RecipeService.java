@@ -37,6 +37,30 @@ public class RecipeService extends Service {
     }
 
     /**
+     * Checks whether a recipe exists with the given id. Makes a request to the API to get the
+     * recipe with the given id
+     * @param rid the id of the recipe
+     * @param callback returns true on success if the recipe is found, or false otherwise
+     */
+    public void checkRecipeExistsById(long rid, CustomCallback<Boolean> callback){
+        String url = String.format("recipe/id/%s?uid=%s",rid,mUid);
+
+        mNetworkingService.getRequest(url, new CustomCallback<>() {
+
+            @Override
+            public void onSuccess(JsonElement jsonElement) {
+                if (jsonElement != null) callback.onSuccess(true);
+                else callback.onFailure(false);
+            }
+
+            @Override
+            public void onFailure(JsonElement jsonElement) {
+                callback.onFailure(false);
+            }
+        });
+    }
+
+    /**
      * Makes a request to get the personalized purchase cost (ppc) of a recipe
      *
      * @param rid the id of the recipe
