@@ -1,6 +1,8 @@
 package hbv601g.recipeapp.ui.recipeLists;
 
 import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 import android.app.AlertDialog;
 import android.os.Bundle;
 
@@ -67,8 +69,9 @@ public class RecipeListFragment extends Fragment {
             @Override
             public void onSuccess(RecipeList recipeList) {
                 if (getActivity() == null) return;
-                mRecipeList = recipeList;
                 requireActivity().runOnUiThread(() -> {
+                    mRecipeList = recipeList;
+                    setListeners(mainActivity,navController);
                     setRecipeList();
                     getRecipesFromList(mainActivity);
                 });
@@ -78,8 +81,9 @@ public class RecipeListFragment extends Fragment {
             public void onFailure(RecipeList recipeList) {
                 if(getActivity() == null) return;
                 // if fetching the list fails, use mClickedList
-                mRecipeList = mClickedList;
                 requireActivity().runOnUiThread(() -> {
+                    mRecipeList = mClickedList;
+                    setListeners(mainActivity,navController);
                     mainActivity.makeToast(R.string.get_recipe_list_failed_toast, Toast.LENGTH_LONG);
                     setRecipeList();
                     getRecipesFromList(mainActivity);
@@ -105,6 +109,8 @@ public class RecipeListFragment extends Fragment {
             mBinding.deleteListButton.setOnClickListener(
                     v -> makeDeleteListAlert(navController, mainActivity));
             mBinding.recipeListRenameButton.setOnClickListener(v -> makeRenameAlert(mainActivity));
+            mBinding.deleteListButton.setVisibility(VISIBLE);
+            mBinding.recipeListRenameButton.setVisibility(VISIBLE);
         }
         else {
             mBinding.deleteListButton.setVisibility(GONE);
