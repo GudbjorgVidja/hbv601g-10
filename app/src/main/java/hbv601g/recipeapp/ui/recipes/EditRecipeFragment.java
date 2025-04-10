@@ -42,20 +42,14 @@ public class EditRecipeFragment extends Fragment {
     private Recipe mRecipe;
     private int mTotalHeight;
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        mBinding = FragmentEditRecipeBinding.inflate(inflater, container, false);
-        View root = mBinding.getRoot();
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
         MainActivity mainActivity = (MainActivity) getActivity();
         assert mainActivity != null;
-
-        NavController navController = Navigation.findNavController(
-                mainActivity, R.id.nav_host_fragment_activity_main
-        );
-
+        NavController navController =
+                Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
         mRecipeService = new RecipeService(new NetworkingService(), mainActivity.getUserId());
 
         if (getArguments() == null ||
@@ -66,6 +60,8 @@ public class EditRecipeFragment extends Fragment {
 
         try {
             mRecipe = getArguments().getParcelable(getString(R.string.selected_recipe));
+            mList = new ArrayList<>(mRecipe.getIngredientMeasurements());
+
             if (mRecipe.getCreatedBy() == null) {
                 Log.e("EditRecipeFragment", "No ones owns this");
                 navController.popBackStack();
@@ -74,6 +70,22 @@ public class EditRecipeFragment extends Fragment {
             mainActivity.makeToast(R.string.recipe_missing_toast, Toast.LENGTH_LONG);
             navController.popBackStack();
         }
+
+    }
+
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState) {
+
+        mBinding = FragmentEditRecipeBinding.inflate(inflater, container, false);
+        View root = mBinding.getRoot();
+        MainActivity mainActivity = (MainActivity) getActivity();
+        assert mainActivity != null;
+        NavController navController =
+                Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
+
 
         setEditable(mainActivity);
 
@@ -86,7 +98,6 @@ public class EditRecipeFragment extends Fragment {
         });
 
         mBinding.cancelEditRecipe.setOnClickListener(view -> {
-            mList = mOriginalList;
             navController.popBackStack();
         });
 	
@@ -127,9 +138,6 @@ public class EditRecipeFragment extends Fragment {
     private void setEditable(MainActivity activity) {
         mBinding.recipeName.setText(mRecipe.getTitle());
         mBinding.instructions.setText(mRecipe.getInstructions());
-
-        mOriginalList = new ArrayList<>(mRecipe.getIngredientMeasurements());
-        mList = mRecipe.getIngredientMeasurements();
 
         ListView ingredientsList = mBinding.ingredients;
         mAdapter = new IngredientMeasurementAdapter

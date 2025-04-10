@@ -42,6 +42,20 @@ public class RecipeFragment extends Fragment {
     private RecipeService mRecipeService;
     private RecipeListService mRecipeListService;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        MainActivity mainActivity = (MainActivity) getActivity();
+        assert mainActivity!=null;
+        NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
+        mRecipeService = new RecipeService(new NetworkingService(), mainActivity.getUserId());
+        mRecipeListService = new RecipeListService(new NetworkingService(), mainActivity.getUserId());
+
+        readArguments(mainActivity,navController);
+    }
+
+
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -50,17 +64,9 @@ public class RecipeFragment extends Fragment {
         mBinding = FragmentRecipeBinding.inflate(inflater,container,false);
         View root = mBinding.getRoot();
         MainActivity mainActivity = (MainActivity) getActivity();
-
-        if (mainActivity == null) {
-            Log.e("RecipeFragment", "MainActivity is null. Navigation failed.");
-            return root;
-        }
-
+        assert mainActivity != null;
         NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
-        mRecipeService = new RecipeService(new NetworkingService(), mainActivity.getUserId());
-        mRecipeListService = new RecipeListService(new NetworkingService(), mainActivity.getUserId());
 
-        readArguments(mainActivity,navController);
         setRecipe();
         verifyRecipeExists(mainActivity,navController);
         setButtonListeners(mainActivity, navController);
