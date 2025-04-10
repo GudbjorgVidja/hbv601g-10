@@ -80,6 +80,7 @@
     <string name="home_camera_button_text">Camera</string>
     <string name="home_information_text">Come cook with us!</string>
 
+
     <!-- format strings -->
     <string name="recipe_tpc">Total purchase cost: %1$,d &curr;</string>
     <string name="recipe_tic">Total ingredient cost: %1$,.0f &curr;</string>
@@ -92,6 +93,8 @@
 
     <string name="private_text">private</string>
     <string name="public_text">public</string>
+    <string name="no_instructions_text">No instructions</string>
+    <string name="no_lists_found_text">No lists found</string>
 
     <!-- Messages/toasts -->
     <string name="login_failed_toast">Login failed. Please ensure username and password are correct.</string>
