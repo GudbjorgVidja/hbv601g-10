@@ -405,7 +405,7 @@ public class RecipeService extends Service {
                     Type collectionType = new TypeToken<Collection<Recipe>>(){}.getType();
                     callback.onSuccess(gson.fromJson(jsonElement, collectionType));
                 } else {
-                    onFailure(jsonElement);
+                    onFailure(null);
                 }
             }
 
@@ -434,7 +434,7 @@ public class RecipeService extends Service {
                     Type collectionType = new TypeToken<Collection<Recipe>>(){}.getType();
                     callback.onSuccess(gson.fromJson(jsonElement, collectionType));
                 } else {
-                    onFailure(jsonElement);
+                    onFailure(null);
                 }
             }
 

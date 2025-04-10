@@ -46,14 +46,14 @@ public class PantryIngredientFragment extends Fragment {
         NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
         mUserService = new UserService(new NetworkingService());
 
-        if(mPantryIngredient != null){
-            setPantryIngredient();
-        }
+        if (mPantryIngredient != null) setPantryIngredient();
+
 
         // A button to delete the ingredient from pantry
         mBinding.removeFromPantryButton.setOnClickListener(v -> {
-            if(mainActivity.getUserId() != 0 && mPantryIngredient != null && mPantryIngredient.getIngredient() != null
-                    && mPantryIngredient.getIngredient().getId() != 0){
+            if (mainActivity.getUserId() != 0 && mPantryIngredient != null &&
+                    mPantryIngredient.getIngredient() != null &&
+                    mPantryIngredient.getIngredient().getId() != 0) {
                 AlertDialog.Builder alert = makeAlert(navController, mainActivity);
                 alert.show();
             } else {

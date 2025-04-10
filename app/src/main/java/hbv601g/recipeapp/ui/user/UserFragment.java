@@ -153,7 +153,6 @@ public class UserFragment extends Fragment{
                 if(getActivity() == null) return;
                 mRecipeLists = recipeLists;
                 requireActivity().runOnUiThread(() -> updateListView());
-
             }
 
             @Override
@@ -164,10 +163,8 @@ public class UserFragment extends Fragment{
                     mainActivity.makeToast(R.string.null_recipe_lists, Toast.LENGTH_LONG);
                     updateListView();
                 });
-
             }
         });
-
 
         mRecipeListListView.setOnItemClickListener((parent, view, position, id) -> {
             Log.d("Callback", "Clicked list from list");
@@ -212,7 +209,6 @@ public class UserFragment extends Fragment{
         mBinding.usernameDisplay.setText(mainActivity.getUserName());
 
         mBinding.deleteUserButton.setOnClickListener(v -> deleteUserAlert(mainActivity));
-
     }
 
     /**
@@ -262,15 +258,12 @@ public class UserFragment extends Fragment{
 				                     Bundle bundle = new Bundle();
                                      bundle.putString(getString(R.string.selected_old_password), password);
                                      mNavController.navigate(R.id.nav_change_password, bundle);
-                                    
                                 }
                                 else {
                                     oldPass.setText("");
                                     activity.makeToast(R.string.password_invalid_toast,Toast.LENGTH_LONG);
                                 }
                             });
-
-
                         }
 
                         @Override

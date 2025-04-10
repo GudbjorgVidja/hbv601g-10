@@ -60,22 +60,17 @@ public class AddIngredientMeasurementFragment extends Fragment {
         }
         if(mIngredients == null) mIngredients = new ArrayList<>();
 
-        mBinding = FragmentAddIngredientMeasurementBinding.inflate(
-                inflater, container, false
-        );
+        mBinding = FragmentAddIngredientMeasurementBinding.inflate(inflater, container, false);
         View root = mBinding.getRoot();
 
         MainActivity mainActivity = (MainActivity) getActivity();
         assert mainActivity != null;
 
-        NavController navController = Navigation.findNavController(
-                mainActivity, R.id.nav_host_fragment_activity_main
-        );
+        NavController navController =
+                Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
 
-        IngredientService ingredientService = new IngredientService(
-            new NetworkingService(),
-            mainActivity.getUserId()
-        );
+        IngredientService ingredientService =
+                new IngredientService(new NetworkingService(), mainActivity.getUserId());
 
         ingredientService.getAllIngredients(new CustomCallback<>() {
             @Override
@@ -108,14 +103,14 @@ public class AddIngredientMeasurementFragment extends Fragment {
                 navController.popBackStack();
             }
             else {
-                Toast.makeText(getContext(), getString(R.string.missing_information_toast), Toast.LENGTH_SHORT).show();
+                //TODO: check when this appears
+                mainActivity.makeToast(R.string.missing_information_toast, Toast.LENGTH_LONG);
             }
 
         });
 
-        mBinding.cancelAddIngredientToRecipe.setOnClickListener(view -> {
-            getParentFragmentManager().popBackStack();
-        });
+        mBinding.cancelAddIngredientToRecipe.setOnClickListener(
+                view -> getParentFragmentManager().popBackStack());
 
         return root;
     }

@@ -64,13 +64,10 @@ public class AddToPantryFragment extends Fragment {
         NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
         mUserService = new UserService(new NetworkingService());
 
-        if(mIngredient != null){
-            setIngredient();
-        }
+        if (mIngredient != null) setIngredient();
 
         Button confirmButton = mBinding.addToPantryConfirmButton;
         mQuantityInput = mBinding.addToPantryInputQuantity;
-
 
         confirmButton.setOnClickListener(v -> {
             String quantityText = mQuantityInput.getText().toString().trim();
@@ -82,7 +79,6 @@ public class AddToPantryFragment extends Fragment {
             if(mainActivity.getUserId() == 0) {
                 navController.popBackStack();
             } else if(isValid){
-
                 mUserService.addIngredientToPantry(
                         mainActivity.getUserId(),
                         mIngredient.getId(),

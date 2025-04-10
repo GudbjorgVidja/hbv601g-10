@@ -55,7 +55,6 @@ public class RecipeFragment extends Fragment {
     }
 
 
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -108,12 +107,11 @@ public class RecipeFragment extends Fragment {
     }
 
 
-
-
     /**
-     * Sets listeners and visibility on various buttons. Users who are logged in can add recipes
-     * to Recipe Lists. Users can view the profile of the creator of the recipe if one is
-     * registered. Users can edit and delete their own recipes
+     * Sets listeners and visibility on various buttons. Users who are logged in can add recipes to
+     * Recipe Lists. Users can view the profile of the creator of the recipe if one is registered.
+     * Users can edit and delete their own recipes
+     *
      * @param mainActivity the current activity
      * @param navController the NavController used to navigate between fragments
      */
@@ -306,7 +304,6 @@ public class RecipeFragment extends Fragment {
                     Log.d("Callback", "No lists found");
                     requireActivity().runOnUiThread(() ->
                             mainActivity.makeToast(R.string.no_lists_found_text, Toast.LENGTH_LONG));
-
                     return;
                 }
                 alert.setTitle(getString(R.string.add_recipe_to_list_dialog_title));

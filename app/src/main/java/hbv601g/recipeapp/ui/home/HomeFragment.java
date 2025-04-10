@@ -51,9 +51,7 @@ public class HomeFragment extends Fragment {
     private void showPhoto(MainActivity mainActivity){
         try{
             Bitmap bitmap = PhotoBaseLab.get(getActivity()).getPhoto();
-            if (bitmap!=null){
-                mBinding.homeImage.setImageBitmap(bitmap);
-            }
+            if (bitmap != null) mBinding.homeImage.setImageBitmap(bitmap);
             else mBinding.homeImage.setImageResource(R.drawable.no_image_available);
         } catch (Exception e){
             mainActivity.makeToast(R.string.home_photo_unavailable_toast, Toast.LENGTH_LONG);

@@ -45,7 +45,7 @@ public class RecipeListFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Clicked list is sent in a bundle to the fragment
-        if(getArguments() != null){
+        if (getArguments() != null) {
             mClickedList = getArguments().getParcelable(getString(R.string.selected_recipe_list));
         }
 
@@ -66,7 +66,7 @@ public class RecipeListFragment extends Fragment {
         mRecipeListService.getListById(mClickedList.getId(), new CustomCallback<>() {
             @Override
             public void onSuccess(RecipeList recipeList) {
-                if(getActivity() == null) return;
+                if (getActivity() == null) return;
                 mRecipeList = recipeList;
                 requireActivity().runOnUiThread(() -> {
                     setRecipeList();
@@ -80,7 +80,7 @@ public class RecipeListFragment extends Fragment {
                 // if fetching the list fails, use mClickedList
                 mRecipeList = mClickedList;
                 requireActivity().runOnUiThread(() -> {
-                    Toast.makeText(mainActivity, getText(R.string.get_recipe_list_failed_toast), Toast.LENGTH_SHORT).show();
+                    mainActivity.makeToast(R.string.get_recipe_list_failed_toast, Toast.LENGTH_LONG);
                     setRecipeList();
                     getRecipesFromList(mainActivity);
                 });
@@ -104,9 +104,7 @@ public class RecipeListFragment extends Fragment {
                 mRecipeList.getCreatedBy().getId() == mainActivity.getUserId() ){
             mBinding.deleteListButton.setOnClickListener(
                     v -> makeDeleteListAlert(navController, mainActivity));
-            mBinding.recipeListRenameButton.setOnClickListener(
-                    v -> makeRenameAlert(mainActivity)
-            );
+            mBinding.recipeListRenameButton.setOnClickListener(v -> makeRenameAlert(mainActivity));
         }
         else {
             mBinding.deleteListButton.setVisibility(GONE);
@@ -178,7 +176,9 @@ public class RecipeListFragment extends Fragment {
         mRecipeListTitle = mBinding.recipeListTitle;
         mBinding.recipeListTitle.setText(mRecipeList.getTitle());
 
-        String tmp = mRecipeList.getCreatedBy() == null ? getString(R.string.created_by_unknown_text) : mRecipeList.getCreatedBy().getUsername();
+        String tmp = mRecipeList.getCreatedBy() == null
+                ? getString(R.string.created_by_unknown_text)
+                : mRecipeList.getCreatedBy().getUsername();
         mBinding.recipeListCreatedBy.setText(tmp);
 
         tmp = mRecipeList.getDescription().isEmpty() ? getString(R.string.no_description_text) : mRecipeList.getDescription();
@@ -228,9 +228,8 @@ public class RecipeListFragment extends Fragment {
         });
 
         if (mRecipeList.getCreatedBy().getId() == activity.getUserId()) {
-            alert.setNegativeButton(R.string.remove_button, (dialog, which) -> {
-                removeRecipeAlert(navController, activity, recipe);
-            });
+            alert.setNegativeButton(R.string.remove_button,
+                    (dialog, which) -> removeRecipeAlert(navController, activity, recipe));
         }
 
         alert.setPositiveButton(R.string.cancel_button_text, null);
@@ -277,9 +276,8 @@ public class RecipeListFragment extends Fragment {
 
         });
 
-        alert.setNegativeButton(android.R.string.no, (dialog, which) -> {
-            makeRecipeChoiceAlert(navController, mainActivity, recipe);
-        });
+        alert.setNegativeButton(android.R.string.no,
+                (dialog, which) -> makeRecipeChoiceAlert(navController, mainActivity, recipe));
 
         alert.show();
     }

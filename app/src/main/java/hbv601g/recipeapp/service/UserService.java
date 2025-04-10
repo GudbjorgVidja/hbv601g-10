@@ -314,7 +314,7 @@ public class UserService extends Service {
                 mNetworkingService.patchRequest(url, null, new CustomCallback<>() {
                     @Override
                     public void onSuccess(JsonElement jsonElement) {
-			            Log.i("Changed password", "User " + uid + " has change there password");
+			            Log.i("Changed password", "User " + uid + " has changed their password");
                         callback.onSuccess(null);
                     }
 

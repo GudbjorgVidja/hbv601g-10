@@ -50,12 +50,9 @@ public class RecipesFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         mBinding = FragmentRecipesBinding.inflate(inflater, container, false);
         View root = mBinding.getRoot();
-
         mMainActivity = (MainActivity) getActivity();
         assert mMainActivity != null;
-
         NavController navController = Navigation.findNavController(mMainActivity, R.id.nav_host_fragment_activity_main);
-
         long uid = mMainActivity.getUserId();
         mRecipeService = new RecipeService(new NetworkingService(), uid);
 
@@ -75,15 +72,10 @@ public class RecipesFragment extends Fragment {
         });
 
 
+        if (mMainActivity.getUserId() != 0) mBinding.addRecipe.setOnClickListener(
+                view -> navController.navigate(R.id.nav_new_recipe));
+        else mBinding.addRecipe.hide();
 
-        if(mMainActivity.getUserId() != 0) {
-            mBinding.addRecipe.setOnClickListener(view -> {
-                navController.navigate(R.id.nav_new_recipe);
-            });
-        }
-        else{
-            mBinding.addRecipe.hide();
-        }
 
         mBinding.recipeSearchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -94,9 +86,8 @@ public class RecipesFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if (newText.isEmpty()) {
-                    searchForRec();
-                }
+                if (newText.isEmpty()) searchForRec();
+
                 return true;
             }
         });
@@ -140,10 +131,7 @@ public class RecipesFragment extends Fragment {
                 public void onSuccess(List<Recipe> recipes) {
                     if(getActivity()==null) return;
                     mRecipeList = recipes;
-                    requireActivity().runOnUiThread(() -> {
-                        updateListView();
-                    });
-
+                    requireActivity().runOnUiThread(() -> updateListView());
                 }
 
                 @Override
@@ -159,9 +147,7 @@ public class RecipesFragment extends Fragment {
                 public void onSuccess(List<Recipe> recipes) {
                     if(getActivity()==null) return;
                     mRecipeList = recipes;
-                    requireActivity().runOnUiThread(() -> {
-                        updateListView();
-                    });
+                    requireActivity().runOnUiThread(() -> updateListView());
 
                 }
 
