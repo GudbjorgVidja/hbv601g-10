@@ -76,8 +76,8 @@ public class PantryIngredientFragment extends Fragment {
      */
     private AlertDialog.Builder makeAlert(NavController navController, MainActivity mainActivity) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());
-        alert.setTitle("Remove from pantry"); // TODO: Harðkóðaður strengur x2
-        alert.setMessage("Are you sure you want to remove this item from the pantry?");
+        alert.setTitle(R.string.remove_from_pantry_alert_title);
+        alert.setMessage(R.string.remove_from_pantry_alert_message);
         alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
 
@@ -101,11 +101,7 @@ public class PantryIngredientFragment extends Fragment {
 
             }
         });
-        alert.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
+        alert.setNegativeButton(android.R.string.no, (dialog, which) -> dialog.cancel());
         return alert;
     }
 

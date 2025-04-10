@@ -40,8 +40,10 @@ public class IngredientService extends Service {
     /**
      * Checks whether an ingredient exists with the given id. Makes a request to the API to get the
      * ingredient with the given id
+     *
      * @param iid the id of the ingredient
-     * @param callback returns true on success if the ingredient is found, or false otherwise
+     * @param callback returns true on success if the ingredient is found, or false
+     *         otherwise
      */
     public void checkIngredientExistsById(long iid, CustomCallback<Boolean> callback){
         String url = String.format("ingredient/id/%s?uid=%s",iid,mUid);
@@ -90,8 +92,8 @@ public class IngredientService extends Service {
      *
      * @param iid the id of the ingredient to be renamed
      * @param newTitle the new title of the ingredient
-     * @param callback - returns the ingredient with the updated title on success,
-     *                   or null on failure
+     * @param callback returns the ingredient with the updated title on success, or null on
+     *         failure
      */
     public void changeIngredientTitle(long iid, String newTitle, CustomCallback<Ingredient> callback) {
         String url = String.format("ingredient/updateTitle/%s?uid=%s", iid, mUid);
@@ -121,8 +123,8 @@ public class IngredientService extends Service {
     /**
      * Makes a request to get all ingredients accessible to the current user from the external API
      *
-     * @param callback - a callback returning a list of the ingredients on success,
-     *                   or an empty list on failure
+     * @param callback a callback returning a list of the ingredients on success, or an
+     *         empty list on failure
      */
     public void getAllIngredients(CustomCallback<List<Ingredient>> callback) {
         String url = "ingredient/all?uid=" + mUid;
@@ -158,8 +160,8 @@ public class IngredientService extends Service {
      * @param store store name, can be empty or null
      * @param brand brand name, can be empty or null
      * @param isPrivate if the ingredient should be visible to only the creator
-     * @param callback - a callback returning the ingredient object on success,
-     *                    or null on failure
+     * @param callback a callback returning the ingredient object on success, or null on
+     *         failure
      */
     public void createIngredient(String title, double quantity, Unit unit, double price,
                                  String store, String brand, boolean isPrivate,

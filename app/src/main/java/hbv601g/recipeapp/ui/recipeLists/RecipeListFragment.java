@@ -9,15 +9,12 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-import android.text.InputFilter;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -72,7 +69,7 @@ public class RecipeListFragment extends Fragment {
                 if(getActivity() == null) return;
                 mRecipeList = recipeList;
                 requireActivity().runOnUiThread(() -> {
-                    setRecipeList(mainActivity,navController);
+                    setRecipeList();
                     getRecipesFromList(mainActivity);
                 });
             }
@@ -84,7 +81,7 @@ public class RecipeListFragment extends Fragment {
                 mRecipeList = mClickedList;
                 requireActivity().runOnUiThread(() -> {
                     Toast.makeText(mainActivity, getText(R.string.get_recipe_list_failed_toast), Toast.LENGTH_SHORT).show();
-                    setRecipeList(mainActivity,navController);
+                    setRecipeList();
                     getRecipesFromList(mainActivity);
                 });
             }
@@ -177,15 +174,14 @@ public class RecipeListFragment extends Fragment {
     /**
      * Function to set recipe list information in the UI.
      */
-    private void setRecipeList(MainActivity mainActivity, NavController navController){
+    private void setRecipeList(){
         mRecipeListTitle = mBinding.recipeListTitle;
         mBinding.recipeListTitle.setText(mRecipeList.getTitle());
 
-        String tmp = mRecipeList.getCreatedBy() == null ? "Unknown" : mRecipeList.getCreatedBy().getUsername();
+        String tmp = mRecipeList.getCreatedBy() == null ? getString(R.string.created_by_unknown_text) : mRecipeList.getCreatedBy().getUsername();
         mBinding.recipeListCreatedBy.setText(tmp);
 
-        // TODO: harðkóðaðir strengir
-        tmp = mRecipeList.getDescription().isEmpty() ? "No description available" : mRecipeList.getDescription();
+        tmp = mRecipeList.getDescription().isEmpty() ? getString(R.string.no_description_text) : mRecipeList.getDescription();
 
         mBinding.recipeListDescription.setText(tmp);
 
@@ -208,8 +204,7 @@ public class RecipeListFragment extends Fragment {
             public void onFailure(List<Recipe> recipes) {
                 if(getActivity() == null) return;
                 requireActivity().runOnUiThread(() ->
-                        // TODO: laga þetta. Harðkóðað
-                        Toast.makeText(mainActivity, "Whoops, something went wrong!", Toast.LENGTH_LONG).show());
+                        mainActivity.makeToast(R.string.something_went_wrong_toast,Toast.LENGTH_LONG));
             }
         });
     }
@@ -264,12 +259,10 @@ public class RecipeListFragment extends Fragment {
                     requireActivity().runOnUiThread(() -> {
                         mainActivity.makeToast(R.string.recipe_removed_from_list_success_toast,Toast.LENGTH_LONG);
 
-                        // TODO: kannski passa að það þarf ekki að uppfæra öll gögn
                         mRecipeList.getRecipes().remove(recipe);
                         RecipeAdapter adapter = (RecipeAdapter) mBinding.recipeListRecipes.getAdapter();
                         adapter.setList(mRecipeList.getRecipes());
                         adapter.notifyDataSetChanged();
-                        //setRecipeList(mainActivity, navController);
                     });
                 }
 

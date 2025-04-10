@@ -2,7 +2,6 @@ package hbv601g.recipeapp.service;
 
 import android.app.Service;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -39,6 +38,7 @@ public class RecipeService extends Service {
     /**
      * Checks whether a recipe exists with the given id. Makes a request to the API to get the
      * recipe with the given id
+     *
      * @param rid the id of the recipe
      * @param callback returns true on success if the recipe is found, or false otherwise
      */
@@ -64,8 +64,8 @@ public class RecipeService extends Service {
      * Makes a request to get the personalized purchase cost (ppc) of a recipe
      *
      * @param rid the id of the recipe
-     * @param callback - returns the personalized purchase cost for the current user on success, or
-     *                   0.0 on failure
+     * @param callback returns the personalized purchase cost for the current user on
+     *         success, or 0.0 on failure
      */
     public void getPersonalizedPurchaseCost(long rid, CustomCallback<Double> callback) {
         String url = String.format("recipe/id/%s/personal?uid=%s", rid, mUid);
@@ -89,7 +89,8 @@ public class RecipeService extends Service {
      * makes a delete request to send to the external API, to try to delete a recipe
      *
      * @param rid the id of the recipe to delete
-     * @param callback - a callback to the fragment
+     * @param callback a callback to the fragment. Always returns null, but either as a
+     *         success or as a failure depending on whether the recipe is deleted
      */
     public void deleteRecipe(long rid, CustomCallback<Boolean> callback) {
         String url = String.format("recipe/delete/%s?uid=%s", rid, mUid);
@@ -113,9 +114,9 @@ public class RecipeService extends Service {
     /**
      * Makes a get request for the external API, for the endpoint that gets all recipes and turns it
      * from a JsonElement to a List of Recipes
-
-     * @param callback returns all recipes on success, or an empty list on failure or when recipes
-     *                 are null
+     *
+     * @param callback returns all recipes on success, or an empty list on failure or when
+     *         recipes are null
      */
     public void getAllRecipes(CustomCallback<List<Recipe>> callback) {
         String url = "recipe/all?uid=" + mUid;
@@ -144,11 +145,11 @@ public class RecipeService extends Service {
      *
      * @param title the title of the recipe
      * @param instructions instructions for how to make the recipe
-     * @param ingredientList a list of IngredientMeasurements containing the ingredients needed
-     *         for making the recipe and their amounts
+     * @param ingredientList a list of IngredientMeasurements containing the ingredients
+     *         needed for making the recipe and their amounts
      * @param isPrivate a boolean value indicating whether the recipe is visible to users
      *         other than the one who created it
-     * @param callback       - callback returning the new recipe on success, or null on failure
+     * @param callback callback returning the new recipe on success, or null on failure
      */
     public void createRecipe(String title, String instructions,
                              List<IngredientMeasurement> ingredientList, Boolean isPrivate,
@@ -182,9 +183,7 @@ public class RecipeService extends Service {
 
                     @Override
                     public void onFailure(Recipe recipe) {
-                        // TODO: ef ingredient measurements klikka, á þá að skila null recipe?
                         callback.onFailure(recipe);
-                        //callback.onFailure(newRecipe);
                     }
                 });
 
@@ -205,7 +204,7 @@ public class RecipeService extends Service {
      * @param id the id of recipe that is being updated
      * @param upIngredList arrayList value, is a list that contains all of the now
      *         ingredients in the recipe.
-     * @param callback : callback returning the updated recipe on success, or null on failure
+     * @param callback callback returning the updated recipe on success, or null on failure
      */
     public void updateRecipe(Recipe recipe, long id, List<IngredientMeasurement> upIngredList,
                              CustomCallback<Recipe> callback){
@@ -250,10 +249,10 @@ public class RecipeService extends Service {
      * Adds This function add new ingredient measurement to a recipe with the same ID value of id
      *
      * @param rid long value, ist the id of the recipe.
-     * @param ingredientList arrayList value, is a list of IngredientMeasurement that will be
-     *         added to a recipe
-     * @param callback - a callback returning the recipe on success,
-     *                   or the original recipe on failure
+     * @param ingredientList arrayList value, is a list of IngredientMeasurement that will
+     *         be added to a recipe
+     * @param callback a callback returning the recipe on success, or the original recipe on
+     *         failure
      */
     public void addIngredientMeasurements(long rid, List<IngredientMeasurement> ingredientList,
                                           CustomCallback<Recipe> callback) {
@@ -302,6 +301,8 @@ public class RecipeService extends Service {
      * Searches for recipes containing the input string in the title
      *
      * @param input a string that should be included in the recipe titles
+     * @param callback A callback returning a list of recipes containing the search string in the
+     * title on success, or an empty list on failure
      */
     public void SearchRecipe (String input, CustomCallback<List<Recipe>> callback){
         String url = "recipe/search/" + input + "?uid=" + mUid;
@@ -330,6 +331,8 @@ public class RecipeService extends Service {
      * Fetches all recipes under a given TPC.
      *
      * @param tpc Total Purchase Cost to filter by.
+     * @param callback A callback returning a list of all recipes under the given TPC on success,
+     * or an empty list on failure
      */
     public void getAllRecipesUnderTPC(int tpc, CustomCallback<List<Recipe>> callback) {
         String url = String.format("recipe/underTPC/%s?uid=%s", tpc, mUid);
@@ -359,6 +362,8 @@ public class RecipeService extends Service {
      * Fetches all recipes under a given TIC.
      *
      * @param tic Total Ingredient Cost to filter by
+     * @param callback A callback returning a list of recipes under the given TIC on success, or
+     * an empty list on failure
      */
     public void getAllRecipesUnderTIC(int tic, CustomCallback<List<Recipe>> callback) {
         String url = String.format("recipe/underTIC/%s?uid=%s", tic, mUid);
@@ -385,6 +390,9 @@ public class RecipeService extends Service {
 
     /**
      * Fetches all recipes ordered by Total Purchase Cost ascending.
+     *
+     * @param callback a callback returning a list of all recipes ordered by price on
+     *         success, or null on failure
      */
     public void getAllOrderedRecipes(CustomCallback<List<Recipe>> callback){
         String url = "recipe/all/ordered?uid=" + mUid;
@@ -411,6 +419,9 @@ public class RecipeService extends Service {
 
     /**
      * Fetches all recipes sorted by title.
+     *
+     * @param callback a callback returning a list of all recipes ordered alphabetically by
+     *         title on success, or null on failure
      */
     public void getAllOrderedRecipesByTitle(CustomCallback<List<Recipe>> callback){
         String url = "recipe/all/orderedByTitle?uid=" + mUid;

@@ -45,6 +45,8 @@
     <string name="validate_new_password_hint">Retype password</string>
     <string name="unit_dropdown_hint">Unit</string>
     <string name="ingredient_dropdown_hint">Ingredient</string>
+    <string name="max_tic_hint">Enter max TIC</string>
+    <string name="max_tpc_hint">Enter max TPC</string>
 
 
     <string name="add_to_pantry">Add to pantry</string>
@@ -95,6 +97,7 @@
     <string name="public_text">public</string>
     <string name="no_instructions_text">No instructions</string>
     <string name="no_lists_found_text">No lists found</string>
+    <string name="no_description_text">No description available</string>
 
     <!-- Messages/toasts -->
     <string name="login_failed_toast">Login failed. Please ensure username and password are correct.</string>
@@ -151,6 +154,7 @@
     <string name="open_ingredient_failed_toast">"Unable to open the ingredient, please try again later"</string>
     <string name="viewing_deleted_ingredient_toast">The ingredient you were viewing has been deleted</string>
     <string name="home_photo_unavailable_toast">An error occurred while trying to fetch the image</string>
+    <string name="something_went_wrong_toast">Whoops, something went wrong!</string>
 
     <!-- variables -->
     <string name="selected_ingredient">Ingredient</string>
@@ -190,6 +194,8 @@
     <string name="remove_recipe_from_recipe_list_alert_message">Are you sure you want to remove the recipe?</string>
     <string name="remove_recipe_from_recipe_list_alert_title">Remove Recipe</string>
     <string name="remove_ingredient_measurement_alert_message">Are you sure you want to remove the ingredient?</string>
+    <string name="remove_from_pantry_alert_title">Remove from pantry</string>
+    <string name="remove_from_pantry_alert_message">Are you sure you want to remove this item from the pantry?</string>
 
     <!-- misc -->
     <string name="currency">&curr;</string>

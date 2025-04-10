@@ -167,7 +167,6 @@ public class RecipesFragment extends Fragment {
 
                 @Override
                 public void onFailure(List<Recipe> recipes) {
-                    // TODO: Gera toast?
                     Log.d("Callback", "Failed to get all recipes ordered by title");
                 }
             });
@@ -215,12 +214,11 @@ public class RecipesFragment extends Fragment {
         alert.setTitle(getString(R.string.title_filter_tpc));
 
         final EditText input = new EditText(mainActivity);
-        input.setHint("Enter max TPC"); // TODO: harðkóðaður strengur
+        input.setHint(R.string.max_tpc_hint);
         input.setInputType(InputType.TYPE_CLASS_NUMBER);
         alert.setView(input);
 
         alert.setPositiveButton(R.string.confirm_button, (dialog, which) -> {
-            // TODO: hafa check hér? input er number?
             int maxTPC = -2;
             try {
                 maxTPC = Integer.parseInt(input.getText().toString());
@@ -263,7 +261,7 @@ public class RecipesFragment extends Fragment {
         alert.setTitle(getString(R.string.title_filter_tic));
 
         final EditText input = new EditText(mainActivity);
-        input.setHint("Enter max TIC"); // TODO: harðkóðaður texti
+        input.setHint(R.string.max_tic_hint);
         input.setInputType(InputType.TYPE_CLASS_NUMBER);
         alert.setView(input);
 
@@ -278,7 +276,6 @@ public class RecipesFragment extends Fragment {
             mRecipeService.getAllRecipesUnderTIC(maxTIC + 1, new CustomCallback<>() {
                 @Override
                 public void onSuccess(List<Recipe> recipes) {
-                    // TODO: skipta þessari if-setningu út fyrir try-catch? (á öllum stöðum)
                     if(getActivity() == null) return;
                     requireActivity().runOnUiThread(() -> {
                         mRecipeList = recipes;
@@ -331,7 +328,6 @@ public class RecipesFragment extends Fragment {
                 public void onFailure(List<Recipe> recipes) {
                     if(getActivity() == null) return;
                     requireActivity().runOnUiThread(() -> {
-                        // tómur listi sýndur, eitthvað klikkaði
                         mRecipeList = recipes;
                         updateListView();
                         mMainActivity.makeToast(R.string.get_recipes_failed_toast, Toast.LENGTH_LONG);

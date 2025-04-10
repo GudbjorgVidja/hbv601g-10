@@ -53,7 +53,6 @@ public class UserFragment extends Fragment{
     private String mNameOfProfile;
     private NavController mNavController;
 
-    // TODO: ef navigate-að frá recipe þá ekki hægt að fara til baka í recipes :(
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
