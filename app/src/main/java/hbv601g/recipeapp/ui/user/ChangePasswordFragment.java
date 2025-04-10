@@ -51,19 +51,14 @@ public class ChangePasswordFragment extends Fragment {
      * @param empty a boolean value indicating whether either input fields are empty
      */
     private void newPassInvalid(boolean empty) {
-        //TODO: test
-        if (empty) mBinding.newPasswordInput.setError(getString(R.string.field_required_error));
-        else mBinding.validatePasswordInputLayout.setError(
-                getString(R.string.new_password_invalid_error));
-
-        /*if (empty) {
+        if (empty) {
             mBinding.newPasswordInputLayout.setError(getString(R.string.field_required_error));
             mBinding.validatePasswordInputLayout.setError(null);
         } else {
             mBinding.newPasswordInputLayout.setError(null);
             mBinding.validatePasswordInputLayout.setError(
                     getString(R.string.new_password_invalid_error));
-        }*/
+        }
     }
 
     /**

@@ -103,7 +103,6 @@ public class AddIngredientMeasurementFragment extends Fragment {
                 navController.popBackStack();
             }
             else {
-                //TODO: check when this appears
                 mainActivity.makeToast(R.string.missing_information_toast, Toast.LENGTH_LONG);
             }
 
