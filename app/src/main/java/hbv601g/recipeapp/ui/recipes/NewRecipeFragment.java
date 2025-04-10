@@ -2,6 +2,7 @@ package hbv601g.recipeapp.ui.recipes;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +27,7 @@ import hbv601g.recipeapp.adapters.IngredientMeasurementAdapter;
 import hbv601g.recipeapp.databinding.FragmentNewRecipeBinding;
 import hbv601g.recipeapp.entities.IngredientMeasurement;
 import hbv601g.recipeapp.entities.Recipe;
+import hbv601g.recipeapp.entities.Unit;
 import hbv601g.recipeapp.networking.CustomCallback;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.RecipeService;
@@ -44,6 +46,14 @@ public class NewRecipeFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        if (savedInstanceState != null){
+            try {
+                mIngredientList = savedInstanceState.getParcelableArrayList(getString(R.string.selected_ingredient_measurement_list));
+            } catch (IllegalArgumentException e) {
+                Log.d("New Recipe", "Illegal argument for list");
+            }
+        }
+
         mBinding = FragmentNewRecipeBinding.inflate(inflater, container, false);
         View root = mBinding.getRoot();
         MainActivity mainActivity = (MainActivity) getActivity();
@@ -208,6 +218,14 @@ public class NewRecipeFragment extends Fragment {
 
         alert.setNegativeButton(R.string.cancel_button_text, null);
         alert.show();
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mIngredientList == null) mIngredientList = new ArrayList<>();
+        outState.putParcelableArrayList(getString(R.string.selected_ingredient_measurement_list),
+                    (ArrayList<? extends Parcelable>) mIngredientList);
     }
 
     @Override

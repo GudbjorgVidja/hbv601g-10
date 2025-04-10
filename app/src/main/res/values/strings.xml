@@ -171,6 +171,7 @@
     <string name="tic_string">tic:</string>
     <string name="tpc_string">tpc:</string>
     <string name="saved_ingredients">Ingredients</string>
+    <string name="selected_ingredient_measurement_list">Ingredient measurements</string>
 
     <!-- Alert strings -->
     <string name="delete_user_alert_title">Delete account</string>

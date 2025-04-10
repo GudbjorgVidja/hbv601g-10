@@ -2,6 +2,7 @@ package hbv601g.recipeapp.ui.recipes;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -77,7 +78,13 @@ public class EditRecipeFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-
+        if (savedInstanceState != null){
+            try {
+                mList = savedInstanceState.getParcelableArrayList(getString(R.string.selected_ingredient_measurement_list));
+            } catch (IllegalArgumentException e) {
+                Log.d("Edit Recipe", "Illegal argument for list");
+            }
+        }
         mBinding = FragmentEditRecipeBinding.inflate(inflater, container, false);
         View root = mBinding.getRoot();
         MainActivity mainActivity = (MainActivity) getActivity();
@@ -255,6 +262,14 @@ public class EditRecipeFragment extends Fragment {
 
         alert.setNegativeButton(R.string.cancel_button_text, null);
         alert.show();
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mList == null) mList = new ArrayList<>();
+        outState.putParcelableArrayList(getString(R.string.selected_ingredient_measurement_list),
+                (ArrayList<? extends Parcelable>) mList);
     }
 
     @Override
