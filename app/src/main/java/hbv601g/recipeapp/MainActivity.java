@@ -4,10 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.text.InputFilter;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.TextUtils;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -42,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot()); // setur contentið eftir bottom nav bar vali
+        setContentView(binding.getRoot()); // sets the content by the bottom nav bar selection
 
         // findViewById(${id}) finds the bottom navigation bar
         BottomNavigationView navView = findViewById(R.id.nav_view);

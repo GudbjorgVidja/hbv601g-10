@@ -42,11 +42,11 @@ public class NetworkingService extends Service {
     }
 
 
-
     /**
      * Makes a get request to the API
-     * @param reqURL - the path to use, which is appended to the base url
-     * @param callback  - a callback returning the response body from the API on success
+     *
+     * @param reqURL the path to use, which is appended to the base url
+     * @param callback a callback returning the response body from the API on success
      */
     public void getRequest(String reqURL, CustomCallback<JsonElement> callback) {
         Request request = new Request.Builder().url(mBaseURL +reqURL).build();
@@ -54,9 +54,9 @@ public class NetworkingService extends Service {
     }
 
 
-
     /**
      * Makes a Post Request to the external API
+     *
      * @param reqURL a string containing the URL for the API call
      * @param data a string containing the data to add to the request body of the call
      * @param callback a callback returning the response body returned
@@ -69,13 +69,13 @@ public class NetworkingService extends Service {
     }
 
 
-
     /**
      * Makes a patch request using the given url and data, calls the API and interprets the result
      * into a JsonElement to return
-     * @param reqURL - the url of the request
-     * @param data - data to include in the request body
-     * @param callback  a callback returning the response body returned
+     *
+     * @param reqURL the url of the request
+     * @param data data to include in the request body
+     * @param callback a callback returning the response body returned
      */
     public void patchRequest(String reqURL, String data, CustomCallback<JsonElement> callback) {
         RequestBody requestBody = RequestBody.create(data == null ? "" : data,
@@ -85,12 +85,12 @@ public class NetworkingService extends Service {
     }
 
 
-
     /**
-     * Makes a delete request using the given url and calls the API
-     * Throws a DeleteFailedException if the responseCode is not 200
-     * @param reqURL - the url to the endpoint that is being called
-     * @param callback - a callback returning the response body returned
+     * Makes a delete request using the given url and calls the API Throws a DeleteFailedException
+     * if the responseCode is not 200
+     *
+     * @param reqURL the url to the endpoint that is being called
+     * @param callback a callback returning the response body returned
      */
     public void deleteRequest(String reqURL, CustomCallback<JsonElement> callback){
         Request request = new Request.Builder().url(mBaseURL +reqURL).delete().build();
@@ -100,9 +100,10 @@ public class NetworkingService extends Service {
 
     /**
      * Makes a put request to the API and returns the result of the call
+     *
      * @param reqURL endpoint url
      * @param data data for the request body
-     * @param callback  a callback returning the response body returned
+     * @param callback a callback returning the response body returned
      */
     public void putRequest(String reqURL, String data, CustomCallback<JsonElement> callback)  {
         RequestBody requestBody = RequestBody.create(data == null ? "" : data,
@@ -112,12 +113,12 @@ public class NetworkingService extends Service {
     }
 
 
-
     /**
      * Method that calls the API, using the given request
-     * @param request - the request to be used
-     * @param callback - a callback which returns the response body on success or
-     *                         null on failure (when response code is not 200)
+     *
+     * @param request the request to be used
+     * @param callback a callback which returns the response body on success or null on
+     *         failure (when response code is not 200)
      */
     private void callAPI(Request request, CustomCallback<JsonElement> callback){
         OkHttpClient client = new OkHttpClient();
@@ -125,7 +126,6 @@ public class NetworkingService extends Service {
         Call call = client.newCall(request);
 
 
-        // TODO: þarf try-catch hér? og þá gera onFailure í catch?
         call.enqueue(new Callback() {
             public void onResponse(@NonNull Call call, @NonNull Response response)
                     throws IOException {
@@ -136,7 +136,6 @@ public class NetworkingService extends Service {
 
                 mJsonElement = JsonParser.parseString(ret);
 
-                // Bara onFailure hér ef response code er ekki 200, annars er success með null json
                 if(mResponseCode != 200)
                     callback.onFailure(null);
                 else if ( mJsonElement == null || mJsonElement.isJsonNull())

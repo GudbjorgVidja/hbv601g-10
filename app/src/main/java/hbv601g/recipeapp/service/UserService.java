@@ -42,12 +42,10 @@ public class UserService extends Service {
      *
      * @param uid the id of the user to delete
      * @param password the password to use for confirmation
-     * @param callback - a callback to the fragment
+     * @param callback a callback to the fragment. Always returns null, but either as a
+     *         success or as a failure depending on whether the user is deleted
      */
     public void deleteAccount(long uid, String password, CustomCallback<User> callback) {
-        // TODO: User bara eytt ef rétt lykilorð, en bakendi sýnir ekki hvort það gekk.
-        //  Bæta því við? þá má sleppa því að sækja user
-
         getUser(uid, uid, new CustomCallback<>() {
             @Override
             public void onSuccess(User user) {
@@ -116,8 +114,8 @@ public class UserService extends Service {
      *
      * @param username the username to look by
      * @param password the password to look by
-     * @param callback returns User object with onSuccess if log in was successful, else null on
-     *                 failure
+     * @param callback returns User object with onSuccess if log in was successful, else
+     *         null on failure
      */
     public void logIn(String username, String password, CustomCallback<User> callback) {
         String url = Uri.parse("user/login").buildUpon()
@@ -147,7 +145,7 @@ public class UserService extends Service {
      *
      * @param username the username of the new user
      * @param password the password of the new user
-     * @param callback - a callback returning the new user on success, or null on failure
+     * @param callback a callback returning the new user on success, or null on failure
      */
     public void signup(String username, String password, CustomCallback<User> callback) {
         String url = Uri.parse("user/signup").buildUpon()
@@ -177,8 +175,8 @@ public class UserService extends Service {
      * Gets the pantry of the user with the given id
      *
      * @param uid the id of the pantry owner
-     * @param callback callback returning the pantry of the user on success,
-     *                 or an empty list on failure
+     * @param callback callback returning the pantry of the user on success, or an empty
+     *         list on failure
      */
     public void getUserPantry(long uid, CustomCallback<List<IngredientMeasurement>> callback) {
         String url = "user/pantry?uid=" + uid;
@@ -206,7 +204,8 @@ public class UserService extends Service {
      *
      * @param uid the id if the user who's pantry it is
      * @param iid the id of the ingredient which should be removed
-     * @param callback - always returns null, but onSuccess called if the ingredient is removed.
+     * @param callback always returns null, but onSuccess called if the ingredient is
+     *         removed.
      */
     public void removeIngredientFromPantry(long uid, long iid, CustomCallback<Boolean> callback) {
         String url = String.format("user/pantry/delete?iid=%s&uid=%s", iid, uid);
@@ -234,8 +233,8 @@ public class UserService extends Service {
      * @param iid the id of the ingredient to add to the pantry
      * @param unit the unit of the quantity to add to the pantry
      * @param qty the quantity to add to the pantry
-     * @param callback - returns the IngredientMeasurement added on success. If the ingredient is in
-     *                   the pantry already, that item is returned on failure, otherwise null
+     * @param callback returns the IngredientMeasurement added on success. If the ingredient
+     *         is in the pantry already, that item is returned on failure, otherwise null
      */
     public void addIngredientToPantry(long uid, long iid, Unit unit, double qty,
                                       CustomCallback<IngredientMeasurement> callback) {
@@ -276,6 +275,8 @@ public class UserService extends Service {
      *
      * @param uid the id of the user who's password should be validated
      * @param pass the password that should be used for the validation
+     * @param callback a callback returning a boolean value indicating the validity of the given
+     * password on success, or null on failure
      */
     public void validatePassword(long uid, String pass, CustomCallback<Boolean> callback){
         getUser(uid, uid, new CustomCallback<>() {
@@ -297,6 +298,8 @@ public class UserService extends Service {
      * @param uid the id of the user who's password is being changed
      * @param newPass the new password
      * @param oldPassword the old password
+     * @param callback a callback returning null. On success is called when the password was
+     * changed, but on failure when it could not be changed
      */
     public void changePassword(long uid, String newPass, String oldPassword, CustomCallback<Boolean> callback){
         getUser(uid, uid, new CustomCallback<>() {
@@ -311,7 +314,7 @@ public class UserService extends Service {
                 mNetworkingService.patchRequest(url, null, new CustomCallback<>() {
                     @Override
                     public void onSuccess(JsonElement jsonElement) {
-			            Log.i("Changed password", "User " + uid + " has change there password");
+			            Log.i("Changed password", "User " + uid + " has changed their password");
                         callback.onSuccess(null);
                     }
 

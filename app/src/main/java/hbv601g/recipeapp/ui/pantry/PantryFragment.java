@@ -37,7 +37,6 @@ public class PantryFragment extends Fragment {
     private long mUid;
 
 
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -79,15 +78,14 @@ public class PantryFragment extends Fragment {
             mainActivity.makeToast(R.string.pantry_no_user, Toast.LENGTH_LONG);
         }
 
-
         return root;
-
     }
 
     /**
      * Sets the ui components which use a list of pantry contents
-     * @param mainActivity - the mainActivity instance
-     * @param navController - the NavController
+     *
+     * @param mainActivity the mainActivity instance
+     * @param navController the NavController
      */
     private void setPantryView(MainActivity mainActivity, NavController navController){
         ListView pantryListView = mBinding.pantryListView;

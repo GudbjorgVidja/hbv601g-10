@@ -48,7 +48,6 @@ public class IngredientsFragment extends Fragment {
 
         mIngredientService = new IngredientService(new NetworkingService(), mainActivity.getUserId());
 
-
         // An attempt to populate the list of ingredients by making an API call
         mIngredientService.getAllIngredients(new CustomCallback<>() {
             @Override
@@ -79,8 +78,9 @@ public class IngredientsFragment extends Fragment {
 
     /**
      * updates the view with the ingredients list
-     * @param mainActivity - the MainActivity
-     * @param navController - the NavController
+     *
+     * @param mainActivity the MainActivity
+     * @param navController the NavController
      */
     private void makeIngredientsView(MainActivity mainActivity, NavController navController){
 

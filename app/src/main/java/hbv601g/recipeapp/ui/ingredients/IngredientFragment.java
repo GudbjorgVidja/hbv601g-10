@@ -240,9 +240,9 @@ public class IngredientFragment extends Fragment{
         DecimalFormat df = new DecimalFormat("###,##0.###");
 
         if(mIngredient.getBrand() != null)
-            tmp=getString(R.string.quantity_brand, df.format(mIngredient.getQuantity()), mIngredient.getUnit().toString(), mIngredient.getBrand());
+            tmp=getString(R.string.ingredient_quantity_brand, df.format(mIngredient.getQuantity()), mIngredient.getUnit().toString(), mIngredient.getBrand());
         else
-            tmp=getString(R.string.quantity, df.format(mIngredient.getQuantity()), mIngredient.getUnit().toString());
+            tmp=getString(R.string.quantity_and_unit, df.format(mIngredient.getQuantity()), mIngredient.getUnit().toString());
         mBinding.ingredientQuantityUnit.setText(tmp);
 
         if(mIngredient.getStore() != null)

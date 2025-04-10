@@ -50,7 +50,6 @@ public class NewIngredientFragment extends Fragment{
         if (savedInstanceState != null){
             String unitString = savedInstanceState.getString(getString(R.string.selected_unit), "");
             try {
-                //Log.d(TAG, "unit string:" + unitString);
                 mSelectedUnit = Unit.valueOf(unitString);
             } catch (IllegalArgumentException e) {
                 Log.d(TAG, "Illegal argument for unit");
@@ -69,7 +68,6 @@ public class NewIngredientFragment extends Fragment{
         mQuantityField = mBinding.newIngredientQuantityInput;
         mTitleField = mBinding.newIngredientTitleInput;
         mPriceField = mBinding.newIngredientPriceInput;
-
 
         Button confirmButton = mBinding.confirmNewIngredientButton;
         EditText storeField = mBinding.newIngredientStoreInput;
@@ -152,23 +150,23 @@ public class NewIngredientFragment extends Fragment{
      *
      * @return a boolean value indicating the validity of the required fields
      */
-    private boolean isValid(){
+    private boolean isValid() {
         boolean isValid = true;
         String errorMessage = getString(R.string.field_required_error);
 
-        if(mTitleField.getText().toString().isEmpty()){
+        if (mTitleField.getText().toString().isEmpty()) {
             mTitleField.setError(errorMessage);
             isValid = false;
         }
-        if(mQuantityField.getText().toString().isEmpty()) {
+        if (mQuantityField.getText().toString().isEmpty()) {
             mQuantityField.setError(errorMessage);
             isValid = false;
         }
-        if(mPriceField.getText().toString().isEmpty()){
+        if (mPriceField.getText().toString().isEmpty()) {
             mPriceField.setError(errorMessage);
             isValid = false;
         }
-        if(mSelectedUnit == null){
+        if (mSelectedUnit == null) {
             mUnitDropdown.setError(errorMessage);
             isValid = false;
         }

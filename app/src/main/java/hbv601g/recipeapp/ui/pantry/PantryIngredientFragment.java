@@ -46,14 +46,14 @@ public class PantryIngredientFragment extends Fragment {
         NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
         mUserService = new UserService(new NetworkingService());
 
-        if(mPantryIngredient != null){
-            setPantryIngredient();
-        }
+        if (mPantryIngredient != null) setPantryIngredient();
+
 
         // A button to delete the ingredient from pantry
         mBinding.removeFromPantryButton.setOnClickListener(v -> {
-            if(mainActivity.getUserId() != 0 && mPantryIngredient != null && mPantryIngredient.getIngredient() != null
-                    && mPantryIngredient.getIngredient().getId() != 0){
+            if (mainActivity.getUserId() != 0 && mPantryIngredient != null &&
+                    mPantryIngredient.getIngredient() != null &&
+                    mPantryIngredient.getIngredient().getId() != 0) {
                 AlertDialog.Builder alert = makeAlert(navController, mainActivity);
                 alert.show();
             } else {
@@ -76,8 +76,8 @@ public class PantryIngredientFragment extends Fragment {
      */
     private AlertDialog.Builder makeAlert(NavController navController, MainActivity mainActivity) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this.getContext());
-        alert.setTitle("Remove from pantry"); // TODO: Harðkóðaður strengur x2
-        alert.setMessage("Are you sure you want to remove this item from the pantry?");
+        alert.setTitle(R.string.remove_from_pantry_alert_title);
+        alert.setMessage(R.string.remove_from_pantry_alert_message);
         alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
 
@@ -101,11 +101,7 @@ public class PantryIngredientFragment extends Fragment {
 
             }
         });
-        alert.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
+        alert.setNegativeButton(android.R.string.no, (dialog, which) -> dialog.cancel());
         return alert;
     }
 
@@ -117,7 +113,7 @@ public class PantryIngredientFragment extends Fragment {
         String tmp;
         DecimalFormat df = new DecimalFormat("###,##0.###");
         if (mPantryIngredient.getIngredient().getBrand() != null){
-            tmp = getString(R.string.pantry_ingredient_quantity_brand,
+            tmp = getString(R.string.ingredient_quantity_brand,
                     df.format(mPantryIngredient.getQuantity()),
                     mPantryIngredient.getUnit().toString(),
                     mPantryIngredient.getIngredient().getBrand());

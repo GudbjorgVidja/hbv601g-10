@@ -43,20 +43,16 @@
     <string name="new_ingredient_brand_hint">Brand</string>
     <string name="new_password_hint">New password</string>
     <string name="validate_new_password_hint">Retype password</string>
-    <string name="recipe_search_bar_hint">Search for recipe</string>
     <string name="unit_dropdown_hint">Unit</string>
     <string name="ingredient_dropdown_hint">Ingredient</string>
+    <string name="max_tic_hint">Enter max TIC</string>
+    <string name="max_tpc_hint">Enter max TPC</string>
 
 
-    <string name="ingredients_text">Ingredients</string>
-    <string name="instructions_text">Instructions</string>
-    <string name="name_text">Name</string>
-    <string name="value_text">Value</string>
     <string name="add_to_pantry">Add to pantry</string>
     <string name="remove_from_pantry">Remove</string>
     <string name="privacy_selection_label">Make private</string>
     <string name="confirm_new_ingredient_button">Create ingredient</string>
-    <string name="check_password_button">Check if password is valid</string>
     <string name="recipe_instructions">Instructions</string>
     <string name="recipe_ingredients">Ingredients</string>
     <string name="recipe_list_description">Description</string>
@@ -77,21 +73,15 @@
     <string name="confirm_button">Confirm</string>
     <string name="confirm_create_recipe_list_button">Create recipe list</string>
     <string name="add_to_list_button">Add to list</string>
-    <string name="filter_tpc_button">Filter by TPC</string>
-    <string name="filter_tic_button">Filter by TIC</string>
-    <string name="confirm_filter_button">Confirm</string>
-    <string name="clear_filter_button">Clear filter</string>
     <string name="save_button">Save</string>
     <string name="remove_button">Remove</string>
     <string name="edit_button_text">Edit</string>
-    <string name="rename_ingredient_button_text">Rename</string>
     <string name="look_at_recipe_button">View recipe</string>
     <string name="change_password_button">Change password</string>
     <string name="camera_shutter_button">Take Photo</string>
     <string name="home_camera_button_text">Camera</string>
     <string name="home_information_text">Come cook with us!</string>
-    <string name="sort_by_price_button">Sort by price</string>
-    <string name="sort_by_title_button">Sort by title</string>
+
 
     <!-- format strings -->
     <string name="recipe_tpc">Total purchase cost: %1$,d &curr;</string>
@@ -100,24 +90,23 @@
 
     <string name="ingredient_price">%1$,.0f &curr;</string>
     <string name="ingredient_price_store">%1$,.0f &curr; at %2$s</string>
-    <string name="quantity_brand">%1$s %2$s, %3$s brand</string>
-    <string name="quantity">%1$s %2$s</string>
-
     <string name="ingredient_quantity_brand">%1$s %2$s, %3$s brand</string>
-    <string name="pantry_ingredient_quantity_brand">%1$s %2$s, %3$s brand</string>
+    <string name="quantity_and_unit">%1$s %2$s</string>
 
     <string name="private_text">private</string>
     <string name="public_text">public</string>
+    <string name="no_instructions_text">No instructions</string>
+    <string name="no_lists_found_text">No lists found</string>
+    <string name="no_description_text">No description available</string>
 
     <!-- Messages/toasts -->
     <string name="login_failed_toast">Login failed. Please ensure username and password are correct.</string>
-    <string name="login_not_empty_toast">Username and password cannot be empty</string>
     <string name="signup_failed_toast">Signup failed. I won\'t tell you why..</string>
     <string name="null_ingredient_list">Something went wrong displaying the ingredient list.</string>
     <string name="get_recipes_failed_toast">Failed to get all recipes</string>
     <string name="delete_ingredient_failed">Something went wrong when trying to delete the ingredient.</string>
     <string name="delete_ingredient_success">Ingredient deleted successfully.</string>
-    <string name="delete_recipe_failed">Something went wrong when trying to delete the Recipe.</string>
+    <string name="delete_recipe_failed">Something went wrong when trying to delete the recipe.</string>
     <string name="delete_recipe_success">Recipe deleted successfully.</string>
     <string name="null_pantry_list">Something went wrong displaying the pantry</string>
     <string name="pantry_no_user">You must log in to view your pantry</string>
@@ -132,9 +121,7 @@
     <string name="create_recipe_success_toast">The recipe has been created</string>
     <string name="create_recipe_failed_toast">Failed to create recipe</string>
     <string name="create_recipe_ingredients_failed_toast">Failed to add ingredients to recipe</string>
-    <string name="recipe_unknown_error">Recipe could not be crated, unknown error</string>
-    <string name="recipe_edit_unknown_error">Recipe could not be edited, unknown error</string>
-    <string name="recipe_name_is_empty_error">Recipe Must have a name</string>
+    <string name="edit_recipe_failed_toast">Failed to edit recipe</string>
     <string name="create_recipe_list_failed_toast">Failed to create recipe list.</string>
     <string name="create_recipe_list_success_toast">Successfully created recipe list.</string>
     <string name="recipe_removed_from_list_success_toast"> Recipe was successfully removed from the list</string>
@@ -143,12 +130,8 @@
     <string name="add_recipe_to_list_failed_toast">Failed to add recipe to list.</string>
     <string name="add_recipe_to_list_success_toast">The recipe has been added to the list</string>
     <string name="add_recipe_to_list_existing_toast">The recipe was already on this list, and still is.</string>
-    <string name="get_recipe_lists_failed_toast">Something went wrong fetching the lists.</string>
     <string name="password_invalid_toast">Invalid password</string>
-    <string name="password_has_no_input_toast">The password field can not be empty</string>
     <string name="get_recipe_list_failed_toast">Something went wrong fetching the list.</string>
-    <string name="recipe_list_rename_blank">Input cannot be blank</string>
-    <string name="recipe_list_rename_not_authorized">You must be the creator of this list to change the title</string>
     <string name="invalid_price_input_toast">Input is invalid</string>
     <string name="delete_user_failed_toast">Failed to delete the user account.</string>
     <string name="delete_user_success_toast">User account deleted successfully.</string>
@@ -158,10 +141,8 @@
     <string name="camera_no_access_toast">Unable to take photo. Please make sure to allow access to the camera.</string>
     <string name="camera_not_initialized_toast">Please wait for the camera to start before taking photos.</string>
     <string name="new_password_invalid_error">The passwords must be the same</string>
-    <string name="new_password_empty_error">The password field can not be empty</string>
-    <string name="password_change_success_toast">Your password has been change</string>
-    <string name="password_change_fail_toast">Your password was not change</string>
-    <string name="password_change_error_toast">Your password could not change</string>
+    <string name="password_change_fail_toast">Your password was not changed</string>
+    <string name="password_change_error_toast">Your password could not be changed</string>
     <string name="recipe_missing_toast">Recipe is missing</string>
     <string name="delete_list_failed_toast">Something went wrong when trying to delete the recipe list.</string>
     <string name="delete_list_success_toast">Recipe list deleted successfully.</string>
@@ -173,6 +154,7 @@
     <string name="open_ingredient_failed_toast">"Unable to open the ingredient, please try again later"</string>
     <string name="viewing_deleted_ingredient_toast">The ingredient you were viewing has been deleted</string>
     <string name="home_photo_unavailable_toast">An error occurred while trying to fetch the image</string>
+    <string name="something_went_wrong_toast">Whoops, something went wrong!</string>
 
     <!-- variables -->
     <string name="selected_ingredient">Ingredient</string>
@@ -185,11 +167,11 @@
     <string name="selected_user_name">User name</string>
     <string name="selected_old_password">Old password</string>
     <string name="request_ingredient_measurement">Ingredient measurement result</string>
-    <string name="request_new_recipe">New recipe result</string>
     <string name="request_edit_recipe">Edited recipe result</string>
     <string name="tic_string">tic:</string>
     <string name="tpc_string">tpc:</string>
     <string name="saved_ingredients">Ingredients</string>
+    <string name="selected_ingredient_measurement_list">Ingredient measurements</string>
 
     <!-- Alert strings -->
     <string name="delete_user_alert_title">Delete account</string>
@@ -206,16 +188,15 @@
     <string name="validate_current_password_title">Validating password</string>
     <string name="validate_current_password_alert_message">Current Password</string>
     <string name="validate_current_password_alert_error">Need to type in your password</string>
-    <string name="delete_user_title">Delete account</string>
-    <string name="delete_user_message">Please enter your password</string>
     <string name="delete_list_alert_title">Delete List</string>
     <string name="delete_list_alert_message">Are you sure you want to delete this Recipe list?</string>
     <string name="recipe_choice_alert_title">%s</string>
     <string name="recipe_choice_alert_message">What do you want to do with the recipe?</string>
     <string name="remove_recipe_from_recipe_list_alert_message">Are you sure you want to remove the recipe?</string>
     <string name="remove_recipe_from_recipe_list_alert_title">Remove Recipe</string>
-    <string name="remove_ingredient_measurement_alert_title">%s</string>
     <string name="remove_ingredient_measurement_alert_message">Are you sure you want to remove the ingredient?</string>
+    <string name="remove_from_pantry_alert_title">Remove from pantry</string>
+    <string name="remove_from_pantry_alert_message">Are you sure you want to remove this item from the pantry?</string>
 
     <!-- misc -->
     <string name="currency">&curr;</string>

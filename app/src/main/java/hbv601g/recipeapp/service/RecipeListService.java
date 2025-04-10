@@ -44,6 +44,8 @@ public class RecipeListService extends Service {
      * @param title title of the list, max 50 characters
      * @param description description of the list, max 250 chars, may be null
      * @param isPrivate true if the list is private, otherwise false
+     * @param callback a callback that returns the new recipe list on success or null on
+     *         failure
      */
     public void createRecipeList(String title, String description, boolean isPrivate,
                                  CustomCallback<RecipeList> callback) {
@@ -77,8 +79,10 @@ public class RecipeListService extends Service {
 
     /**
      * Makes a request to get all recipe lists for the current user, public and private
-     * @param uid - user id
-     * @param callback - returns all of the user's recipe lists on success, or an empty list on failure
+     *
+     * @param uid user id
+     * @param callback returns all of the user's recipe lists on success, or an empty list
+     *         on failure
      */
     public void getUserRecipeLists(long uid, CustomCallback<List<RecipeList>> callback) {
         String url = "list/user/" + uid + "?uid=" + mUid;
@@ -109,7 +113,7 @@ public class RecipeListService extends Service {
      *
      * @param recipeId id of the recipe to add
      * @param listId id of the list to be added to
-     * @param callback - callback returning the new list size on success, or null on failure
+     * @param callback callback returning the new list size on success, or null on failure
      */
     public void addRecipeToList(long recipeId, long listId, CustomCallback<Integer> callback) {
         String url = String.format("list/addRecipe?recipeID=%s&listID=%s&uid=%s",
@@ -139,7 +143,7 @@ public class RecipeListService extends Service {
      * Fetches a recipe list by its id.
      *
      * @param lid id of the recipe list.
-     * @param callback - callback returning the recipeList on success, or null on failure.
+     * @param callback callback returning the recipeList on success, or null on failure.
      */
     public void getListById(long lid, CustomCallback<RecipeList> callback){
         String url = String.format("list/id/%s?uid=%s", lid, mUid);
@@ -167,6 +171,8 @@ public class RecipeListService extends Service {
      * Fetches all recipes from the recipe list with the id 'lid'.
      *
      * @param lid id of the recipe list.
+     * @param callback a callback returning the recipes from the list that are accessible to
+     *         the user making the request on success, or an empty list on failure
      */
     public void getRecipesFromList(long lid, CustomCallback<List<Recipe>> callback){
         String url = String.format("list/id/%s/recipe?uid=%s", lid, mUid);
@@ -271,6 +277,8 @@ public class RecipeListService extends Service {
      * Deletes the given recipe list
      *
      * @param lid id of the recipe list
+     * @param callback a callback that always returns null, but calls onSuccess if the recipe
+     * list was successfully deleted or onFailure if it was not
      */
     public void deleteRecipeList(long lid, CustomCallback<Boolean> callback) {
         String url = String.format("list/id/%s/delete?uid=%s", lid, mUid);

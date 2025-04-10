@@ -2,6 +2,7 @@ package hbv601g.recipeapp.ui.recipes;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,24 +39,17 @@ public class EditRecipeFragment extends Fragment {
     private FragmentEditRecipeBinding mBinding;
     private IngredientMeasurementAdapter mAdapter;
     private List<IngredientMeasurement> mList;
-    private List<IngredientMeasurement> mOriginalList;
     private Recipe mRecipe;
     private int mTotalHeight;
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        mBinding = FragmentEditRecipeBinding.inflate(inflater, container, false);
-        View root = mBinding.getRoot();
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
         MainActivity mainActivity = (MainActivity) getActivity();
         assert mainActivity != null;
-
-        NavController navController = Navigation.findNavController(
-                mainActivity, R.id.nav_host_fragment_activity_main
-        );
-
+        NavController navController =
+                Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
         mRecipeService = new RecipeService(new NetworkingService(), mainActivity.getUserId());
 
         if (getArguments() == null ||
@@ -66,6 +60,8 @@ public class EditRecipeFragment extends Fragment {
 
         try {
             mRecipe = getArguments().getParcelable(getString(R.string.selected_recipe));
+            mList = new ArrayList<>(mRecipe.getIngredientMeasurements());
+
             if (mRecipe.getCreatedBy() == null) {
                 Log.e("EditRecipeFragment", "No ones owns this");
                 navController.popBackStack();
@@ -75,28 +71,29 @@ public class EditRecipeFragment extends Fragment {
             navController.popBackStack();
         }
 
+    }
+
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState) {
+        if (savedInstanceState != null){
+            try {
+                mList = savedInstanceState.getParcelableArrayList(getString(R.string.selected_ingredient_measurement_list));
+            } catch (IllegalArgumentException e) {
+                Log.d("Edit Recipe", "Illegal argument for list");
+            }
+        }
+        mBinding = FragmentEditRecipeBinding.inflate(inflater, container, false);
+        View root = mBinding.getRoot();
+        MainActivity mainActivity = (MainActivity) getActivity();
+        assert mainActivity != null;
+        NavController navController =
+                Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
+
         setEditable(mainActivity);
-
-        mBinding.ingredients.setOnItemClickListener((parent, view, position, id) -> {
-            removeIngredientAlert(
-                    mainActivity,
-                    (IngredientMeasurement) parent.getItemAtPosition(position),
-                    position
-            );
-        });
-
-        mBinding.cancelEditRecipe.setOnClickListener(view -> {
-            mList = mOriginalList;
-            navController.popBackStack();
-        });
-	
-        mBinding.addIngredient.setOnClickListener(view ->
-            navController.navigate(R.id.nav_add_ingredient_measurement_to_recipe));
-
-        mBinding.editRecipe.setOnClickListener(view -> editRecipe(mainActivity, navController));
-
-        //This make a listener to revel the tool tip on a long tip
-        mBinding.removeIngredientsToolTip.performLongClick();
+        setListeners(mainActivity, navController);
 
         ListView ingredientsList = mBinding.ingredients;
 
@@ -108,17 +105,43 @@ public class EditRecipeFragment extends Fragment {
 
                     View listItem = mAdapter.getView(mAdapter.getCount()-1, null, mBinding.ingredients);
                     listItem.measure(0, 0);
-                    mTotalHeight += listItem.getMeasuredHeight();
+                    mTotalHeight += listItem.getMeasuredHeight() + ingredientsList.getDividerHeight();
 
                     ViewGroup.LayoutParams params = ingredientsList.getLayoutParams();
-                    params.height = mTotalHeight + (ingredientsList.getDividerHeight() * (mAdapter.getCount() - 1));
+                    params.height = mTotalHeight ;
                     ingredientsList.setLayoutParams(params);
                     ingredientsList.requestLayout();
                 });
 
+        setHeight();
         return root;
     }
 
+
+    /**
+     * Sets listeners on various buttons and other UI components.
+     *
+     * @param mainActivity the current activity
+     * @param navController the NavController used to navigate between fragments
+     */
+    private void setListeners(MainActivity mainActivity, NavController navController){
+        mBinding.ingredients.setOnItemClickListener((parent, view, position, id) -> {
+            removeIngredientAlert(mainActivity,
+                    (IngredientMeasurement) parent.getItemAtPosition(position), position);
+        });
+
+        mBinding.cancelEditRecipe.setOnClickListener(view -> {
+            navController.popBackStack();
+        });
+
+        mBinding.addIngredient.setOnClickListener(
+                view -> navController.navigate(R.id.nav_add_ingredient_measurement_to_recipe));
+
+        mBinding.editRecipe.setOnClickListener(view -> editRecipe(mainActivity, navController));
+
+        //This make a listener to revel the tool tip on a long tip
+        mBinding.removeIngredientsToolTip.performLongClick();
+    }
     /**
      * Displays the information about the recipe that should be edited in the UI
      *
@@ -128,20 +151,20 @@ public class EditRecipeFragment extends Fragment {
         mBinding.recipeName.setText(mRecipe.getTitle());
         mBinding.instructions.setText(mRecipe.getInstructions());
 
-        mOriginalList = new ArrayList<>(mRecipe.getIngredientMeasurements());
-        mList = mRecipe.getIngredientMeasurements();
-
         ListView ingredientsList = mBinding.ingredients;
-        mAdapter = new IngredientMeasurementAdapter
-                (
-                        activity.getApplicationContext(),
-                        mList
-                );
+        mAdapter = new IngredientMeasurementAdapter(activity.getApplicationContext(), mList);
         ingredientsList.setAdapter(mAdapter);
 
         mBinding.isPrivate.setChecked(mRecipe.isPrivate());
 
-        // setting the listview height to fit the contents
+       setHeight();
+    }
+
+    /**
+     * Sets the height of the listview to fit the contents
+     */
+    private void setHeight() {
+        ListView ingredientsList = mBinding.ingredients;
 
         mTotalHeight = 0;
 
@@ -152,10 +175,10 @@ public class EditRecipeFragment extends Fragment {
         }
 
         ViewGroup.LayoutParams params = ingredientsList.getLayoutParams();
-        params.height = mTotalHeight + (ingredientsList.getDividerHeight() * (mAdapter.getCount() - 1));
+        params.height =
+                mTotalHeight + (ingredientsList.getDividerHeight() * (mAdapter.getCount() - 1));
         ingredientsList.setLayoutParams(params);
         ingredientsList.requestLayout();
-
     }
 
     /**
@@ -173,11 +196,10 @@ public class EditRecipeFragment extends Fragment {
         String title =  temp.getText().toString();
 
         if(title.isEmpty()){
-            temp.setError(getString(R.string.recipe_name_is_empty_error));
+            temp.setError(getString(R.string.field_required_error));
             return;
         }
-       
-        
+
         Recipe upRes = new Recipe();
         upRes.setTitle(title);
         upRes.setInstructions(mBinding.instructions.getText().toString());
@@ -200,7 +222,7 @@ public class EditRecipeFragment extends Fragment {
             public void onFailure(Recipe recipe) {
                 if(getActivity() == null) return;
                 requireActivity().runOnUiThread(() ->
-                        Toast.makeText(getActivity(), R.string.recipe_edit_unknown_error, Toast.LENGTH_LONG).show());
+                        Toast.makeText(getActivity(), R.string.edit_recipe_failed_toast, Toast.LENGTH_LONG).show());
             }
         });
 
@@ -213,12 +235,8 @@ public class EditRecipeFragment extends Fragment {
      *                 remove
      * @param ingerd Is the IngredientMeasurement that is being removed
      */
-    private void removeIngredientAlert
-    (
-            MainActivity activity,
-            IngredientMeasurement ingerd,
-            int position
-    ) {
+    private void removeIngredientAlert(MainActivity activity, IngredientMeasurement ingerd,
+                                       int position) {
         AlertDialog.Builder alert = new AlertDialog.Builder(activity);
         alert.setTitle(ingerd.getIngredient().getTitle());
 
@@ -229,10 +247,10 @@ public class EditRecipeFragment extends Fragment {
             View listItem = mAdapter.getView(position, null, ingredientsList);
             listItem.measure(0, 0);
 
-            mTotalHeight -= listItem.getMeasuredHeight();
+            mTotalHeight -= (listItem.getMeasuredHeight() + ingredientsList.getDividerHeight());
 
             ViewGroup.LayoutParams params = ingredientsList.getLayoutParams();
-            params.height = mTotalHeight + (ingredientsList.getDividerHeight() * (mAdapter.getCount() - 1));
+            params.height = mTotalHeight ;
             ingredientsList.setLayoutParams(params);
             ingredientsList.requestLayout();
 
@@ -244,6 +262,14 @@ public class EditRecipeFragment extends Fragment {
 
         alert.setNegativeButton(R.string.cancel_button_text, null);
         alert.show();
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mList == null) mList = new ArrayList<>();
+        outState.putParcelableArrayList(getString(R.string.selected_ingredient_measurement_list),
+                (ArrayList<? extends Parcelable>) mList);
     }
 
     @Override

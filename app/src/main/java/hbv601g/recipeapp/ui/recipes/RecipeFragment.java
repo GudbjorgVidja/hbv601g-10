@@ -42,6 +42,19 @@ public class RecipeFragment extends Fragment {
     private RecipeService mRecipeService;
     private RecipeListService mRecipeListService;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        MainActivity mainActivity = (MainActivity) getActivity();
+        assert mainActivity!=null;
+        NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
+        mRecipeService = new RecipeService(new NetworkingService(), mainActivity.getUserId());
+        mRecipeListService = new RecipeListService(new NetworkingService(), mainActivity.getUserId());
+
+        readArguments(mainActivity,navController);
+    }
+
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -50,17 +63,9 @@ public class RecipeFragment extends Fragment {
         mBinding = FragmentRecipeBinding.inflate(inflater,container,false);
         View root = mBinding.getRoot();
         MainActivity mainActivity = (MainActivity) getActivity();
-
-        if (mainActivity == null) {
-            Log.e("RecipeFragment", "MainActivity is null. Navigation failed.");
-            return root;
-        }
-
+        assert mainActivity != null;
         NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
-        mRecipeService = new RecipeService(new NetworkingService(), mainActivity.getUserId());
-        mRecipeListService = new RecipeListService(new NetworkingService(), mainActivity.getUserId());
 
-        readArguments(mainActivity,navController);
         setRecipe();
         verifyRecipeExists(mainActivity,navController);
         setButtonListeners(mainActivity, navController);
@@ -102,12 +107,11 @@ public class RecipeFragment extends Fragment {
     }
 
 
-
-
     /**
-     * Sets listeners and visibility on various buttons. Users who are logged in can add recipes
-     * to Recipe Lists. Users can view the profile of the creator of the recipe if one is
-     * registered. Users can edit and delete their own recipes
+     * Sets listeners and visibility on various buttons. Users who are logged in can add recipes to
+     * Recipe Lists. Users can view the profile of the creator of the recipe if one is registered.
+     * Users can edit and delete their own recipes
+     *
      * @param mainActivity the current activity
      * @param navController the NavController used to navigate between fragments
      */
@@ -209,11 +213,10 @@ public class RecipeFragment extends Fragment {
     private void setRecipe(){
         mBinding.recipeTitle.setText(mRecipe.getTitle());
 
-        String tmp = mRecipe.getCreatedBy()==null ? "Unknown" : mRecipe.getCreatedBy().getUsername();
+        String tmp = mRecipe.getCreatedBy()==null ? getString(R.string.created_by_unknown_text) : mRecipe.getCreatedBy().getUsername();
         mBinding.recipeCreator.setText(tmp);
 
-        // TODO: harðkóðaðir strengir
-        tmp = mRecipe.getInstructions() == null ? "No instructions" : mRecipe.getInstructions();
+        tmp = mRecipe.getInstructions() == null ? getString(R.string.no_instructions_text) : mRecipe.getInstructions();
         mBinding.recipeInstructions.setText(tmp);
 
         tmp = getString(R.string.recipe_tpc, mRecipe.getTotalPurchaseCost());
@@ -222,7 +225,7 @@ public class RecipeFragment extends Fragment {
         tmp=getString(R.string.recipe_tic,mRecipe.getTotalIngredientCost());
         mBinding.recipeTic.setText(tmp);
 
-        tmp = mRecipe.isPrivate() ? "private" : "public";
+        tmp = mRecipe.isPrivate() ? getString(R.string.private_text) : getString(R.string.public_text);
         mBinding.recipePrivate.setText(tmp);
 
         MainActivity mainActivity = (MainActivity) getActivity();
@@ -239,7 +242,6 @@ public class RecipeFragment extends Fragment {
 
                 @Override
                 public void onFailure(Double ppc) {
-                    // TODO: á að gera visibility á viðmótshlutnum gone, nú er eyða?
                     Log.d("Callback", "Failed to get personalized purchase cost");
                 }
             });
@@ -265,8 +267,6 @@ public class RecipeFragment extends Fragment {
 
         ingredientMeasurementListView.setAdapter(adapter);
 
-
-        // setting the listview height to fit the contents
 
         int totalHeight = 0;
 
@@ -302,10 +302,8 @@ public class RecipeFragment extends Fragment {
                 if(getActivity() == null) return;
                 if(recipeLists.isEmpty()){
                     Log.d("Callback", "No lists found");
-                    // TODO: harðkóðaður texti
                     requireActivity().runOnUiThread(() ->
-                            Toast.makeText(mainActivity, "No lists found", Toast.LENGTH_LONG).show());
-
+                            mainActivity.makeToast(R.string.no_lists_found_text, Toast.LENGTH_LONG));
                     return;
                 }
                 alert.setTitle(getString(R.string.add_recipe_to_list_dialog_title));
@@ -344,9 +342,8 @@ public class RecipeFragment extends Fragment {
             @Override
             public void onFailure(List<RecipeList> recipeLists) {
                 if(getActivity() == null) return;
-                // TODO: harðkóðaður texti
                 requireActivity().runOnUiThread(() ->
-                        Toast.makeText(mainActivity, "Something went wrong, No lists found", Toast.LENGTH_LONG).show());
+                        mainActivity.makeToast(R.string.no_lists_found_text, Toast.LENGTH_LONG));
             }
         });
 

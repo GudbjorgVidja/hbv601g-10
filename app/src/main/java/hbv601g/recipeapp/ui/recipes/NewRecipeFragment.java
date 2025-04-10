@@ -2,6 +2,7 @@ package hbv601g.recipeapp.ui.recipes;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +27,7 @@ import hbv601g.recipeapp.adapters.IngredientMeasurementAdapter;
 import hbv601g.recipeapp.databinding.FragmentNewRecipeBinding;
 import hbv601g.recipeapp.entities.IngredientMeasurement;
 import hbv601g.recipeapp.entities.Recipe;
+import hbv601g.recipeapp.entities.Unit;
 import hbv601g.recipeapp.networking.CustomCallback;
 import hbv601g.recipeapp.networking.NetworkingService;
 import hbv601g.recipeapp.service.RecipeService;
@@ -44,42 +46,29 @@ public class NewRecipeFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        if (savedInstanceState != null){
+            try {
+                mIngredientList = savedInstanceState.getParcelableArrayList(getString(R.string.selected_ingredient_measurement_list));
+            } catch (IllegalArgumentException e) {
+                Log.d("New Recipe", "Illegal argument for list");
+            }
+        }
+
         mBinding = FragmentNewRecipeBinding.inflate(inflater, container, false);
         View root = mBinding.getRoot();
-
         MainActivity mainActivity = (MainActivity) getActivity();
         assert mainActivity != null;
+        NavController navController =
+                Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
+        mRecipeService = new RecipeService(new NetworkingService(), mainActivity.getUserId());
 
         IngredientMeasurementAdapter adapter = new IngredientMeasurementAdapter(
                 mainActivity.getApplicationContext(), mIngredientList);
         mBinding.ingredients.setAdapter(adapter);
 
-        NavController navController = Navigation.findNavController(
-                mainActivity, R.id.nav_host_fragment_activity_main
-        );
-
-        mRecipeService = new RecipeService(new NetworkingService(), mainActivity.getUserId());
-
-        mBinding.addIngredient.setOnClickListener(view ->
-            navController.navigate(R.id.nav_add_ingredient_measurement_to_recipe));
-
-        mBinding.createRecipe.setOnClickListener(view -> createRecipe(navController));
-
-        mBinding.cancelRecipe.setOnClickListener(view -> navController.popBackStack());
+        setListeners(mainActivity,navController);
 
         ListView ingredientsList = mBinding.ingredients;
-
-        ingredientsList.setOnItemClickListener((parent, view, position, id) -> {
-            removeIngredientAlert(
-                    mainActivity,
-                    adapter,
-                    (IngredientMeasurement) parent.getItemAtPosition(position),
-                    position
-            );
-        });
-
-        //This make a listener to revel the tool tip on a long tip
-        mBinding.removeIngredientsToolTip.performLongClick();
 
         getParentFragmentManager().setFragmentResultListener(getString(R.string.request_ingredient_measurement),
                 this, (requestKey, result) -> {
@@ -89,15 +78,65 @@ public class NewRecipeFragment extends Fragment {
             mIngredientList.add(ingredientMeasurement);
             View listItem = adapter.getView(adapter.getCount() - 1, null, mBinding.ingredients);
             listItem.measure(0, 0);
-            mTotalHeight += listItem.getMeasuredHeight();
+            mTotalHeight += listItem.getMeasuredHeight() + ingredientsList.getDividerHeight();
 
             ViewGroup.LayoutParams params = ingredientsList.getLayoutParams();
-            params.height = mTotalHeight + (ingredientsList.getDividerHeight() * (adapter.getCount() - 1));
+            params.height = mTotalHeight ;
             ingredientsList.setLayoutParams(params);
             ingredientsList.requestLayout();
         });
 
+        setHeight();
         return root;
+    }
+
+    /**
+     * Sets listeners on various buttons and other UI components.
+     *
+     * @param mainActivity the current activity
+     * @param navController the NavController used to navigate between fragments
+     */
+    private void setListeners(MainActivity mainActivity, NavController navController){
+        mBinding.addIngredient.setOnClickListener(view ->
+                navController.navigate(R.id.nav_add_ingredient_measurement_to_recipe));
+
+        mBinding.createRecipe.setOnClickListener(view -> createRecipe(navController));
+
+        mBinding.cancelRecipe.setOnClickListener(view -> navController.popBackStack());
+
+        ListView ingredientsList = mBinding.ingredients;
+
+        IngredientMeasurementAdapter adapter =
+                (IngredientMeasurementAdapter) ingredientsList.getAdapter();
+        ingredientsList.setOnItemClickListener((parent, view, position, id) -> {
+            removeIngredientAlert(mainActivity, adapter,
+                    (IngredientMeasurement) parent.getItemAtPosition(position), position);
+        });
+
+        //This make a listener to revel the tool tip on a long tip
+        mBinding.removeIngredientsToolTip.performLongClick();
+
+    }
+
+    /**
+     * Sets the height of the listview to fit the contents
+     */
+    private void setHeight(){
+        ListView ingredientsList = mBinding.ingredients;
+        IngredientMeasurementAdapter adapter =
+                (IngredientMeasurementAdapter) ingredientsList.getAdapter();
+        mTotalHeight = 0;
+
+        for (int i = 0; i < adapter.getCount(); i++) {
+            View listItem = adapter.getView(i, null, ingredientsList);
+            listItem.measure(0, 0);
+            mTotalHeight += listItem.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams params = ingredientsList.getLayoutParams();
+        params.height = mTotalHeight + (ingredientsList.getDividerHeight() * (adapter.getCount() - 1));
+        ingredientsList.setLayoutParams(params);
+        ingredientsList.requestLayout();
     }
 
     /**
@@ -110,7 +149,7 @@ public class NewRecipeFragment extends Fragment {
         String title =  temp.getText().toString();
 
 	    if(title.isEmpty()){
-            temp.setError(getString(R.string.recipe_name_is_empty_error));
+            temp.setError(getString(R.string.field_required_error));
             return;
         }
 
@@ -136,7 +175,7 @@ public class NewRecipeFragment extends Fragment {
                         Toast.makeText(getActivity(), R.string.create_recipe_ingredients_failed_toast, Toast.LENGTH_LONG).show();
                     }
                     else
-                        Toast.makeText(getActivity(), R.string.recipe_unknown_error, Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), R.string.create_recipe_failed_toast, Toast.LENGTH_LONG).show();
                 });
             }
         });
@@ -151,13 +190,8 @@ public class NewRecipeFragment extends Fragment {
      * @param position Is the position of the IngredientMeasurement in the adapter that is being
      *                 remove
      */
-    private void removeIngredientAlert
-    (
-            MainActivity activity,
-            IngredientMeasurementAdapter adapter,
-            IngredientMeasurement ingerd,
-            int position
-    ) {
+    private void removeIngredientAlert(MainActivity activity, IngredientMeasurementAdapter adapter,
+                                       IngredientMeasurement ingerd, int position) {
         AlertDialog.Builder alert = new AlertDialog.Builder(activity);
         alert.setTitle(ingerd.getIngredient().getTitle());
 
@@ -169,10 +203,10 @@ public class NewRecipeFragment extends Fragment {
             View listItem = adapter.getView(position, null, ingredientsList);
             listItem.measure(0, 0);
 
-            mTotalHeight -= listItem.getMeasuredHeight();
+            mTotalHeight -= (listItem.getMeasuredHeight()+ingredientsList.getDividerHeight());
 
             ViewGroup.LayoutParams params = ingredientsList.getLayoutParams();
-            params.height = mTotalHeight + (ingredientsList.getDividerHeight() * (adapter.getCount() - 1));
+            params.height = mTotalHeight;
             ingredientsList.setLayoutParams(params);
             ingredientsList.requestLayout();
 
@@ -184,6 +218,14 @@ public class NewRecipeFragment extends Fragment {
 
         alert.setNegativeButton(R.string.cancel_button_text, null);
         alert.show();
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mIngredientList == null) mIngredientList = new ArrayList<>();
+        outState.putParcelableArrayList(getString(R.string.selected_ingredient_measurement_list),
+                    (ArrayList<? extends Parcelable>) mIngredientList);
     }
 
     @Override

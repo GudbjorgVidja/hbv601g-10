@@ -34,12 +34,9 @@ public class NewRecipeListFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         mBinding = FragmentNewRecipeListBinding.inflate(inflater, container, false);
         View root = mBinding.getRoot();
-
-        MainActivity mainActivity = ((MainActivity) getActivity());
+        MainActivity mainActivity = (MainActivity) getActivity();
         assert mainActivity != null;
-
         NavController navController = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_activity_main);
-
         mRecipeListService = new RecipeListService(new NetworkingService(), mainActivity.getUserId());
 
         EditText titleInput = mBinding.newRecipeListTitleInput;
@@ -49,7 +46,6 @@ public class NewRecipeListFragment extends Fragment {
             if (Objects.requireNonNull(titleInput.getText()).toString().isEmpty())
                 titleInput.setError(getString(R.string.field_required_error));
             else {
-
                 mRecipeListService.createRecipeList(
                         titleInput.getText().toString(),
                         Objects.requireNonNull(descriptionInput.getText()).toString(),
@@ -63,6 +59,8 @@ public class NewRecipeListFragment extends Fragment {
                                     Bundle bundle = new Bundle();
                                     bundle.putLong(getString(R.string.selected_user_id), mainActivity.getUserId());
                                     bundle.putString(getString(R.string.selected_user_name), mainActivity.getUserName());
+                                    navController.popBackStack();
+                                    navController.popBackStack();
                                     navController.navigate(R.id.nav_user, bundle);
                                 });
                             }
@@ -75,10 +73,8 @@ public class NewRecipeListFragment extends Fragment {
                             }
                         }
                 );
-
             }
         });
-
 
         return root;
     }
