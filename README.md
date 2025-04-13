@@ -9,8 +9,11 @@ Pressing the Run 'app' button in Android Studio with an emulator running will bu
 Another option is to, in the home directory, run `./gradlew build` to build and `./gradlew installDebug` to install on running emulator. Then the app may be run by pressing the app icon on the device.
 
 ### Running on a physical device
+The app can be run on a physical device using either a usb or wifi connection. If using a wifi connection, open Settings -> About phone -> Software information on the android device. Tap 'Build number' seven times to enable Developer Mode. Go back, and open Settings -> Developer options -> Wireless debugging. Turn wireless debugging on and select a pairing mode (Pair device with QR code or Pair device with pairing code). In Android Studio, open Device Manager and select Pair Devices Using Wi-Fi. Select a pairing mode corresponding to the one selected on the device, and follow the prompt given in Android Studio.
 
+Note that this only works on Android 11+. 
 
+After connecting to the device, the app can be run in the same way as when using an emulator. 
 
 ## About the app
 ### API
